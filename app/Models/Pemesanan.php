@@ -9,7 +9,9 @@ class Pemesanan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'kos_id', 'tanggal_masuk', 'status', 'bukti_pembayaran'];
+    protected $fillable = ['kos_id', 'nama', 'email', 'no_hp', 'tgl_masuk', 'bukti_pembayaran'];
+    protected $table = 'pemesanan';
+
 
     public function kos()
     {

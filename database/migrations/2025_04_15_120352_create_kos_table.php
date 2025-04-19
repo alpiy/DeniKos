@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('kos', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama_kos');
             $table->text('alamat');
             $table->integer('harga');
-            $table->text('fasilitas');
+            $table->text('deskripsi')->nullable();
+            $table->json('fasilitas');
             $table->string('foto')->nullable();
             $table->timestamps();
         });

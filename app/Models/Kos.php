@@ -9,7 +9,10 @@ class Kos extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'alamat', 'harga', 'fasilitas', 'foto'];
+    protected $fillable = ['nama_kos', 'alamat', 'harga', 'deskripsi','fasilitas', 'foto'];
+    protected $casts = [
+        'fasilitas' => 'array',
+    ];
 
     public function pemesanan()
     {

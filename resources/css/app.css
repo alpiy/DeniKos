@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Add your custom styles here */
+.bg-status-pending {
+    background-color: #ddc04d; /* Same as bg-yellow-100 */
+}
+
+.bg-status-accepted {
+    background-color: #d1fae5; /* Same as bg-green-100 */
+}
+
+.bg-status-rejected {
+    background-color: #fee2e2; /* Same as bg-red-100 */
+}
