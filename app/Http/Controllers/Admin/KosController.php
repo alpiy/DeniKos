@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Kos;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class KosController extends Controller
 {
     public function index()
     {
-        $kos = Kos::all();
-        return view('admin.kos.index', compact('kos'));
+        $data = Kos::all();
+        return view('admin.kos.index', compact('data'));
     }
 
     public function create()
@@ -21,26 +22,78 @@ class KosController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'fasilitas' => array_map('trim', explode(',', $request->input('fasilitas'))),
+        ]);
         $request->validate([
-            'nama' => 'required',
+            'nama_kos' => 'required',
             'alamat' => 'required',
             'harga' => 'required|integer',
-            'fasilitas' => 'required',
-            'foto' => 'nullable|image',
+            'deskripsi' => 'required',
+            'fasilitas' => 'required|array',
+            'foto' => 'nullable|image|max:2048',
         ]);
 
-        $kos = new Kos();
-        $kos->nama = $request->nama;
-        $kos->alamat = $request->alamat;
-        $kos->harga = $request->harga;
-        $kos->fasilitas = $request->fasilitas;
-
+        $foto = null;
         if ($request->hasFile('foto')) {
-            $kos->foto = $request->file('foto')->store('foto_kos');
+            $foto = $request->file('foto')->store('kos', 'public');
         }
 
-        $kos->save();
+        Kos::create([
+            'nama_kos' => $request->nama_kos,
+            'alamat' => $request->alamat,
+            'harga' => $request->harga,
+            'deskripsi' => $request->deskripsi,
+            'fasilitas' => $request->fasilitas,
+            'foto' => $foto,
+        ]);
 
-        return redirect()->route('admin.kos.index');
+        return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil ditambahkan!');
+    }
+
+    public function edit(Kos $ko)
+    {
+        return view('admin.kos.edit', ['kos' => $ko]);
+    }
+
+    public function update(Request $request, Kos $ko)
+    {
+        $request->merge([
+            'fasilitas' => array_map('trim', explode(',', $request->input('fasilitas'))),
+        ]);
+        $request->validate([
+            'nama_kos' => 'required',
+            'alamat' => 'required',
+            'harga' => 'required|integer',
+            'deskripsi' => 'required',
+            'fasilitas' => 'required|array',
+            'foto' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto')->store('kos', 'public');
+            $ko->foto = $foto;
+        }
+
+        $ko->update([
+            'nama_kos' => $request->nama_kos,
+            'alamat' => $request->alamat,
+            'harga' => $request->harga,
+            'deskripsi' => $request->deskripsi,
+            'fasilitas' => $request->fasilitas,
+        ]);
+
+        return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil diperbarui!');
+    }
+
+    public function destroy(Kos $ko)
+    {
+         // Jika ada foto, hapus dari storage
+        if ($ko->foto) {
+        Storage::disk('public')->delete($ko->foto);
+     }
+
+        $ko->delete();
+        return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil dihapus.');
     }
 }

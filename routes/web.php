@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Admin\PemesananController as AdminPemesananController;
 use App\Http\Controllers\Admin\KosController as AdminKosController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\User\PemesananController as UserPemesananController;
 use App\Http\Controllers\User\KosController as UserKosController;
 
@@ -27,16 +28,11 @@ Route::prefix('user')->name('user.')->group(function () {
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // CRUD kos
-    Route::get('/kos', [AdminKosController::class, 'index'])->name('kos.index');
-    Route::get('/kos/create', [AdminKosController::class, 'create'])->name('kos.create');
-    Route::post('/kos', [AdminKosController::class, 'store'])->name('kos.store');
-    Route::get('/kos/{id}/edit', [AdminKosController::class, 'edit'])->name('kos.edit');
-    Route::put('/kos/{id}', [AdminKosController::class, 'update'])->name('kos.update');
-    Route::delete('/kos/{id}', [AdminKosController::class, 'destroy'])->name('kos.destroy');
+    Route::resource('/kos', AdminKosController::class)->names('kos');
 
     // Daftar pemesanan
-    Route::get('/pemesanan', [AdminPemesananController::class, 'index'])->name('pemesanan.index');
+    Route::resource('/pemesanan', AdminPemesananController::class)->names('pemesanan')->except(['create','edit', 'store']);
 });
