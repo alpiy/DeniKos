@@ -12,6 +12,7 @@ class Kos extends Model
     protected $fillable = ['nama_kos', 'alamat', 'harga', 'deskripsi','fasilitas', 'foto'];
     protected $casts = [
         'fasilitas' => 'array',
+        'foto' => 'array',
     ];
 
     public function pemesanan()

@@ -13,3 +13,14 @@
 .bg-status-rejected {
     background-color: #fee2e2; /* Same as bg-red-100 */
 }
+/* Mengubah warna tombol anak panah swiper menjadi putih */
+.swiper-button-next, .swiper-button-prev {
+    color: white !important;
+    font-size: 0.75rem; /* Adjust the size as needed */
+    transform: scale(0.75); /* Makes the buttons smaller */
+
+}
+/* Menambahkan style untuk hover jika ingin panah berubah warna saat dihover */
+/* .swiper-button-next:hover, .swiper-button-prev:hover {
+    color: rgba(255, 255, 255, 0.7);
+} */

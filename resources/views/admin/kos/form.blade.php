@@ -28,11 +28,18 @@
        class="w-full border rounded-lg px-4 py-2">
     </div>
 
+    {{-- Foto --}}
     <div>
-        <label class="block font-semibold mb-1">Foto (opsional)</label>
-        <input type="file" name="foto" class="w-full border rounded-lg px-4 py-2">
-        @if (isset($kos) && $kos->foto)
-            <img src="{{ asset('storage/' . $kos->foto) }}" alt="Foto Kos" class="w-32 mt-2 rounded">
+        <label class="block font-semibold mb-1">Foto (bisa lebih dari satu)</label>
+        <input type="file" name="foto[]" multiple class="w-full border rounded-lg px-4 py-2">
+
+        {{-- Tampilkan preview jika mode edit --}}
+        @if (isset($kos) && is_array($kos->foto))
+            <div class="flex flex-wrap gap-2 mt-2">
+                @foreach ($kos->foto as $path)
+                    <img src="{{ asset('storage/' . $path) }}" alt="Foto Kos" class="w-24 h-24 object-cover rounded shadow">
+                @endforeach
+            </div>
         @endif
     </div>
 

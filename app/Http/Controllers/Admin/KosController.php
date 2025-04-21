@@ -31,12 +31,14 @@ class KosController extends Controller
             'harga' => 'required|integer',
             'deskripsi' => 'required',
             'fasilitas' => 'required|array',
-            'foto' => 'nullable|image|max:2048',
+            'foto.*' => 'nullable|image|max:2048',
         ]);
 
-        $foto = null;
+        $fotoPaths = [];
         if ($request->hasFile('foto')) {
-            $foto = $request->file('foto')->store('kos', 'public');
+            foreach ($request->file('foto') as $file) {
+            $fotoPaths[] = $file->store('kos', 'public');
+         }
         }
 
         Kos::create([
@@ -45,7 +47,7 @@ class KosController extends Controller
             'harga' => $request->harga,
             'deskripsi' => $request->deskripsi,
             'fasilitas' => $request->fasilitas,
-            'foto' => $foto,
+            'foto' => $fotoPaths,
         ]);
 
         return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil ditambahkan!');
@@ -67,12 +69,15 @@ class KosController extends Controller
             'harga' => 'required|integer',
             'deskripsi' => 'required',
             'fasilitas' => 'required|array',
-            'foto' => 'nullable|image|max:2048',
+            'foto.*' => 'nullable|image|max:2048',
         ]);
 
+        $fotoPaths = $ko->foto ?? [];
+
         if ($request->hasFile('foto')) {
-            $foto = $request->file('foto')->store('kos', 'public');
-            $ko->foto = $foto;
+            foreach ($request->file('foto') as $file) {
+                $fotoPaths[] = $file->store('kos', 'public');
+            }
         }
 
         $ko->update([
@@ -81,6 +86,7 @@ class KosController extends Controller
             'harga' => $request->harga,
             'deskripsi' => $request->deskripsi,
             'fasilitas' => $request->fasilitas,
+            'foto' => $fotoPaths,
         ]);
 
         return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil diperbarui!');

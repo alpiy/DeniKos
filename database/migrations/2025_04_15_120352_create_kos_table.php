@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('harga');
             $table->text('deskripsi')->nullable();
             $table->json('fasilitas');
-            $table->string('foto')->nullable();
+            $table->json('foto')->nullable();
             $table->timestamps();
         });
     }
