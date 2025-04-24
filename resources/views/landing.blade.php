@@ -2,13 +2,33 @@
 
 @section('content')
     {{-- Hero Section --}}
-    <section class="text-center py-16 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-lg">
-        <h1 class="text-5xl font-extrabold mb-4">Selamat Datang di <span class="text-yellow-300">DeniKos</span></h1>
-        <p class="text-lg md:text-xl max-w-xl mx-auto">Temukan kos yang nyaman, aman, dan sesuai budgetmu hanya di DeniKos.</p>
-        <a href="{{ route('user.kos.index') }}" class="mt-8 inline-block bg-yellow-400 text-indigo-900 font-semibold px-8 py-3 rounded-xl hover:bg-yellow-300 transition">
-            Lihat Daftar Kos
-        </a>
+    <section class="relative text-center py-20 bg-gray-900 text-white rounded-xl shadow-lg overflow-hidden">
+        {{-- Swiper Background --}}
+        <div class="absolute inset-0 z-0">
+            <div class="swiper bgSwiper h-full w-full">
+                <div class="swiper-wrapper">
+                    @foreach ($backgroundFotos as $foto)
+                        <div class="swiper-slide">
+                            <img src="{{ asset( $foto) }}" class="w-full h-full object-cover" alt="Background Kos">
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+    
+            <div class="absolute inset-0 bg-black bg-opacity-60 z-10"></div>
+        </div>
+    
+        {{-- Hero Content --}}
+        <div class="relative z-20 px-4">
+            <h1 class="text-5xl font-extrabold mb-4">Selamat Datang di <span class="text-yellow-300">DeniKos</span></h1>
+            <p class="text-lg md:text-xl max-w-xl mx-auto">Temukan kos yang nyaman, aman, dan sesuai budgetmu hanya di DeniKos.</p>
+            <a href="{{ route('user.kos.index') }}"
+               class="mt-8 inline-block bg-yellow-400 text-indigo-900 font-semibold px-8 py-3 rounded-xl hover:bg-yellow-300 transition">
+                Lihat Daftar Kos
+            </a>
+        </div>
     </section>
+    
 
     {{-- Feature Section --}}
     <section class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">

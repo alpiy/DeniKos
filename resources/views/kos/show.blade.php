@@ -26,10 +26,10 @@
 
             {{-- Info Kos --}}
             <div class="p-6 md:p-10">
-                <h1 class="text-4xl font-bold text-indigo-600 mb-2">{{ $kos->nama_kos }}</h1>
+                <h1 class="text-4xl font-bold text-indigo-600 mb-2">{{ $kos->nomor_kamar }}</h1>
                 <p class="text-gray-500 text-sm mb-4">{{ $kos->alamat }}</p>
                 <p class="text-2xl font-bold text-gray-800 mb-6">
-                    Rp{{ number_format($kos->harga, 0, ',', '.') }} <span class="text-base font-normal">/ bulan</span>
+                    Rp{{ number_format($kos->harga_bulanan, 0, ',', '.') }} <span class="text-base font-normal">/ bulan</span>
                 </p>
 
                 {{-- Deskripsi --}}

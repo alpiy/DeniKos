@@ -3,9 +3,9 @@ import Swiper from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
-Swiper.use([Navigation, Pagination]);
+Swiper.use([Navigation, Pagination, Autoplay]);
 
 document.addEventListener('DOMContentLoaded', () => {
     //swiper daftar kos
@@ -46,6 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+        // swiper landing page
+        console.log("Initializing landing page swiper...");
+            new Swiper(".bgSwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                effect: 'fade',
+                speed: 1000,
+            });
+        
     
 
 });

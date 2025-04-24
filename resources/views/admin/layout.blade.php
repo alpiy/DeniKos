@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin - @yield('title')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-gray-100">
 

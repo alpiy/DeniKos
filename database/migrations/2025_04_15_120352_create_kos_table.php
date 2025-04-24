@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('kos', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kos');
             $table->text('alamat');
-            $table->integer('harga');
+            $table->integer('harga_bulanan');
+            $table->enum('lantai', [2, 3]); // Lantai 2 atau 3
+            $table->string('nomor_kamar')->unique(); // Penomoran kamar 1-12
             $table->text('deskripsi')->nullable();
             $table->json('fasilitas');
             $table->json('foto')->nullable();
+            $table->string('denah_kamar')->nullable(); // Opsional untuk menyimpan URL gambar denah
+            $table->enum('status_kamar', ['tersedia', 'terpesan'])->default('tersedia');
             $table->timestamps();
         });
+        
+        
     }
 
     /**
