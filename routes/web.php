@@ -7,9 +7,24 @@ use App\Http\Controllers\Admin\KosController as AdminKosController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\User\PemesananController as UserPemesananController;
 use App\Http\Controllers\User\KosController as UserKosController;
+use App\Http\Controllers\User\AuthController;
 
 // Landing Page
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// ------------------ ROUTE UNTUK AUTH ------------------
+Route::prefix('auth')->name('auth.')->group(function () {
+    // Register
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+    // Login
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 // ------------------ ROUTE UNTUK USER ------------------
 Route::prefix('user')->name('user.')->group(function () {

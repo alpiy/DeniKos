@@ -57,6 +57,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 effect: 'fade',
                 speed: 1000,
             });
+             // Toggle password visibility
+            const togglePassword = (passwordId, iconId) => {
+                const passwordField = document.getElementById(passwordId);
+                const eyeIcon = document.getElementById(iconId);
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    eyeIcon.classList.add('text-indigo-600');
+                } else {
+                    passwordField.type = 'password';
+                    eyeIcon.classList.remove('text-indigo-600');
+                }
+            };
+
+            // Add event listeners for password visibility toggles
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                const targetPassword = button.getAttribute('data-target');
+                const targetIcon = button.getAttribute('data-icon');
+                button.addEventListener('click', () => togglePassword(targetPassword, targetIcon));
+            });
         
     
 

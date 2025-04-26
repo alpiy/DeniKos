@@ -13,9 +13,9 @@ class DashboardController extends Controller
     {
         $jumlahKos = Kos::count();
         $totalPemesanan = Pemesanan::count();
-        $pending = Pemesanan::where('status', 'pending')->count();
-        $diterima = Pemesanan::where('status', 'diterima')->count();
-        $ditolak = Pemesanan::where('status', 'ditolak')->count();
+        $pending = Pemesanan::where('status_pemesanan', 'pending')->count();
+        $diterima = Pemesanan::where('status_pemesanan', 'diterima')->count();
+        $ditolak = Pemesanan::where('status_pemesanan', 'ditolak')->count();
 
         return view('admin.dashboard', compact(
             'jumlahKos', 'totalPemesanan', 'pending', 'diterima', 'ditolak'

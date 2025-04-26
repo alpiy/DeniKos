@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('pemesanan', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('kos_id')->constrained('kos')->onDelete('cascade');
-            $table->string('nama');
-            $table->string('email');
-            $table->string('no_hp');
-            $table->date('tgl_masuk');
+            $table->date('tanggal_pesan');
             $table->string('bukti_pembayaran')->nullable();
-            $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
+            $table->enum('status_pemesanan', ['pending', 'diterima', 'ditolak'])->default('pending');
             $table->timestamps();
         });
     }
