@@ -43,6 +43,15 @@
                         <div class="text-red-500 text-sm">{{ $message }}</div>
                     @enderror
                 </div>
+                
+                <div class="mb-4">
+                    <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" id="jenis_kelamin" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
 
                 <!-- Password -->
                 <div class="relative">

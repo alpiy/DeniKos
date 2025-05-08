@@ -28,6 +28,8 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 // ------------------ ROUTE UNTUK USER ------------------
 Route::prefix('user')->name('user.')->group(function () {
+    // Profile
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
     // List dan detail kos
     Route::get('/kos', [UserKosController::class, 'index'])->name('kos.index');
     Route::get('/kos/{id}', [UserKosController::class, 'show'])->name('kos.show');
@@ -39,6 +41,7 @@ Route::prefix('user')->name('user.')->group(function () {
     // Daftar & riwayat pemesanan user
     Route::get('/pemesanan', [UserPemesananController::class, 'index'])->name('pemesanan.index'); // daftar
     Route::get('/riwayat', [UserPemesananController::class, 'riwayat'])->name('riwayat');
+    Route::get('/pesan/success/{id}', [UserPemesananController::class, 'success'])->name('pesan.success');
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
@@ -50,4 +53,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Daftar pemesanan
     Route::resource('/pemesanan', AdminPemesananController::class)->names('pemesanan')->except(['create','edit', 'store']);
+    Route::get('/pemesanan/{id}/detail', [AdminPemesananController::class, 'show'])->name('pemesanan.show');
+    Route::post('/pemesanan/{id}/approve', [AdminPemesananController::class, 'approve'])->name('pemesanan.approve');
+    Route::post('/pemesanan/{id}/reject', [AdminPemesananController::class, 'reject'])->name('pemesanan.reject');
 });

@@ -76,6 +76,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetIcon = button.getAttribute('data-icon');
                 button.addEventListener('click', () => togglePassword(targetPassword, targetIcon));
             });
+             // Hitung Total Pembayaran pada Form Pemesanan
+             const hitungTotal = () => {
+                const lamaSewaInput = document.getElementById('lama_sewa');
+                const totalDisplay = document.getElementById('total_pembayaran_display');
+                const totalHidden = document.getElementById('total_pembayaran');
+            
+                const hargaBulanan = parseInt(lamaSewaInput?.dataset.harga || 0);
+                const lamaSewa = parseInt(lamaSewaInput.value) || 0;
+                const total = hargaBulanan * lamaSewa;
+            
+                if (totalDisplay && totalHidden) {
+                    totalDisplay.value = total ? `Rp ${total.toLocaleString('id-ID')}` : '';
+                    totalHidden.value = total || '';
+                }
+            };
+
+    const lamaSewaInput = document.getElementById('lama_sewa');
+    if (lamaSewaInput) {
+        lamaSewaInput.addEventListener('input', hitungTotal);
+        hitungTotal(); // Hitung saat pertama kali halaman dibuka jika ada nilai
+    }
         
     
 

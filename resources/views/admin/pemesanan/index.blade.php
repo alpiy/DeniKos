@@ -16,6 +16,7 @@
                 <th class="p-2 border">Email</th>
                 <th class="p-2 border">Kos</th>
                 <th class="p-2 border">Tanggal Masuk</th>
+                <th class="p-2 border">Status</th>
                 <th class="p-2 border">Aksi</th>
             </tr>
         </thead>
@@ -25,7 +26,14 @@
                     <td class="p-2 border">{{ $item->nama }}</td>
                     <td class="p-2 border">{{ $item->email }}</td>
                     <td class="p-2 border">{{ $item->kos->nama ?? '-' }}</td>
-                    <td class="p-2 border">{{ $item->tgl_masuk }}</td>
+                    <td class="p-2 border">{{ $item->tanggal_pesan }}</td>
+                    <td class="p-2 border">
+                        <span class="px-2 py-1 text-sm rounded
+                            {{ $item->status_pemesanan === 'diterima' ? 'bg-green-100 text-green-700' :
+                               ($item->status_pemesanan === 'ditolak' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
+                            {{ ucfirst($item->status_pemesanan) }}
+                        </span>
+                    </td>
                     <td class="p-2 border space-x-2">
                         <a href="{{ route('admin.pemesanan.show', $item->id) }}" class="text-blue-600 hover:underline">Lihat</a>
 

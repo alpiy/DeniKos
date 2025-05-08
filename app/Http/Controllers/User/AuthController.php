@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
+    // Tampilkan halaman profile
+    public function showProfile()
+    {
+        $user = Auth::user();
+        return view('client.profile', compact('user'));
+    }
      // Tampilkan halaman login
      public function showLoginForm()
      {
@@ -53,6 +60,7 @@ class AuthController extends Controller
              'name' => ['required', 'string', 'max:255'],
              'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
              'password' => ['required', 'confirmed', 'min:6'],
+             'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
              'no_hp' => ['required', 'string', 'max:20'],
              'alamat' => ['required', 'string'],
          ]);
@@ -63,6 +71,7 @@ class AuthController extends Controller
              'password' => Hash::make($validated['password']),
              'no_hp' => $validated['no_hp'],
              'alamat' => $validated['alamat'],
+             'jenis_kelamin' => $validated['jenis_kelamin'],
              'role' => 'user', // default user
          ]);
  

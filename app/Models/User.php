@@ -22,6 +22,7 @@ class User extends Authenticatable
         'password',
         'no_hp',
         'alamat',
+        'jenis_kelamin',
         'role',
     ];
 

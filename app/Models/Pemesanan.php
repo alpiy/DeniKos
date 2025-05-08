@@ -9,13 +9,13 @@ class Pemesanan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kos_id', 'user_id', 'tanggal_pemesanan', 'status_pemesanan'];
+    protected $fillable = ['kos_id', 'user_id', 'tanggal_pesan', 'status_pemesanan','bukti_pembayaran', 'lama_sewa', 'total_pembayaran'];
     protected $table = 'pemesanan';
 
 
     public function kos()
     {
-        return $this->belongsTo(Kos::class);
+        return $this->belongsTo(Kos::class, 'kos_id');
     }
 
     public function user()

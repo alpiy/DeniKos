@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    <h1 class="text-4xl font-extrabold text-indigo-600 mb-10 text-center">Daftar Kos</h1>
+    <h1 class="text-4xl font-extrabold text-indigo-600 mb-10 text-center">Daftar Kamar</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @forelse ($dataKos as $kos)
@@ -28,8 +28,15 @@
                 
 
                 <div class="p-5">
-                    <h2 class="text-2xl font-bold text-indigo-700 mb-1">{{ $kos->nama_kos }}</h2>
-                    <p class="text-gray-600 text-sm">{{ $kos->alamat }}</p>
+                    <h2 class="text-2xl font-bold text-indigo-700 mb-1">Kamar {{ $kos->nomor_kamar }}</h2>
+                    <p class="text-gray-600 text-sm">Lantai: {{ $kos->lantai }}</p>
+                    <p class="text-gray-600 text-sm">Harga: Rp{{ number_format($kos->harga_bulanan, 0, ',', '.') }} / bulan</p>
+                    <p class="text-sm font-semibold mt-2">
+                        Status: 
+                        <span class="{{ $kos->status_kamar == 'tersedia' ? 'text-green-600' : 'text-red-600' }}">
+                            {{ ucfirst($kos->status_kamar) }}
+                        </span>
+                    </p>
 
                     <a href="{{ route('user.kos.show', $kos->id) }}"
                        class="inline-block mt-4 bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition">

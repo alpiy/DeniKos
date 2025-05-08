@@ -49,10 +49,17 @@
                 </div>
 
                 {{-- Tombol Pemesanan --}}
+                @if($kos->status_kamar == 'tersedia')
                 <a href="{{ route('user.pesan.create', $kos->id) }}"
-                   class="inline-block mt-4 bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition duration-300">
+                class="inline-block mt-4 bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition duration-300">
                     Pesan Sekarang
                 </a>
+                @else
+                <button disabled
+                    class="inline-block mt-4 bg-gray-400 text-white px-6 py-3 rounded-xl cursor-not-allowed opacity-70">
+                    Kamar Sudah Dipesan
+                </button>
+                @endif
             </div>
         </div>
     </div>

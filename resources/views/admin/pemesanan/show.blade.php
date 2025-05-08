@@ -18,4 +18,20 @@
             @endif
         </p>
     </div>
+    @if($pemesanan->status_pemesanan === 'pending')
+    <div class="space-x-2">
+        <form action="{{ route('admin.pemesanan.approve', $pemesanan->id) }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Setujui</button>
+        </form>
+
+        <form action="{{ route('admin.pemesanan.reject', $pemesanan->id) }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Tolak</button>
+        </form>
+    </div>
+@endif
+    <div class="mt-4">
+        <a href="{{ route('admin.pemesanan.index') }}" class="text-blue-600 hover:underline">Kembali ke Daftar Pemesanan</a>
+    </div>
 @endsection

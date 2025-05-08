@@ -3,12 +3,12 @@
         <a href="/" class="text-xl font-bold text-indigo-600">DeniKos</a>
         <ul class="flex space-x-4">
             <li><a href="/" class="hover:text-indigo-600">Beranda</a></li>
-            <li><a href="/kos" class="hover:text-indigo-600">Daftar Kos</a></li>
+            <li><a href="{{ route('user.kos.index') }}" class="hover:text-indigo-600">Daftar Kos</a></li>
             @auth
                 @if(auth()->user()->role === 'admin')
                     <li><a href="/dashboard" class="hover:text-indigo-600">Dashboard Admin</a></li>
                 @else
-                    <li><a href="/profile" class="hover:text-indigo-600">Akun Saya</a></li>
+                    <li><a href="{{ route('user.profile') }}" class="hover:text-indigo-600">Akun Saya</a></li>
                 @endif
                 <li>
                     <form method="POST" action="{{ route('auth.logout') }}">

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('kos_id')->constrained('kos')->onDelete('cascade');
             $table->date('tanggal_pesan');
             $table->string('bukti_pembayaran')->nullable();
+            $table->integer('lama_sewa');
+            $table->integer('total_pembayaran');
             $table->enum('status_pemesanan', ['pending', 'diterima', 'ditolak'])->default('pending');
             $table->timestamps();
         });

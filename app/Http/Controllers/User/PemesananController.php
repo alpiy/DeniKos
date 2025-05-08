@@ -23,14 +23,21 @@ class PemesananController extends Controller
     }
     public function store(Request $request)
     {
+        if (!Auth::check()) {
+            return redirect()->route('auth.login.form')->with('error', 'Silakan login untuk memesan kos.');
+        }
+        
         $validated = $request->validate([
         'kos_id' => 'required|exists:kos,id',
-        'nama' => 'required|string|max:255',
-        'email' => 'required|email',
-        'no_hp' => 'required|string|max:20',
-        'tgl_masuk' => 'required|date',
+        'tanggal_pesan' => 'required|date',
+        'lama_sewa' => 'required|integer|min:1',
+        'total_pembayaran' => 'required|integer',
         'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
+
+    $validated['user_id'] = Auth::id();
+   
+    $validated['status_pemesanan'] = 'pending'; // default status
 
     // Simpan bukti pembayaran
     if ($request->hasFile('bukti_pembayaran')) {
@@ -39,9 +46,21 @@ class PemesananController extends Controller
     }
 
     // Simpan ke database
-    Pemesanan::create($validated);
+    $pemesanan = Pemesanan::create($validated);
+    
 
-    return redirect()->route('user.kos.index')->with('success', 'Pemesanan berhasil dikirim!');
+    return redirect()->route('user.pesan.success', $pemesanan->id);
     }
+    public function success($id)
+{
+    $pemesanan = Pemesanan::with('kos')->findOrFail($id);
+
+    // Pastikan hanya user yang memesan bisa melihat
+    if ($pemesanan->user_id !== Auth::user()->id) {
+        abort(403);
+    }
+
+    return view('pemesanan.success', compact('pemesanan'));
+}
 
 }

@@ -20,6 +20,33 @@ class PemesananController extends Controller
         $pemesanan = Pemesanan::with('kos')->findOrFail($id);
         return view('admin.pemesanan.show', compact('pemesanan'));
     }
+        public function approve($id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+        $pemesanan->status_pemesanan = 'diterima';
+        $pemesanan->save();
+         // Ubah status kamar jadi tidak tersedia
+    if ($pemesanan->kos) {
+        $pemesanan->kos->status_kamar = 'terpesan';
+        $pemesanan->kos->save();
+    }
+        // Kirim notifikasi ke user (opsional)
+        // Notifikasi bisa menggunakan laravel notification atau cara lain sesuai kebutuhan
+        // Contoh: Notifikasi menggunakan session flash
+        session()->flash('success', 'Pemesanan telah disetujui dan notifikasi telah dikirim.');
+
+        return redirect()->route('admin.pemesanan.index')->with('success', 'Pemesanan berhasil disetujui.');
+    }
+
+    public function reject($id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+        $pemesanan->status_pemesanan = 'ditolak';
+        $pemesanan->save();
+
+        return redirect()->route('admin.pemesanan.index')->with('success', 'Pemesanan telah ditolak.');
+    }
+
 
     public function destroy($id)
     {
