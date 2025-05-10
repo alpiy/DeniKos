@@ -14,7 +14,7 @@
             <tr class="bg-gray-100">
                 <th class="p-2 border">Nama</th>
                 <th class="p-2 border">Email</th>
-                <th class="p-2 border">Kos</th>
+                <th class="p-2 border">No.Kamar</th>
                 <th class="p-2 border">Tanggal Masuk</th>
                 <th class="p-2 border">Status</th>
                 <th class="p-2 border">Aksi</th>
@@ -23,9 +23,9 @@
         <tbody>
             @foreach($pemesanan as $item)
                 <tr class="hover:bg-gray-50">
-                    <td class="p-2 border">{{ $item->nama }}</td>
-                    <td class="p-2 border">{{ $item->email }}</td>
-                    <td class="p-2 border">{{ $item->kos->nama ?? '-' }}</td>
+                    <td class="p-2 border">{{ $item->user->name }}</td>
+                    <td class="p-2 border">{{ $item->user->email }}</td>
+                    <td class="p-2 border">{{ $item->kos->nomor_kamar ?? '-' }}</td>
                     <td class="p-2 border">{{ $item->tanggal_pesan }}</td>
                     <td class="p-2 border">
                         <span class="px-2 py-1 text-sm rounded

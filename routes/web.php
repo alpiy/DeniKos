@@ -5,6 +5,8 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Admin\PemesananController as AdminPemesananController;
 use App\Http\Controllers\Admin\KosController as AdminKosController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\PenyewaController as AdminPenyewaController;
+use App\Http\Controllers\Admin\LaporanSewaController as AdminLaporanSewaController;
 use App\Http\Controllers\User\PemesananController as UserPemesananController;
 use App\Http\Controllers\User\KosController as UserKosController;
 use App\Http\Controllers\User\AuthController;
@@ -56,4 +58,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/pemesanan/{id}/detail', [AdminPemesananController::class, 'show'])->name('pemesanan.show');
     Route::post('/pemesanan/{id}/approve', [AdminPemesananController::class, 'approve'])->name('pemesanan.approve');
     Route::post('/pemesanan/{id}/reject', [AdminPemesananController::class, 'reject'])->name('pemesanan.reject');
+
+    //data penyewa
+    Route::get('/penyewa', [AdminPenyewaController::class, 'index'])->name('penyewa.index');
+    Route::delete('/penyewa/{id}', [AdminPenyewaController::class, 'destroy'])->name('penyewa.destroy');
+
+    //laporanSewa
+    Route::get('/laporan-sewa', [AdminLaporanSewaController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan-sewa/export-excel', [AdminLaporanSewaController::class, 'exportExcel'])->name('laporan.exportExcel');
+    Route::get('/laporan-sewa/export-pdf', [AdminLaporanSewaController::class, 'exportPDF'])->name('laporan.exportPDF');
+
 });

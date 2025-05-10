@@ -1,8 +1,13 @@
 import './bootstrap';
+import Alpine from 'alpinejs';
+window.Alpine = Alpine;
+Alpine.start();
 import Swiper from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import Chart from 'chart.js/auto';
+
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
 Swiper.use([Navigation, Pagination, Autoplay]);
@@ -96,6 +101,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lamaSewaInput) {
         lamaSewaInput.addEventListener('input', hitungTotal);
         hitungTotal(); // Hitung saat pertama kali halaman dibuka jika ada nilai
+    }
+    //grafik pendapatand
+    const grafikCanvas = document.getElementById('grafikPendapatan');
+    if (grafikCanvas) {
+        const chart = new Chart(grafikCanvas, {
+            type: 'bar',
+            data: {
+                labels: JSON.parse(grafikCanvas.dataset.labels || '[]'),
+                datasets: [{
+                    label: 'Pendapatan (Rp)',
+                    data: JSON.parse(grafikCanvas.dataset.data || '[]'),
+                    backgroundColor: 'rgba(79, 70, 229, 0.6)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
         
     

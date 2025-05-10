@@ -30,5 +30,16 @@
             <h2 class="text-lg font-semibold">Ditolak</h2>
             <p class="text-3xl font-bold text-red-500">{{ $ditolak }}</p>
         </div>
+       
+    </div>
+    <div class="mt-10">
+        <h2 class="text-xl font-bold mb-4">Grafik Pendapatan</h2>
+        <div class="bg-white p-6 rounded-xl shadow">
+            <canvas id="grafikPendapatan"
+                height="70a"
+                data-labels='@json($labels)'
+                data-data='@json($data)'
+            ></canvas>
+        </div>
     </div>
 @endsection

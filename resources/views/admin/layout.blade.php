@@ -9,14 +9,16 @@
 </head>
 <body class="bg-gray-100">
 
-    <div class="flex min-h-screen">
+    <div class="flex h-screen overflow-hidden">
         {{-- Sidebar --}}
-        @include('admin.partials.sidebar')
+        <div class="w-64 bg-white shadow-lg fixed top-0 bottom-0 z-30">
+            @include('admin.partials.sidebar')
+        </div>
 
-        {{-- Content --}}
-        <main class="flex-1 p-6">
+        {{-- Konten --}}
+        <div class="flex-1 ml-64 overflow-y-auto p-6">
             @yield('content')
-        </main>
+        </div>
     </div>
 
 </body>
