@@ -8,4 +8,13 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 3000,
+        strictPort: true,
+        hmr: {
+            host: '192.168.30.123',
+            port: 3000,
+        },
+    },
 });

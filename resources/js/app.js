@@ -65,17 +65,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 speed: 1000,
             });
              // Toggle password visibility
-            const togglePassword = (passwordId, iconId) => {
-                const passwordField = document.getElementById(passwordId);
-                const eyeIcon = document.getElementById(iconId);
-                if (passwordField.type === 'password') {
-                    passwordField.type = 'text';
-                    eyeIcon.classList.add('text-indigo-600');
-                } else {
-                    passwordField.type = 'password';
-                    eyeIcon.classList.remove('text-indigo-600');
-                }
-            };
+            document.querySelectorAll('[data-toggle="password"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const input = document.getElementById(this.dataset.target);
+        const iconShow = this.querySelector('.icon-show');
+        const iconHide = this.querySelector('.icon-hide');
+        if (input.type === 'password') {
+            input.type = 'text';
+            iconShow.classList.add('hidden');
+            iconHide.classList.remove('hidden');
+        } else {
+            input.type = 'password';
+            iconShow.classList.remove('hidden');
+            iconHide.classList.add('hidden');
+        }
+    });
+});
 
             // Add event listeners for password visibility toggles
             document.querySelectorAll('.toggle-password').forEach(button => {
