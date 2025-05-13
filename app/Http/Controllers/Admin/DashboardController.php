@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Kos;
+use App\Models\Notification;
 use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,7 @@ class DashboardController extends Controller
         $pending = Pemesanan::where('status_pemesanan', 'pending')->count();
         $diterima = Pemesanan::where('status_pemesanan', 'diterima')->count();
         $ditolak = Pemesanan::where('status_pemesanan', 'ditolak')->count();
+        $notifications = Notification::latest()->take(10)->get();
           // Data untuk grafik pendapatan
         $pendapatan = DB::table('pemesanan')
         ->selectRaw('MONTH(tanggal_pesan) as bulan, SUM(total_pembayaran) as total')
@@ -37,7 +39,7 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact(
             'jumlahKos', 'totalPemesanan', 'pending', 'diterima', 'ditolak',
-            'labels', 'data'
+            'labels', 'data', 'notifications'
         ));
 
         

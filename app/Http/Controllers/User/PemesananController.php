@@ -4,7 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Models\Kos;
 use App\Models\Pemesanan;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Events\PemesananBaru;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,21 +48,29 @@ class PemesananController extends Controller
     }
 
     // Simpan ke database
-    $pemesanan = Pemesanan::create($validated);
+    $pemesanan = Pemesanan::create($validated)->load('kos');
+    // Buat notifikasi untuk admin
+        Notification::create([
+            'user_id' => null, // karena untuk admin umum
+            'title' => 'Pemesanan Baru',
+        'message' => 'User ' . Auth::user()->name . ' telah memesan kamar kos "' . $pemesanan->kos->nomor_kamar . '".',
+    ]);
+    event(new PemesananBaru('User ' . Auth::user()->name . ' telah memesan kamar kos "' . $pemesanan->kos->nomor_kamar . '".'));
+   
     
 
     return redirect()->route('user.pesan.success', $pemesanan->id);
     }
     public function success($id)
-{
-    $pemesanan = Pemesanan::with('kos')->findOrFail($id);
+    {
+        $pemesanan = Pemesanan::with('kos')->findOrFail($id);
 
-    // Pastikan hanya user yang memesan bisa melihat
-    if ($pemesanan->user_id !== Auth::user()->id) {
-        abort(403);
+        // Pastikan hanya user yang memesan bisa melihat
+        if ($pemesanan->user_id !== Auth::user()->id) {
+            abort(403);
+        }
+
+        return view('pemesanan.success', compact('pemesanan'));
     }
-
-    return view('pemesanan.success', compact('pemesanan'));
-}
 
 }

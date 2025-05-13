@@ -31,16 +31,16 @@ class AuthController extends Controller
              'password' => ['required'],
          ]);
  
-         if (Auth::attempt($credentials)) {
-             $request->session()->regenerate();
- 
-             // Cek role
-             if (Auth::user()->role == 'admin') {
-                 return redirect()->route('admin.dashboard');
-             } else {
-                 return redirect()->route('landing')->with('success', 'Selamat datang, ' . Auth::user()->name);
-             }
-         }
+        if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        
+        return match(Auth::user()->role) {
+            'user' => redirect()->route('landing')->with('success', 'Selamat datang, ' . Auth::user()->name),
+            default => back()->withErrors(['email' => 'Akun admin harus login melalui halaman admin.']),
+            // default => redirect()->route('landing'),
+        };
+    }
+
  
          return back()->withErrors([
              'email' => 'Email atau password salah.',

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\KosController as AdminKosController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PenyewaController as AdminPenyewaController;
 use App\Http\Controllers\Admin\LaporanSewaController as AdminLaporanSewaController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\User\PemesananController as UserPemesananController;
 use App\Http\Controllers\User\KosController as UserKosController;
 use App\Http\Controllers\User\AuthController;
@@ -28,8 +29,15 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+// Admin Auth (Terpisah)
+Route::prefix('admin/auth')->name('admin.auth.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+});
+
 // ------------------ ROUTE UNTUK USER ------------------
-Route::prefix('user')->name('user.')->group(function () {
+Route::prefix('user')->name('user.')->middleware('role:user')->group(function () {
     // Profile
     Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
     // List dan detail kos
@@ -47,7 +55,7 @@ Route::prefix('user')->name('user.')->group(function () {
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // CRUD kos
