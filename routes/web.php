@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\LaporanSewaController as AdminLaporanSewaControll
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\User\PemesananController as UserPemesananController;
 use App\Http\Controllers\User\KosController as UserKosController;
+use App\Http\Controllers\User\ForgotPasswordController;
 use App\Http\Controllers\User\AuthController;
 
 // Landing Page
@@ -25,6 +26,12 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+    // Forgot Password
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
+
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -36,13 +43,17 @@ Route::prefix('admin/auth')->name('admin.auth.')->group(function () {
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 });
 
+// Daftar & detail kos BISA diakses guest
+Route::get('/kos', [UserKosController::class, 'index'])->name('user.kos.index');
+Route::get('/kos/{id}', [UserKosController::class, 'show'])->name('user.kos.show');
+
 // ------------------ ROUTE UNTUK USER ------------------
 Route::prefix('user')->name('user.')->middleware('role:user')->group(function () {
     // Profile
     Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
-    // List dan detail kos
-    Route::get('/kos', [UserKosController::class, 'index'])->name('kos.index');
-    Route::get('/kos/{id}', [UserKosController::class, 'show'])->name('kos.show');
+    // // List dan detail kos
+    // Route::get('/kos', [UserKosController::class, 'index'])->name('kos.index');
+    // Route::get('/kos/{id}', [UserKosController::class, 'show'])->name('kos.show');
 
     // Form pemesanan
     Route::get('/kos/{id}/pesan', [UserPemesananController::class, 'create'])->name('pesan.create');

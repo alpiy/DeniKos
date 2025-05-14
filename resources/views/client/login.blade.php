@@ -47,10 +47,16 @@
                         Login
                     </button>
                 </div>
+                <div class="mt-2 text-right">
+    <a href="{{ route('auth.password.request') }}" class="text-blue-600 hover:underline text-sm">Lupa password?</a>
+</div>
 
                 <div class="mt-4 text-center">
                     Don't have an account? <a href="{{ route('auth.register.form') }}" class="text-blue-600 hover:underline">Register here</a>
                 </div>
+                <div class="mt-4 text-center">
+    <a href="{{ route('admin.auth.login') }}" class="text-blue-600 hover:underline text-sm">Login sebagai Admin</a>
+</div>
             </div>
         </form>
     </div>

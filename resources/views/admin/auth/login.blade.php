@@ -71,6 +71,9 @@
                     Login
                 </button>
             </div>
+            <div class="mt-4 text-center">
+    <a href="{{ route('auth.login.form') }}" class="text-blue-600 hover:underline text-sm">Login sebagai User</a>
+</div>
         </form>
     </div>
 </div>
