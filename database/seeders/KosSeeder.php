@@ -14,17 +14,118 @@ class KosSeeder extends Seeder
     public function run(): void
     {
         Kos::create([
-            'nama_kos' => 'Kos Deni Putra',
-            'alamat' => 'Gang 19 No.05',
-            'harga' => 750000,
-            'deskripsi' => 'Kos nyaman dengan kamar mandi dalam, WiFi, dapur, dan parkiran. Cocok untuk pelajar dan mahasiswa.',
-            'fasilitas' => ([
+            'alamat' => 'Jl. Melati No. 10',
+            'harga_bulanan' => 750000,
+            'lantai' => 2,
+            'nomor_kamar' => '201',
+            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+            'fasilitas' => [
                 'Kamar mandi dalam',
                 'WiFi 24 jam',
                 'Dapur bersama',
                 'Parkir motor'
-            ]),
-            'foto' => 'https://via.placeholder.com/600x400'
+            ],
+            'foto' => [
+                'https://via.placeholder.com/600x400',
+                'https://via.placeholder.com/600x401'
+            ],
+            'denah_kamar' => 'https://via.placeholder.com/300x200',
+            'status_kamar' => 'tersedia',
+        ]);
+        Kos::create([
+            'alamat' => 'Jl. Melati No. 10',
+            'harga_bulanan' => 750000,
+            'lantai' => 2,
+            'nomor_kamar' => '202',
+            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+            'fasilitas' => [
+                'Kamar mandi dalam',
+                'WiFi 24 jam',
+                'Dapur bersama',
+                'Parkir motor'
+            ],
+            'foto' => [
+                'https://via.placeholder.com/600x400',
+                'https://via.placeholder.com/600x401'
+            ],
+            'denah_kamar' => 'https://via.placeholder.com/300x200',
+            'status_kamar' => 'tersedia',
+        ]);
+        Kos::create([
+            'alamat' => 'Jl. Melati No. 10',
+            'harga_bulanan' => 750000,
+            'lantai' => 2,
+            'nomor_kamar' => '203',
+            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+            'fasilitas' => [
+                'Kamar mandi dalam',
+                'WiFi 24 jam',
+                'Dapur bersama',
+                'Parkir motor'
+            ],
+            'foto' => [
+                'https://via.placeholder.com/600x400',
+                'https://via.placeholder.com/600x401'
+            ],
+            'denah_kamar' => 'https://via.placeholder.com/300x200',
+            'status_kamar' => 'tersedia',
+        ]);
+        Kos::create([
+            'alamat' => 'Jl. Melati No. 10',
+            'harga_bulanan' => 750000,
+            'lantai' => 2,
+            'nomor_kamar' => '204',
+            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+            'fasilitas' => [
+                'Kamar mandi dalam',
+                'WiFi 24 jam',
+                'Dapur bersama',
+                'Parkir motor'
+            ],
+            'foto' => [
+                'https://via.placeholder.com/600x400',
+                'https://via.placeholder.com/600x401'
+            ],
+            'denah_kamar' => 'https://via.placeholder.com/300x200',
+            'status_kamar' => 'tersedia',
+        ]);
+        Kos::create([
+            'alamat' => 'Jl. Melati No. 10',
+            'harga_bulanan' => 750000,
+            'lantai' => 2,
+            'nomor_kamar' => '205',
+            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+            'fasilitas' => [
+                'Kamar mandi dalam',
+                'WiFi 24 jam',
+                'Dapur bersama',
+                'Parkir motor'
+            ],
+            'foto' => [
+                'https://via.placeholder.com/600x400',
+                'https://via.placeholder.com/600x401'
+            ],
+            'denah_kamar' => 'https://via.placeholder.com/300x200',
+            'status_kamar' => 'tersedia',
+        ]);
+        Kos::create([
+            'alamat' => 'Jl. Melati No. 10',
+            'harga_bulanan' => 750000,
+            'lantai' => 2,
+            'nomor_kamar' => '206',
+            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+            'fasilitas' => [
+                'Kamar mandi dalam',
+                'WiFi 24 jam',
+                'Dapur bersama',
+                'Parkir motor'
+            ],
+            'foto' => [
+                'https://via.placeholder.com/600x400',
+                'https://via.placeholder.com/600x401'
+            ],
+            'denah_kamar' => 'https://via.placeholder.com/300x200',
+            'status_kamar' => 'tersedia',
         ]);
         
     }
