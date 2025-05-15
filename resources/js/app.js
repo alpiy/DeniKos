@@ -109,6 +109,29 @@ document.addEventListener('DOMContentLoaded', () => {
         lamaSewaInput.addEventListener('input', hitungTotal);
         hitungTotal(); // Hitung saat pertama kali halaman dibuka jika ada nilai
     }
+    
+
+// Hitung Total Biaya Perpanjangan pada Form Perpanjang Sewa
+const tambahLamaSewaInput = document.getElementById('tambah_lama_sewa');
+const totalPerpanjangDisplay = document.getElementById('total_biaya_perpanjangan_display');
+const totalPerpanjangHidden = document.getElementById('total_biaya_perpanjangan');
+
+const hitungTotalPerpanjang = () => {
+    if (!tambahLamaSewaInput) return;
+    const hargaBulanan = parseInt(tambahLamaSewaInput.dataset.harga || 0);
+    const lamaSewa = parseInt(tambahLamaSewaInput.value) || 0;
+    const total = hargaBulanan * lamaSewa;
+
+    if (totalPerpanjangDisplay && totalPerpanjangHidden) {
+        totalPerpanjangDisplay.value = total ? `Rp ${total.toLocaleString('id-ID')}` : '';
+        totalPerpanjangHidden.value = total || '';
+    }
+};
+
+if (tambahLamaSewaInput) {
+    tambahLamaSewaInput.addEventListener('input', hitungTotalPerpanjang);
+    hitungTotalPerpanjang(); // Hitung saat pertama kali halaman dibuka jika ada nilai
+}
     //grafik pendapatand
     const grafikCanvas = document.getElementById('grafikPendapatan');
     if (grafikCanvas) {
@@ -138,6 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+     // Notifikasi error otomatis hilang setelah 10 detik
+    const notif = document.getElementById('notif-error');
+    if (notif) {
+        setTimeout(() => {
+            notif.style.opacity = '0';
+            setTimeout(() => notif.remove(), 500);
+        }, 10000); // 10 detik
     }
   
 

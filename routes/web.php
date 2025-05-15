@@ -63,6 +63,9 @@ Route::prefix('user')->name('user.')->middleware('role:user')->group(function ()
     Route::get('/pemesanan', [UserPemesananController::class, 'index'])->name('pemesanan.index'); // daftar
     Route::get('/riwayat', [UserPemesananController::class, 'riwayat'])->name('riwayat');
     Route::get('/pesan/success/{id}', [UserPemesananController::class, 'success'])->name('pesan.success');
+    // Perpanjang sewa
+    Route::get('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangForm'])->name('pesan.perpanjang');
+    Route::post('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangStore'])->name('pesan.perpanjang.store');
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------

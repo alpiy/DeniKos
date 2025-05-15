@@ -2,7 +2,11 @@
 
 @section('content')
     <h1 class="text-4xl font-extrabold text-indigo-600 mb-10 text-center">Daftar Kamar</h1>
-
+  @if (session('error'))
+        <div id="notif-error" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-300 text-red-700 px-6 py-3 rounded-lg shadow-lg mb-6 transition-opacity duration-500">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @forelse ($dataKos as $kos)
             <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden">
@@ -52,7 +56,7 @@
     </div>
 @endsection
 
-@section('scripts')
+{{-- @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -71,4 +75,4 @@
 
 @section('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
-@endsection
+@endsection --}}
