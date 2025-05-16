@@ -28,6 +28,7 @@
         <label class="block font-semibold mb-1">Upload Bukti Pembayaran</label>
         <input type="file" name="bukti_pembayaran" class="w-full border rounded px-3 py-2" required>
     </div>
+    <input type="hidden" name="is_perpanjangan" value="1">
     <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">Ajukan Perpanjangan</button>
 </form>
 @endsection

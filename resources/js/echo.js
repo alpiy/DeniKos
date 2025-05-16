@@ -50,5 +50,43 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => notifEl.remove(), 300); // Hapus setelah animasi
         }, 5000); // Sesuaikan waktu (dalam milidetik)
     });
+   // ...existing code...
+
+// === USER NOTIFIKASI REALTIME ===
+if (window.Laravel && window.Laravel.userId) {
+    window.Echo.channel('user.' + window.Laravel.userId)
+        .listen('.notifikasi-user', (e) => {
+            // Container notifikasi user
+            const container = document.getElementById('user-realtime-notifikasi');
+            if (!container) return;
+
+            // Card notifikasi
+            const notifEl = document.createElement('div');
+            notifEl.className = 'notification-card bg-green-50 border border-green-200 shadow-lg p-4 rounded-lg min-w-[260px] max-w-xs animate-fade-in';
+            notifEl.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="mt-1">
+                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-green-700">${e.title}</div>
+                        <div class="text-sm text-green-800 mt-1">${e.message}</div>
+                        <div class="text-xs text-gray-400 mt-2">${new Date().toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `;
+
+            // Tambahkan ke container
+            container.prepend(notifEl);
+
+            // Auto-hide setelah 5 detik
+            setTimeout(() => {
+                notifEl.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => notifEl.remove(), 300);
+            }, 5000);
+        });
+}
 }
 });

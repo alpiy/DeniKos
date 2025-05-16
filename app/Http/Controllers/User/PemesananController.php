@@ -7,6 +7,7 @@ use App\Models\Pemesanan;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Events\PemesananBaru;
+use App\Events\NotifikasiUserBaru;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -125,6 +126,12 @@ public function perpanjangStore(Request $request, $id)
         'message' => 'User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesanan->kos->nomor_kamar . '".',
     ]);
     event(new PemesananBaru('User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesanan->kos->nomor_kamar . '".'));
+     // Setelah perpanjangan berhasil:
+    event(new NotifikasiUserBaru(
+        Auth::id(),
+        'Perpanjangan Sewa Berhasil',
+        'Pengajuan perpanjangan sewa kamar ' . $pemesanan->kos->nomor_kamar . ' berhasil dikirim. Menunggu verifikasi admin.'
+    ));
 
     return redirect()->route('user.pemesanan.index')->with('success', 'Pengajuan perpanjangan berhasil, menunggu verifikasi admin.');
 }

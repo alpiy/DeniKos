@@ -22,6 +22,9 @@
     <div class="space-x-2">
         <form action="{{ route('admin.pemesanan.approve', $pemesanan->id) }}" method="POST" class="inline">
             @csrf
+             @if(request()->has('is_perpanjangan') || old('is_perpanjangan') || $pemesanan->is_perpanjangan ?? false)
+        <input type="hidden" name="is_perpanjangan" value="1">
+    @endif
             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Setujui</button>
         </form>
 
