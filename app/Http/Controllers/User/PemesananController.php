@@ -95,10 +95,7 @@ public function perpanjangStore(Request $request, $id)
 {
     $pemesanan = Pemesanan::with('kos')->where('user_id', Auth::id())->findOrFail($id);
     if ($pemesanan->status_pemesanan !== 'diterima') {
-        // Jika status pemesanan bukan diterima, tidak bisa perpanjang
-        // Redirect atau tampilkan pesan error
         return redirect()->route('user.pemesanan.index')->with('error', 'Hanya bisa perpanjang sewa pada pemesanan aktif.');
-       
     }
 
     $request->validate([
@@ -117,6 +114,7 @@ public function perpanjangStore(Request $request, $id)
     }
 
     $pemesanan->status_pemesanan = 'pending'; // Perpanjangan perlu diverifikasi admin lagi
+    $pemesanan->is_perpanjangan = true; // Tandai sebagai perpanjangan
     $pemesanan->save();
 
     // Notifikasi admin (opsional)
@@ -126,7 +124,6 @@ public function perpanjangStore(Request $request, $id)
         'message' => 'User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesanan->kos->nomor_kamar . '".',
     ]);
     event(new PemesananBaru('User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesanan->kos->nomor_kamar . '".'));
-     // Setelah perpanjangan berhasil:
     event(new NotifikasiUserBaru(
         Auth::id(),
         'Perpanjangan Sewa Berhasil',

@@ -21,6 +21,7 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('admin'), // pastikan menggunakan password yang aman
             'role' => 'admin', // menentukan role sebagai admin
             'no_hp' => '081234567890',
+            'jenis_kelamin' => 'laki-laki',
             'alamat' => 'Jl. Contoh No. 123, Kota X',
         ]);
         

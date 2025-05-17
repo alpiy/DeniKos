@@ -27,9 +27,6 @@ public function approve($id, Request $request)
 {
     $pemesanan = Pemesanan::findOrFail($id);
 
-    // Cek context dari request
-    $isPerpanjangan = $request->input('is_perpanjangan') == 1;
-
     $pemesanan->status_pemesanan = 'diterima';
     $pemesanan->save();
 
@@ -39,7 +36,7 @@ public function approve($id, Request $request)
     }
 
     // Kirim notifikasi realtime ke user dengan pesan berbeda
-    if ($isPerpanjangan) {
+    if ($pemesanan->is_perpanjangan) {
         event(new NotifikasiUserBaru(
             $pemesanan->user_id,
             'Perpanjangan Disetujui',
@@ -53,7 +50,7 @@ public function approve($id, Request $request)
         ));
     }
 
-    return redirect()->route('admin.pemesanan.index')->with('success', $isPerpanjangan ? 'Perpanjangan berhasil disetujui.' : 'Pemesanan berhasil disetujui.');
+    return redirect()->route('admin.pemesanan.index')->with('success', $pemesanan->is_perpanjangan ? 'Perpanjangan berhasil disetujui.' : 'Pemesanan berhasil disetujui.');
 }
 
     public function reject($id)
