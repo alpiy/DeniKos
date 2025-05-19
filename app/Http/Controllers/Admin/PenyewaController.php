@@ -10,11 +10,15 @@ class PenyewaController extends Controller
 {
     public function index()
     {
-        // Ambil semua pemesanan yang sudah disetujui (status = 'disetujui')
-        $penyewa = Pemesanan::with(['user', 'kos'])
+        // Ambil semua pemesanan diterima, urutkan terbaru
+        $all = Pemesanan::with(['user', 'kos'])
             ->where('status_pemesanan', 'diterima')
+            ->orderByDesc('id')
             ->get();
-
+        // Filter: hanya satu data aktif per user per kamar (ambil yang terbaru)
+        $penyewa = $all->unique(function($item) {
+            return $item->user_id.'-'.$item->kos_id;
+        });
         return view('admin.dataPenyewa.index', compact('penyewa'));
     }
 

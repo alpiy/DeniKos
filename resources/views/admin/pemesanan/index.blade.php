@@ -9,7 +9,8 @@
         </div>
     @endif
 
-    <table class="w-full table-auto border-collapse">
+    <h2 class="text-xl font-semibold mt-8 mb-2">Pemesanan Awal</h2>
+    <table class="w-full table-auto border-collapse mb-8">
         <thead>
             <tr class="bg-gray-100">
                 <th class="p-2 border">Nama</th>
@@ -17,11 +18,12 @@
                 <th class="p-2 border">No.Kamar</th>
                 <th class="p-2 border">Tanggal Masuk</th>
                 <th class="p-2 border">Status</th>
+                <th class="p-2 border">Refund</th>
                 <th class="p-2 border">Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($pemesanan as $item)
+            @foreach($pemesananAwal as $item)
                 <tr class="hover:bg-gray-50">
                     <td class="p-2 border">{{ $item->user->name }}</td>
                     <td class="p-2 border">{{ $item->user->email }}</td>
@@ -33,6 +35,25 @@
                                ($item->status_pemesanan === 'ditolak' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') }}">
                             {{ ucfirst($item->status_pemesanan) }}
                         </span>
+                    </td>
+                    <td class="p-2 border">
+                        @if($item->status_pemesanan === 'batal')
+                            @if($item->status_refund === 'belum')
+                                <form action="{{ route('admin.pemesanan.refund', $item->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs">Proses Refund</button>
+                                </form>
+                            @elseif($item->status_refund === 'proses')
+                                <form action="{{ route('admin.pemesanan.refund', $item->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="bg-green-600 text-white px-2 py-1 rounded text-xs">Tandai Selesai</button>
+                                </form>
+                            @elseif($item->status_refund === 'selesai')
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Selesai</span>
+                            @endif
+                        @else
+                            <span class="text-gray-400 text-xs">-</span>
+                        @endif
                     </td>
                     <td class="p-2 border space-x-2">
                         <a href="{{ route('admin.pemesanan.show', $item->id) }}" class="text-blue-600 hover:underline">Lihat</a>
@@ -47,4 +68,6 @@
             @endforeach
         </tbody>
     </table>
+
+   
 @endsection

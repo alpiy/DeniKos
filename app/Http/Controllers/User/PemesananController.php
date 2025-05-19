@@ -31,7 +31,7 @@ class PemesananController extends Controller
         }
          // Cek apakah user sudah punya pemesanan aktif
     $sudahPesan = Pemesanan::where('user_id', Auth::id())
-        ->whereIn('status_pemesanan', ['ditolak', 'diterima'])
+        ->whereIn('status_pemesanan', ['pending', 'diterima'])
         ->exists();
 
     if ($sudahPesan) {
@@ -93,8 +93,8 @@ public function perpanjangForm($id)
 
 public function perpanjangStore(Request $request, $id)
 {
-    $pemesanan = Pemesanan::with('kos')->where('user_id', Auth::id())->findOrFail($id);
-    if ($pemesanan->status_pemesanan !== 'diterima') {
+    $pemesananLama = Pemesanan::with('kos')->where('user_id', Auth::id())->findOrFail($id);
+    if ($pemesananLama->status_pemesanan !== 'diterima') {
         return redirect()->route('user.pemesanan.index')->with('error', 'Hanya bisa perpanjang sewa pada pemesanan aktif.');
     }
 
@@ -103,35 +103,64 @@ public function perpanjangStore(Request $request, $id)
         'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
-    // Update lama_sewa dan total_pembayaran
-    $pemesanan->lama_sewa += $request->tambah_lama_sewa;
-    $pemesanan->total_pembayaran += $request->tambah_lama_sewa * $pemesanan->kos->harga_bulanan;
-
     // Simpan bukti pembayaran baru
+    $buktiBaru = null;
     if ($request->hasFile('bukti_pembayaran')) {
-        $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
-        $pemesanan->bukti_pembayaran = $path;
+        $buktiBaru = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
     }
 
-    $pemesanan->status_pemesanan = 'pending'; // Perpanjangan perlu diverifikasi admin lagi
-    $pemesanan->is_perpanjangan = true; // Tandai sebagai perpanjangan
-    $pemesanan->save();
+    // Buat record pemesanan baru untuk perpanjangan
+    $pemesananBaru = Pemesanan::create([
+        'kos_id' => $pemesananLama->kos_id,
+        'user_id' => Auth::id(),
+        'tanggal_pesan' => now(),
+        'lama_sewa' => $request->tambah_lama_sewa,
+        'total_pembayaran' => $request->tambah_lama_sewa * $pemesananLama->kos->harga_bulanan,
+        'bukti_pembayaran' => $buktiBaru,
+        'status_pemesanan' => 'pending',
+        'is_perpanjangan' => true,
+        'status_refund' => 'belum',
+    ]);
 
     // Notifikasi admin (opsional)
     Notification::create([
         'user_id' => null,
         'title' => 'Perpanjangan Sewa',
-        'message' => 'User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesanan->kos->nomor_kamar . '".',
+        'message' => 'User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesananLama->kos->nomor_kamar . '".',
     ]);
-    event(new PemesananBaru('User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesanan->kos->nomor_kamar . '".'));
+    event(new PemesananBaru('User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesananLama->kos->nomor_kamar . '".'));
     event(new NotifikasiUserBaru(
         Auth::id(),
         'Perpanjangan Sewa Berhasil',
-        'Pengajuan perpanjangan sewa kamar ' . $pemesanan->kos->nomor_kamar . ' berhasil dikirim. Menunggu verifikasi admin.'
+        'Pengajuan perpanjangan sewa kamar ' . $pemesananLama->kos->nomor_kamar . ' berhasil dikirim. Menunggu verifikasi admin.'
     ));
 
-    return redirect()->route('user.pemesanan.index')->with('success', 'Pengajuan perpanjangan berhasil, menunggu verifikasi admin.');
+    return redirect()->route('user.riwayat')->with('success', 'Pengajuan perpanjangan berhasil, menunggu verifikasi admin.');
 }
 
+public function batal($id)
+{
+    $pemesanan = Pemesanan::with('kos')->where('user_id', Auth::id())->findOrFail($id);
+    if ($pemesanan->status_pemesanan !== 'pending') {
+        return redirect()->route('user.pemesanan.index')->with('error', 'Hanya bisa membatalkan pemesanan yang masih pending.');
+    }
 
+    $pemesanan->status_pemesanan = 'batal';
+    $pemesanan->status_refund = 'proses'; // Jika ingin langsung proses refund
+    $pemesanan->save();
+
+    // Notifikasi realtime ke admin
+    event(new PemesananBaru(
+        'User ' . Auth::user()->name . ' membatalkan pemesanan kamar "' . $pemesanan->kos->nomor_kamar . '".'
+    ));
+
+    // Notifikasi ke user
+    event(new NotifikasiUserBaru(
+        Auth::id(),
+        'Pemesanan Dibatalkan',
+        'Pemesanan kamar ' . $pemesanan->kos->nomor_kamar . ' telah dibatalkan.'
+    ));
+
+    return redirect()->route('user.riwayat')->with('success', 'Pemesanan berhasil dibatalkan. Untuk pengembalian dana, silakan hubungi admin.');
+}
 }

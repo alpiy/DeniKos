@@ -23,10 +23,20 @@ class LaporanSewaController extends Controller
             $query->whereYear('created_at', $request->tahun);
         }
 
-        $data = $query->get();
-        $totalPendapatan = $data->sum('total_pembayaran');
+        $all = $query->orderByDesc('id')->get();
+        // Filter: hanya satu data per user per kamar (ambil yang terbaru)
+        $data = $all->unique(function($item) {
+            return $item->user_id.'-'.$item->kos_id;
+        });
+        // Total pendapatan: semua pembayaran diterima (tanpa unique)
+        $totalPendapatan = $all->sum('total_pembayaran');
 
-        return view('admin.laporan.index', compact('data', 'totalPendapatan'));
+        // Untuk detail, kirim juga semua histori diterima (group by user+kos)
+        $detailHistori = $all->groupBy(function($item) {
+            return $item->user_id.'-'.$item->kos_id;
+        });
+
+        return view('admin.laporan.index', compact('data', 'totalPendapatan', 'detailHistori'));
     }
     public function exportExcel()
     {

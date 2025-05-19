@@ -17,18 +17,19 @@ class NotifikasiUserBaru implements ShouldBroadcast
     public $userId;
     public $title;
     public $message;
+    public $type; // HARUS public
 
-    public function __construct($userId, $title, $message)
+    public function __construct($userId, $title, $message, $type = 'success')
     {
         $this->userId = $userId;
         $this->title = $title;
         $this->message = $message;
+        $this->type = $type;
     }
 
     public function broadcastOn()
     {
-       
-         return ['user.' . $this->userId];
+        return new PrivateChannel('user.' . $this->userId);
     }
 
     public function broadcastAs()

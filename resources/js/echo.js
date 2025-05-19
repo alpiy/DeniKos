@@ -54,34 +54,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // === USER NOTIFIKASI REALTIME ===
 if (window.Laravel && window.Laravel.userId) {
-    window.Echo.channel('user.' + window.Laravel.userId)
+    window.Echo.private('user.' + window.Laravel.userId)
         .listen('.notifikasi-user', (e) => {
-            // Container notifikasi user
+             console.log(e);
             const container = document.getElementById('user-realtime-notifikasi');
             if (!container) return;
 
-            // Card notifikasi
+            // Pilih warna dan icon berdasarkan tipe
+            let bg = 'bg-green-50 border-green-200 text-green-700';
+            let icon = `<svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
+                        </svg>`;
+            let titleClass = 'text-green-700';
+            let messageClass = 'text-green-800';
+
+            if (e.type === 'danger') {
+                bg = 'bg-red-50 border-red-200 text-red-700';
+                icon = `<svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>`;
+                titleClass = 'text-red-700';
+                messageClass = 'text-red-800';
+            }
+
             const notifEl = document.createElement('div');
-            notifEl.className = 'notification-card bg-green-50 border border-green-200 shadow-lg p-4 rounded-lg min-w-[260px] max-w-xs animate-fade-in';
+            notifEl.className = `notification-card ${bg} border shadow-lg p-4 rounded-lg min-w-[260px] max-w-xs animate-fade-in`;
             notifEl.innerHTML = `
                 <div class="flex items-start gap-3">
-                    <div class="mt-1">
-                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
-                        </svg>
-                    </div>
+                    <div class="mt-1">${icon}</div>
                     <div>
-                        <div class="font-semibold text-green-700">${e.title}</div>
-                        <div class="text-sm text-green-800 mt-1">${e.message}</div>
+                        <div class="font-semibold ${titleClass}">${e.title}</div>
+                        <div class="text-sm mt-1 ${messageClass}">${e.message}</div>
                         <div class="text-xs text-gray-400 mt-2">${new Date().toLocaleTimeString()}</div>
                     </div>
                 </div>
             `;
 
-            // Tambahkan ke container
             container.prepend(notifEl);
 
-            // Auto-hide setelah 5 detik
             setTimeout(() => {
                 notifEl.classList.add('opacity-0', 'transition-opacity', 'duration-300');
                 setTimeout(() => notifEl.remove(), 300);

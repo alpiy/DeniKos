@@ -66,8 +66,13 @@
         {{-- Tampilkan preview foto jika mode edit --}}
         @if (isset($kos) && is_array($kos->foto))
             <div class="flex flex-wrap gap-2 mt-2">
-                @foreach ($kos->foto as $path)
-                    <img src="{{ asset('storage/' . $path) }}" alt="Foto Kos" class="w-24 h-24 object-cover rounded shadow">
+                @foreach ($kos->foto as $i => $path)
+                    <div class="relative group">
+                        <img src="{{ asset('storage/' . $path) }}" alt="Foto Kos" class="w-24 h-24 object-cover rounded shadow">
+                        <label class="absolute top-1 right-1 bg-white bg-opacity-80 rounded p-1 cursor-pointer group-hover:bg-red-100">
+                            <input type="checkbox" name="hapus_foto[]" value="{{ $i }}" class="mr-1"> Hapus
+                        </label>
+                    </div>
                 @endforeach
             </div>
         @endif
@@ -79,8 +84,11 @@
         <input type="file" name="denah_kamar" class="w-full border rounded-lg px-4 py-2">
         {{-- Tampilkan preview denah jika mode edit --}}
         @if (isset($kos) && $kos->denah_kamar)
-            <div class="mt-2">
+            <div class="mt-2 flex items-center gap-2">
                 <img src="{{ asset('storage/' . $kos->denah_kamar) }}" alt="Denah Kamar" class="w-24 h-24 object-cover rounded shadow">
+                <label class="bg-white bg-opacity-80 rounded p-1 cursor-pointer hover:bg-red-100">
+                    <input type="checkbox" name="hapus_denah" value="1" class="mr-1"> Hapus
+                </label>
             </div>
         @endif
     </div>

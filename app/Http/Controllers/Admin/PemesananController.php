@@ -13,8 +13,11 @@ class PemesananController extends Controller
 {
     public function index()
     {
-        $pemesanan = Pemesanan::with('kos')->latest()->get();
-        return view('admin.pemesanan.index', compact('pemesanan'));
+        // Ambil pemesanan awal (bukan perpanjangan)
+        $pemesananAwal = Pemesanan::with('kos', 'user')->where('is_perpanjangan', false)->latest()->get();
+        // Ambil pemesanan perpanjangan
+        $pemesananPerpanjang = Pemesanan::with('kos', 'user')->where('is_perpanjangan', true)->latest()->get();
+        return view('admin.pemesanan.index', compact('pemesananAwal', 'pemesananPerpanjang'));
     }
 
     public function show($id)
@@ -58,14 +61,25 @@ public function approve($id, Request $request)
         $pemesanan = Pemesanan::findOrFail($id);
         $pemesanan->status_pemesanan = 'ditolak';
         $pemesanan->save();
-        // Kirim notifikasi ke user (opsional) // Kirim notifikasi realtime ke user
-    event(new NotifikasiUserBaru(
-        $pemesanan->user_id,
-        'Pemesanan Ditolak',
-        'Pemesanan kamar ' . $pemesanan->kos->nomor_kamar . ' Anda ditolak.'
-    ));
 
-        return redirect()->route('admin.pemesanan.index')->with('success', 'Pemesanan telah ditolak.');
+        // Kirim notifikasi realtime ke user dengan pesan berbeda
+        if ($pemesanan->is_perpanjangan) {
+            event(new NotifikasiUserBaru(
+                $pemesanan->user_id,
+                'Perpanjangan Ditolak',
+                'Pengajuan perpanjangan sewa kamar ' . $pemesanan->kos->nomor_kamar . ' Anda ditolak oleh admin.',
+                'danger'
+            ));
+        } else {
+            event(new NotifikasiUserBaru(
+                $pemesanan->user_id,
+                'Pemesanan Ditolak',
+                'Pemesanan kamar ' . $pemesanan->kos->nomor_kamar . ' Anda ditolak.',
+                'danger'
+            ));
+        }
+
+        return redirect()->route('admin.pemesanan.index')->with('success', $pemesanan->is_perpanjangan ? 'Perpanjangan berhasil ditolak.' : 'Pemesanan telah ditolak.');
     }
 
 
@@ -80,5 +94,34 @@ public function approve($id, Request $request)
         $pemesanan->delete();
 
         return redirect()->route('admin.pemesanan.index')->with('success', 'Pemesanan berhasil dihapus.');
+    }
+public function refund($id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+        if ($pemesanan->status_refund === 'proses') {
+            $pemesanan->status_refund = 'selesai';
+            $pemesanan->save();
+            event(new NotifikasiUserBaru(
+                $pemesanan->user_id,
+                'Refund Selesai',
+                'Pengembalian dana untuk pemesanan kamar ' . ($pemesanan->kos->nomor_kamar ?? '-') . ' telah selesai diproses oleh admin.'
+            ));
+            return redirect()->route('admin.pemesanan.index')->with('success', 'Status refund diubah menjadi selesai.');
+        } elseif ($pemesanan->status_refund === 'belum') {
+            $pemesanan->status_refund = 'proses';
+            $pemesanan->save();
+            event(new NotifikasiUserBaru(
+                $pemesanan->user_id,
+                'Refund Diproses',
+                'Pengembalian dana untuk pemesanan kamar ' . ($pemesanan->kos->nomor_kamar ?? '-') . ' sedang diproses oleh admin.'
+            ));
+            return redirect()->route('admin.pemesanan.index')->with('success', 'Status refund diubah menjadi proses.');
+        }
+        return redirect()->route('admin.pemesanan.index')->with('error', 'Status refund sudah selesai atau tidak valid.');
+    }
+public function perpanjangIndex()
+    {
+        $pemesananPerpanjang = Pemesanan::with('kos', 'user')->where('is_perpanjangan', true)->latest()->get();
+        return view('admin.pemesanan.perpanjang', compact('pemesananPerpanjang'));
     }
 }

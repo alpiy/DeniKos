@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('bukti_pembayaran')->nullable();
             $table->integer('lama_sewa');
             $table->integer('total_pembayaran');
-            $table->enum('status_pemesanan', ['pending', 'diterima', 'ditolak'])->default('pending');
+            $table->enum('status_pemesanan', ['pending', 'diterima', 'ditolak','batal'])->default('pending');
+            $table->enum('status_refund', ['belum', 'proses', 'selesai'])->default('belum');
             
            
             $table->timestamps();

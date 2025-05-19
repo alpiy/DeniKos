@@ -9,6 +9,25 @@
         <p><strong>No HP:</strong> {{ $pemesanan->no_hp }}</p>
         <p><strong>Kos:</strong> {{ $pemesanan->kos->nama ?? '-' }}</p>
         <p><strong>Tanggal Masuk:</strong> {{ $pemesanan->tgl_masuk }}</p>
+        <p><strong>Status Refund:</strong>
+            @if($pemesanan->status_pemesanan === 'batal')
+                @if($pemesanan->status_refund === 'belum')
+                    <form action="{{ route('admin.pemesanan.refund', $pemesanan->id) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs">Proses Refund</button>
+                    </form>
+                @elseif($pemesanan->status_refund === 'proses')
+                    <form action="{{ route('admin.pemesanan.refund', $pemesanan->id) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="bg-green-600 text-white px-2 py-1 rounded text-xs">Tandai Selesai</button>
+                    </form>
+                @elseif($pemesanan->status_refund === 'selesai')
+                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Selesai</span>
+                @endif
+            @else
+                <span class="text-gray-400 text-xs">-</span>
+            @endif
+        </p>
 
         <p><strong>Bukti Pembayaran:</strong><br>
             @if($pemesanan->bukti_pembayaran)

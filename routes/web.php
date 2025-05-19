@@ -60,12 +60,14 @@ Route::prefix('user')->name('user.')->middleware('role:user')->group(function ()
     Route::post('/pesan', [UserPemesananController::class, 'store'])->name('pesan.store');
 
     // Daftar & riwayat pemesanan user
-    Route::get('/pemesanan', [UserPemesananController::class, 'index'])->name('pemesanan.index'); // daftar
-    Route::get('/riwayat', [UserPemesananController::class, 'riwayat'])->name('riwayat');
+    Route::get('/riwayat', [UserPemesananController::class, 'index'])->name('riwayat'); // daftar
+   
     Route::get('/pesan/success/{id}', [UserPemesananController::class, 'success'])->name('pesan.success');
     // Perpanjang sewa
     Route::get('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangForm'])->name('pesan.perpanjang');
     Route::post('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangStore'])->name('pesan.perpanjang.store');
+    // Pembatalan pemesanan
+    Route::post('/pemesanan/{id}/batal', [UserPemesananController::class, 'batal'])->name('pesan.batal');
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
@@ -80,6 +82,8 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     Route::get('/pemesanan/{id}/detail', [AdminPemesananController::class, 'show'])->name('pemesanan.show');
     Route::post('/pemesanan/{id}/approve', [AdminPemesananController::class, 'approve'])->name('pemesanan.approve');
     Route::post('/pemesanan/{id}/reject', [AdminPemesananController::class, 'reject'])->name('pemesanan.reject');
+    Route::post('/pemesanan/{id}/refund', [AdminPemesananController::class, 'refund'])->name('pemesanan.refund');
+    Route::get('/perpanjang', [AdminPemesananController::class, 'perpanjangIndex'])->name('pemesanan.perpanjang');
 
     //data penyewa
     Route::get('/penyewa', [AdminPenyewaController::class, 'index'])->name('penyewa.index');

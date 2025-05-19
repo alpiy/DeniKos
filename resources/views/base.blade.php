@@ -37,6 +37,14 @@
                             <span class="hidden md:inline">Akun Saya</span>
                         </a>
                     </li>
+                     <li>
+        <a href="{{ route('user.riwayat') }}" class="flex items-center px-3 py-2 rounded-lg hover:bg-indigo-50 hover:text-indigo-700 transition">
+            <svg class="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0h6" />
+            </svg>
+            <span class="hidden md:inline">Riwayat Pemesanan</span>
+        </a>
+    </li>
                 @endif
                 <li>
                     <form method="POST" action="{{ route('auth.logout') }}">

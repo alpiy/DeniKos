@@ -7,7 +7,7 @@
   
       <!-- Section Notifikasi Realtime -->
   
-        <div id="realtime-notifikasi" class="space-y-3">
+        <div id="realtime-notifikasi" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3">
           
         </div>
     

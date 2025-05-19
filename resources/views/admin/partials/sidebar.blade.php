@@ -6,6 +6,7 @@
         <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded hover:bg-indigo-100">Dashboard</a>
         <a href="{{ route('admin.kos.index') }}" class="block px-4 py-2 rounded hover:bg-indigo-100">Manajemen Kos</a>
         <a href="{{ route('admin.pemesanan.index') }}" class="block px-4 py-2 rounded hover:bg-indigo-100">Daftar Pemesanan</a>
+        <a href="{{ route('admin.pemesanan.perpanjang') }}" class="block px-4 py-2 rounded hover:bg-indigo-100">Perpanjangan Sewa</a>
         <a href="{{ route('admin.penyewa.index') }}" class="block px-4 py-2 rounded hover:bg-indigo-100">Data Penyewa</a>
         <a href="{{ route('admin.laporan.index') }}" class="block px-4 py-2 rounded hover:bg-indigo-100">Laporan Sewa</a>
     </nav>

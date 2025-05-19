@@ -9,9 +9,16 @@ use Illuminate\Support\Facades\Storage;
 
 class KosController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Kos::all();
+        $query = Kos::query();
+        if ($request->filled('status_kamar')) {
+            $query->where('status_kamar', $request->status_kamar);
+        }
+        if ($request->filled('q')) {
+            $query->where('nomor_kamar', 'like', '%'.$request->q.'%');
+        }
+        $data = $query->orderBy('nomor_kamar')->get();
         return view('admin.kos.index', compact('data'));
     }
 
@@ -82,13 +89,34 @@ class KosController extends Controller
         ]);
 
         $fotoPaths = $ko->foto ?? [];
+        // Hapus foto yang dicentang
+        if ($request->filled('hapus_foto')) {
+            foreach ($request->hapus_foto as $idx) {
+                if (isset($fotoPaths[$idx])) {
+                    Storage::disk('public')->delete($fotoPaths[$idx]);
+                    unset($fotoPaths[$idx]);
+                }
+            }
+            $fotoPaths = array_values($fotoPaths); // reindex
+        }
+        // Hapus denah jika dicentang
+        $denahPath = $ko->denah_kamar;
+        if ($request->filled('hapus_denah')) {
+            if ($denahPath) {
+                Storage::disk('public')->delete($denahPath);
+            }
+            $denahPath = null;
+        }
+        // Tambah foto baru
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
                 $fotoPaths[] = $file->store('kos', 'public');
             }
         }
-         // Menyimpan denah kamar
-         $denahPath = $request->hasFile('denah_kamar') ? $request->file('denah_kamar')->store('denah', 'public') : $ko->denah_kamar;
+        // Tambah/replace denah baru
+        if ($request->hasFile('denah_kamar')) {
+            $denahPath = $request->file('denah_kamar')->store('denah', 'public');
+        }
 
         $ko->update([
             'alamat' => $request->alamat,
@@ -107,16 +135,24 @@ class KosController extends Controller
 
     public function destroy(Kos $ko)
     {
-         // Jika ada foto, hapus dari storage
-        if ($ko->foto) {
-        Storage::disk('public')->delete($ko->foto);
-     }
-           // Hapus denah kamar jika ada
-           if ($ko->denah_kamar) {
+        // Jika ada foto, hapus dari storage
+        if (is_array($ko->foto)) {
+            foreach ($ko->foto as $foto) {
+                if ($foto) {
+                    Storage::disk('public')->delete($foto);
+                }
+            }
+        }
+        // Hapus denah kamar jika ada
+        if (!empty($ko->denah_kamar)) {
             Storage::disk('public')->delete($ko->denah_kamar);
         }
-
         $ko->delete();
         return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil dihapus.');
+    }
+
+    public function show(Kos $ko)
+    {
+        return view('admin.kos.show', ['kos' => $ko]);
     }
 }

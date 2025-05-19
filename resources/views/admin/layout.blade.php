@@ -14,7 +14,9 @@
         <div class="w-64 bg-white shadow-lg fixed top-0 bottom-0 z-30">
             @include('admin.partials.sidebar')
         </div>
-
+          <div id="realtime-notifikasi" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3">
+          
+        </div>
         {{-- Konten --}}
         <div class="flex-1 ml-64 overflow-y-auto p-6">
             @yield('content')
