@@ -13,120 +13,49 @@ class KosSeeder extends Seeder
      */
     public function run(): void
     {
-        Kos::create([
-            'alamat' => 'Jl. Melati No. 10',
-            'harga_bulanan' => 750000,
-            'lantai' => 2,
-            'nomor_kamar' => '201',
-            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
-            'fasilitas' => [
-                'Kamar mandi dalam',
-                'WiFi 24 jam',
-                'Dapur bersama',
-                'Parkir motor'
-            ],
-            'foto' => [
-                'https://via.placeholder.com/600x400',
-                'https://via.placeholder.com/600x401'
-            ],
-            'denah_kamar' => 'https://via.placeholder.com/300x200',
-            'status_kamar' => 'tersedia',
-        ]);
-        Kos::create([
-            'alamat' => 'Jl. Melati No. 10',
-            'harga_bulanan' => 750000,
-            'lantai' => 2,
-            'nomor_kamar' => '202',
-            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
-            'fasilitas' => [
-                'Kamar mandi dalam',
-                'WiFi 24 jam',
-                'Dapur bersama',
-                'Parkir motor'
-            ],
-            'foto' => [
-                'https://via.placeholder.com/600x400',
-                'https://via.placeholder.com/600x401'
-            ],
-            'denah_kamar' => 'https://via.placeholder.com/300x200',
-            'status_kamar' => 'tersedia',
-        ]);
-        Kos::create([
-            'alamat' => 'Jl. Melati No. 10',
-            'harga_bulanan' => 750000,
-            'lantai' => 2,
-            'nomor_kamar' => '203',
-            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
-            'fasilitas' => [
-                'Kamar mandi dalam',
-                'WiFi 24 jam',
-                'Dapur bersama',
-                'Parkir motor'
-            ],
-            'foto' => [
-                'https://via.placeholder.com/600x400',
-                'https://via.placeholder.com/600x401'
-            ],
-            'denah_kamar' => 'https://via.placeholder.com/300x200',
-            'status_kamar' => 'tersedia',
-        ]);
-        Kos::create([
-            'alamat' => 'Jl. Melati No. 10',
-            'harga_bulanan' => 750000,
-            'lantai' => 2,
-            'nomor_kamar' => '204',
-            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
-            'fasilitas' => [
-                'Kamar mandi dalam',
-                'WiFi 24 jam',
-                'Dapur bersama',
-                'Parkir motor'
-            ],
-            'foto' => [
-                'https://via.placeholder.com/600x400',
-                'https://via.placeholder.com/600x401'
-            ],
-            'denah_kamar' => 'https://via.placeholder.com/300x200',
-            'status_kamar' => 'tersedia',
-        ]);
-        Kos::create([
-            'alamat' => 'Jl. Melati No. 10',
-            'harga_bulanan' => 750000,
-            'lantai' => 2,
-            'nomor_kamar' => '205',
-            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
-            'fasilitas' => [
-                'Kamar mandi dalam',
-                'WiFi 24 jam',
-                'Dapur bersama',
-                'Parkir motor'
-            ],
-            'foto' => [
-                'https://via.placeholder.com/600x400',
-                'https://via.placeholder.com/600x401'
-            ],
-            'denah_kamar' => 'https://via.placeholder.com/300x200',
-            'status_kamar' => 'tersedia',
-        ]);
-        Kos::create([
-            'alamat' => 'Jl. Melati No. 10',
-            'harga_bulanan' => 750000,
-            'lantai' => 2,
-            'nomor_kamar' => '206',
-            'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
-            'fasilitas' => [
-                'Kamar mandi dalam',
-                'WiFi 24 jam',
-                'Dapur bersama',
-                'Parkir motor'
-            ],
-            'foto' => [
-                'https://via.placeholder.com/600x400',
-                'https://via.placeholder.com/600x401'
-            ],
-            'denah_kamar' => 'https://via.placeholder.com/300x200',
-            'status_kamar' => 'tersedia',
-        ]);
-        
+        // Kamar 1-6 di lantai 2, harga 450000
+        for ($i = 1; $i <= 6; $i++) {
+            Kos::create([
+                'alamat' => 'Jl. Melati No. 10',
+                'harga_bulanan' => 450000,
+                'lantai' => '2',
+                'nomor_kamar' => (string)$i,
+                'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+                'fasilitas' => [
+                    'Kamar mandi dalam',
+                    'WiFi 24 jam',
+                    'Dapur bersama',
+                    'Parkir motor'
+                ],
+                'foto' => [
+                    'https://via.placeholder.com/600x400',
+                    'https://via.placeholder.com/600x401'
+                ],
+                'denah_kamar' => 'https://via.placeholder.com/300x200',
+                'status_kamar' => 'tersedia',
+            ]);
+        }
+        // Kamar 7-12 di lantai 3, harga 350000
+        for ($i = 7; $i <= 12; $i++) {
+            Kos::create([
+                'alamat' => 'Jl. Melati No. 10',
+                'harga_bulanan' => 350000,
+                'lantai' => '3',
+                'nomor_kamar' => (string)$i,
+                'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
+                'fasilitas' => [
+                    'Kamar mandi dalam',
+                    'WiFi 24 jam',
+                    'Dapur bersama',
+                    'Parkir motor'
+                ],
+                'foto' => [
+                    'https://via.placeholder.com/600x400',
+                    'https://via.placeholder.com/600x401'
+                ],
+                'denah_kamar' => 'https://via.placeholder.com/300x200',
+                'status_kamar' => 'tersedia',
+            ]);
+        }
     }
 }
