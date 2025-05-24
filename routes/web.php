@@ -68,6 +68,8 @@ Route::prefix('user')->name('user.')->middleware('role:user')->group(function ()
     Route::post('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangStore'])->name('pesan.perpanjang.store');
     // Pembatalan pemesanan
     Route::post('/pemesanan/{id}/batal', [UserPemesananController::class, 'batal'])->name('pesan.batal');
+    // Upload pelunasan pembayaran
+    Route::post('/pemesanan/{id}/pelunasan', [UserPemesananController::class, 'pelunasan'])->name('pembayaran.pelunasan');
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
@@ -94,4 +96,6 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     Route::get('/laporan-sewa/export-excel', [AdminLaporanSewaController::class, 'exportExcel'])->name('laporan.exportExcel');
     Route::get('/laporan-sewa/export-pdf', [AdminLaporanSewaController::class, 'exportPDF'])->name('laporan.exportPDF');
 
+    // Verifikasi Pembayaran
+    Route::post('/pembayaran/{id}/verifikasi', [AdminPemesananController::class, 'verifikasiPembayaran'])->name('pembayaran.verifikasi');
 });

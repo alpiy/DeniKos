@@ -5,7 +5,7 @@
     @csrf
     <div class="mb-4">
         <label class="block font-semibold mb-1">Tanggal Mulai Perpanjangan</label>
-        <input type="date" name="tanggal_mulai" class="w-full border rounded px-3 py-2" required>
+        <input type="date" name="tanggal_masuk" class="w-full border rounded px-3 py-2" required min="{{ date('Y-m-d') }}">
     </div>
     <div class="mb-4">
         <label class="block font-semibold mb-1">Tambah Lama Sewa (bulan)</label>

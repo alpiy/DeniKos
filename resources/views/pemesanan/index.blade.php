@@ -17,7 +17,7 @@
                 <tr>
                     <th class="p-3 border">#</th>
                     <th class="p-3 border">Kamar</th>
-                    <th class="p-3 border">Tanggal Pesan</th>
+                    <th class="p-3 border">Tanggal Masuk</th>
                     <th class="p-3 border">Lama Sewa</th>
                     <th class="p-3 border">Status</th>
                     <th class="p-3 border">Refund</th>
@@ -29,7 +29,7 @@
                     <tr>
                         <td class="p-3 border">{{ $no+1 }}</td>
                         <td class="p-3 border">{{ $p->kos->nomor_kamar ?? '-' }}</td>
-                        <td class="p-3 border">{{ $p->tanggal_pesan }}</td>
+                        <td class="p-3 border">{{ $p->tanggal_masuk }}</td>
                         <td class="p-3 border">{{ $p->lama_sewa }} bulan</td>
                         <td class="p-3 border capitalize">
                             @if($p->status_pemesanan == 'diterima')
@@ -65,6 +65,49 @@
                                 <a href="{{ route('user.pesan.perpanjang', $p->id) }}" class="text-blue-600 hover:underline">Ajukan Perpanjangan</a>
                             @else
                                 <a href="{{ asset('storage/'.$p->bukti_pembayaran) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Bukti Pembayaran</a>
+                            @endif
+                        </td>
+                        @php
+                            $totalTagihan = $p->lama_sewa * ($p->kos->harga_bulanan ?? 0);
+                            $totalDibayar = $p->pembayaran->whereIn('status', ['pending','diterima'])->sum('jumlah');
+                            $sisaTagihan = max($totalTagihan - $totalDibayar, 0);
+                        @endphp
+                        <td class="p-3 border">
+                            <ul class="text-xs">
+                                @foreach($p->pembayaran as $bayar)
+                                    <li>
+                                        <span class="font-semibold">{{ ucfirst($bayar->jenis) }}:</span> Rp{{ number_format($bayar->jumlah,0,',','.') }}
+                                        ({{ $bayar->status }})
+                                        @if($bayar->bukti_pembayaran)
+                                            <a href="{{ asset('storage/'.$bayar->bukti_pembayaran) }}" target="_blank" class="text-blue-600 underline ml-1">Bukti</a>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                            @if($p->status_pemesanan == 'batal')
+                                <div class="mt-1">
+                                    <span class="font-semibold text-gray-500">Pesanan Dibatalkan</span>
+                                    <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs ml-2">Tidak Berlaku</span>
+                                </div>
+                            @else
+                                <div class="mt-1">
+                                    <span class="font-semibold">Sisa Tagihan:</span> <span class="{{ $sisaTagihan > 0 ? 'text-red-600 font-bold' : 'text-green-600 font-bold' }}">Rp{{ number_format($sisaTagihan,0,',','.') }}</span>
+                                    <span class="ml-2">
+                                        @if($sisaTagihan == 0)
+                                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Lunas</span>
+                                        @else
+                                            <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">Belum Lunas</span>
+                                        @endif
+                                    </span>
+                                </div>
+                                @if($p->status_pemesanan == 'diterima' && $sisaTagihan > 0)
+                                    <form action="{{ route('user.pembayaran.pelunasan', $p->id) }}" method="POST" enctype="multipart/form-data" class="mt-2 flex flex-col gap-2">
+                                        @csrf
+                                        <input type="number" name="jumlah" min="1" max="{{ $sisaTagihan }}" value="{{ $sisaTagihan }}" placeholder="Nominal Pelunasan" class="border rounded px-2 py-1 text-xs" required>
+                                        <input type="file" name="bukti_pembayaran" class="border rounded px-2 py-1 text-xs" required>
+                                        <button type="submit" class="bg-indigo-600 text-white px-2 py-1 rounded text-xs">Upload Pelunasan</button>
+                                    </form>
+                                @endif
                             @endif
                         </td>
                     </tr>

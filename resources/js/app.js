@@ -173,6 +173,24 @@ if (tambahLamaSewaInput) {
   
 
         
-    
-
+    // Hitung Total Pembayaran pada Form Pemesanan (multi kamar)
+    if (document.getElementById('lama_sewa') && window.hargaKamarList && Array.isArray(window.hargaKamarList) && window.hargaKamarList.length > 0) {
+        const lamaSewaInputMulti = document.getElementById('lama_sewa');
+        const totalDisplayMulti = document.getElementById('total_pembayaran_display');
+        const totalHiddenMulti = document.getElementById('total_pembayaran');
+        const hargaList = window.hargaKamarList;
+        function updateTotalPembayaranMulti() {
+            const lama = parseInt(lamaSewaInputMulti.value) || 0;
+            let total = 0;
+            hargaList.forEach(harga => {
+                total += harga * lama;
+            });
+            if (totalDisplayMulti && totalHiddenMulti) {
+                totalDisplayMulti.value = total > 0 ? 'Rp' + total.toLocaleString('id-ID') : '';
+                totalHiddenMulti.value = total || '';
+            }
+        }
+        lamaSewaInputMulti.addEventListener('input', updateTotalPembayaranMulti);
+        updateTotalPembayaranMulti();
+    }
 });

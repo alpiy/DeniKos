@@ -9,7 +9,7 @@ class Pemesanan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kos_id', 'user_id', 'tanggal_pesan', 'status_pemesanan','bukti_pembayaran', 'lama_sewa', 'total_pembayaran', 'is_perpanjangan', 'status_refund'];
+    protected $fillable = ['kos_id', 'user_id', 'tanggal_pesan', 'tanggal_masuk', 'status_pemesanan','bukti_pembayaran', 'lama_sewa', 'total_pembayaran', 'is_perpanjangan', 'status_refund'];
     protected $table = 'pemesanan';
 
 
@@ -21,5 +21,10 @@ class Pemesanan extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
     }
 }

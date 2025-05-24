@@ -22,8 +22,12 @@ class PemesananController extends Controller
 
     public function show($id)
     {
-        $pemesanan = Pemesanan::with('kos')->findOrFail($id);
-        return view('admin.pemesanan.show', compact('pemesanan'));
+        $pemesanan = Pemesanan::with(['kos', 'user', 'pembayaran'])->findOrFail($id);
+        // Hitung total tagihan dan total pembayaran diterima
+        $totalTagihan = $pemesanan->lama_sewa * ($pemesanan->kos->harga_bulanan ?? 0);
+        $totalDibayar = $pemesanan->pembayaran->where('status','diterima')->sum('jumlah');
+        $sisaTagihan = max($totalTagihan - $totalDibayar, 0);
+        return view('admin.pemesanan.show', compact('pemesanan', 'totalTagihan', 'totalDibayar', 'sisaTagihan'));
     }
         
 public function approve($id, Request $request)
@@ -123,5 +127,18 @@ public function perpanjangIndex()
     {
         $pemesananPerpanjang = Pemesanan::with('kos', 'user')->where('is_perpanjangan', true)->latest()->get();
         return view('admin.pemesanan.perpanjang', compact('pemesananPerpanjang'));
+    }
+public function verifikasiPembayaran($id)
+    {
+        $pembayaran = \App\Models\Pembayaran::with('pemesanan')->findOrFail($id);
+        $pembayaran->status = 'diterima';
+        $pembayaran->save();
+        // Notifikasi ke user
+        event(new NotifikasiUserBaru(
+            $pembayaran->pemesanan->user_id,
+            'Pembayaran Diverifikasi',
+            'Pembayaran ' . $pembayaran->jenis . ' untuk kamar ' . ($pembayaran->pemesanan->kos->nomor_kamar ?? '-') . ' telah diverifikasi admin.'
+        ));
+        return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi.');
     }
 }

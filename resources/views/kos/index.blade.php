@@ -55,10 +55,10 @@
                         </ul>
                     </div>
                 </div>
-                <form id="form-pesan-lantai2" action="{{ route('user.pesan.create', ['id' => 'KAMAR_ID']) }}" method="get" onsubmit="return validateDropdownLogin('kamar2', 'form-pesan-lantai2', {{ Auth::check() ? 'true' : 'false' }});">
-                    <label for="kamar2" class="block mb-2 font-semibold">Pilih Nomor Kamar:</label>
-                    <select name="kamar" id="kamar2" class="w-full border rounded-lg px-3 py-2 mb-4">
-                        <option value="">-- Pilih Kamar --</option>
+                <form id="form-pesan-lantai2" action="{{ route('user.pesan.create', ['id' => 'multi']) }}" method="get" onsubmit="return validateDropdownLogin('kamar2', 'form-pesan-lantai2', {{ Auth::check() ? 'true' : 'false' }});">
+                    <label for="kamar2" class="block mb-2 font-semibold">Pilih Nomor Kamar (bisa lebih dari satu):</label>
+                    <select name="kamar[]" id="kamar2" class="w-full border rounded-lg px-3 py-2 mb-4" multiple size="4">
+                        <option value="" disabled>-- Pilih Kamar --</option>
                         @foreach($lantai2_tersedia as $kamar)
                             <option value="{{ $kamar->id }}">Kamar {{ $kamar->nomor_kamar }}</option>
                         @endforeach
@@ -110,10 +110,10 @@
                         </ul>
                     </div>
                 </div>
-                <form id="form-pesan-lantai3" action="{{ route('user.pesan.create', ['id' => 'KAMAR_ID']) }}" method="get" onsubmit="return validateDropdownLogin('kamar3', 'form-pesan-lantai3', {{ Auth::check() ? 'true' : 'false' }});">
-                    <label for="kamar3" class="block mb-2 font-semibold">Pilih Nomor Kamar:</label>
-                    <select name="kamar" id="kamar3" class="w-full border rounded-lg px-3 py-2 mb-4">
-                        <option value="">-- Pilih Kamar --</option>
+                <form id="form-pesan-lantai3" action="{{ route('user.pesan.create', ['id' => 'multi']) }}" method="get" onsubmit="return validateDropdownLogin('kamar3', 'form-pesan-lantai3', {{ Auth::check() ? 'true' : 'false' }});">
+                    <label for="kamar3" class="block mb-2 font-semibold">Pilih Nomor Kamar (bisa lebih dari satu):</label>
+                    <select name="kamar[]" id="kamar3" class="w-full border rounded-lg px-3 py-2 mb-4" multiple size="4">
+                        <option value="" disabled>-- Pilih Kamar --</option>
                         @foreach($lantai3_tersedia as $kamar)
                             <option value="{{ $kamar->id }}">Kamar {{ $kamar->nomor_kamar }}</option>
                         @endforeach
@@ -150,8 +150,9 @@
 
         function validateDropdownLogin(selectId, formId, isLoggedIn) {
             var select = document.getElementById(selectId);
-            if (!select.value) {
-                alert('Silakan pilih nomor kamar terlebih dahulu!');
+            var selected = Array.from(select.selectedOptions).map(option => option.value).filter(v => v);
+            if (selected.length === 0) {
+                alert('Silakan pilih minimal satu kamar terlebih dahulu!');
                 return false;
             }
             if (!isLoggedIn) {
@@ -159,10 +160,10 @@
                 window.location.href = "{{ route('auth.login.form') }}";
                 return false;
             }
-            // Ganti action form dengan id kamar yang dipilih
+            // Ganti action form dengan id kamar pertama yang dipilih (untuk keperluan route lama, backend harus handle array)
             var form = document.getElementById(formId);
             var action = form.getAttribute('action');
-            form.setAttribute('action', action.replace('KAMAR_ID', select.value));
+            form.setAttribute('action', action.replace('KAMAR_ID', selected[0]));
             return true;
         }
     </script>
