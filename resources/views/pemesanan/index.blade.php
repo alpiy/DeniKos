@@ -110,6 +110,11 @@
                                 @endif
                             @endif
                         </td>
+                        <td class="p-3 border">
+                            @if($p->status_pemesanan == 'diterima' && $sisaTagihan == 0 && $p->pembayaran->where('status','diterima')->count() > 0)
+                                <a href="{{ route('user.pemesanan.downloadReceipt', $p->id) }}" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition">Download Tanda Terima</a>
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr>

@@ -33,6 +33,7 @@ class KosSeeder extends Seeder
                 ],
                 'denah_kamar' => 'https://via.placeholder.com/300x200',
                 'status_kamar' => 'tersedia',
+                'luas_kamar' => '2x3',
             ]);
         }
         // Kamar 7-12 di lantai 3, harga 350000
@@ -55,6 +56,7 @@ class KosSeeder extends Seeder
                 ],
                 'denah_kamar' => 'https://via.placeholder.com/300x200',
                 'status_kamar' => 'tersedia',
+                'luas_kamar' => '2x3',
             ]);
         }
     }

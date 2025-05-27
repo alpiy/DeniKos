@@ -39,9 +39,10 @@
                 <div>
                     <h1 class="text-3xl font-bold text-indigo-600 mb-2">Kamar Lantai 2</h1>
                     <p class="text-gray-500 text-sm mb-4">{{ $lantai2_pertama->alamat }}</p>
-                    <p class="text-2xl font-bold text-gray-800 mb-6">
-                        Rp{{ number_format($lantai2_pertama->harga_bulanan, 0, ',', '.') }} <span class="text-base font-normal">/ bulan</span>
-                    </p>
+                    <div class="flex flex-wrap items-center gap-4 mb-4">
+                        <span class="inline-block bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-base font-semibold">Luas kamar: <span class="font-bold">{{ $lantai2_pertama->luas_kamar }} m<sup>2</sup></span></span>
+                        <span class="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-base font-semibold">Rp{{ number_format($lantai2_pertama->harga_bulanan, 0, ',', '.') }} <span class="font-normal">/ bulan</span></span>
+                    </div>
                     <div class="mb-6">
                         <h2 class="text-xl font-semibold text-gray-800 mb-2">Deskripsi</h2>
                         <p class="text-gray-700 leading-relaxed">{{ $lantai2_pertama->deskripsi }}</p>
@@ -55,14 +56,16 @@
                         </ul>
                     </div>
                 </div>
-                <form id="form-pesan-lantai2" action="{{ route('user.pesan.create', ['id' => 'multi']) }}" method="get" onsubmit="return validateDropdownLogin('kamar2', 'form-pesan-lantai2', {{ Auth::check() ? 'true' : 'false' }});">
-                    <label for="kamar2" class="block mb-2 font-semibold">Pilih Nomor Kamar (bisa lebih dari satu):</label>
-                    <select name="kamar[]" id="kamar2" class="w-full border rounded-lg px-3 py-2 mb-4" multiple size="4">
-                        <option value="" disabled>-- Pilih Kamar --</option>
+                <form id="form-pesan-lantai2" action="{{ route('user.pesan.create', ['id' => 'multi']) }}" method="get" onsubmit="return validateCheckboxLogin('kamar2', 'form-pesan-lantai2', {{ Auth::check() ? 'true' : 'false' }});">
+                    <label class="block mb-2 font-semibold">Pilih Kamar (bisa lebih dari satu):</label>
+                    <div id="kamar2" class="grid grid-cols-2 gap-2 mb-4">
                         @foreach($lantai2_tersedia as $kamar)
-                            <option value="{{ $kamar->id }}">Kamar {{ $kamar->nomor_kamar }}</option>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="kamar[]" value="{{ $kamar->id }}" class="accent-indigo-600">
+                                <span>Kamar {{ $kamar->nomor_kamar }}</span>
+                            </label>
                         @endforeach
-                    </select>
+                    </div>
                     <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition duration-300 w-full">Pesan Sekarang</button>
                 </form>
             </div>
@@ -94,9 +97,10 @@
                 <div>
                     <h1 class="text-3xl font-bold text-indigo-600 mb-2">Kamar Lantai 3</h1>
                     <p class="text-gray-500 text-sm mb-4">{{ $lantai3_pertama->alamat }}</p>
-                    <p class="text-2xl font-bold text-gray-800 mb-6">
-                        Rp{{ number_format($lantai3_pertama->harga_bulanan, 0, ',', '.') }} <span class="text-base font-normal">/ bulan</span>
-                    </p>
+                    <div class="flex flex-wrap items-center gap-4 mb-4">
+                        <span class="inline-block bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-base font-semibold">Luas kamar: <span class="font-bold">{{ $lantai3_pertama->luas_kamar }} m<sup>2</sup></span></span>
+                        <span class="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-base font-semibold">Rp{{ number_format($lantai3_pertama->harga_bulanan, 0, ',', '.') }} <span class="font-normal">/ bulan</span></span>
+                    </div>
                     <div class="mb-6">
                         <h2 class="text-xl font-semibold text-gray-800 mb-2">Deskripsi</h2>
                         <p class="text-gray-700 leading-relaxed">{{ $lantai3_pertama->deskripsi }}</p>
@@ -110,14 +114,16 @@
                         </ul>
                     </div>
                 </div>
-                <form id="form-pesan-lantai3" action="{{ route('user.pesan.create', ['id' => 'multi']) }}" method="get" onsubmit="return validateDropdownLogin('kamar3', 'form-pesan-lantai3', {{ Auth::check() ? 'true' : 'false' }});">
-                    <label for="kamar3" class="block mb-2 font-semibold">Pilih Nomor Kamar (bisa lebih dari satu):</label>
-                    <select name="kamar[]" id="kamar3" class="w-full border rounded-lg px-3 py-2 mb-4" multiple size="4">
-                        <option value="" disabled>-- Pilih Kamar --</option>
+                <form id="form-pesan-lantai3" action="{{ route('user.pesan.create', ['id' => 'multi']) }}" method="get" onsubmit="return validateCheckboxLogin('kamar3', 'form-pesan-lantai3', {{ Auth::check() ? 'true' : 'false' }});">
+                    <label class="block mb-2 font-semibold">Pilih Kamar (bisa lebih dari satu):</label>
+                    <div id="kamar3" class="grid grid-cols-2 gap-2 mb-4">
                         @foreach($lantai3_tersedia as $kamar)
-                            <option value="{{ $kamar->id }}">Kamar {{ $kamar->nomor_kamar }}</option>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="kamar[]" value="{{ $kamar->id }}" class="accent-indigo-600">
+                                <span>Kamar {{ $kamar->nomor_kamar }}</span>
+                            </label>
                         @endforeach
-                    </select>
+                    </div>
                     <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition duration-300 w-full">Pesan Sekarang</button>
                 </form>
             </div>
@@ -147,11 +153,9 @@
                 },
             });
         });
-
-        function validateDropdownLogin(selectId, formId, isLoggedIn) {
-            var select = document.getElementById(selectId);
-            var selected = Array.from(select.selectedOptions).map(option => option.value).filter(v => v);
-            if (selected.length === 0) {
+        function validateCheckboxLogin(containerId, formId, isLoggedIn) {
+            var checkboxes = document.querySelectorAll('#' + containerId + ' input[type=checkbox]:checked');
+            if (checkboxes.length === 0) {
                 alert('Silakan pilih minimal satu kamar terlebih dahulu!');
                 return false;
             }
@@ -160,10 +164,6 @@
                 window.location.href = "{{ route('auth.login.form') }}";
                 return false;
             }
-            // Ganti action form dengan id kamar pertama yang dipilih (untuk keperluan route lama, backend harus handle array)
-            var form = document.getElementById(formId);
-            var action = form.getAttribute('action');
-            form.setAttribute('action', action.replace('KAMAR_ID', selected[0]));
             return true;
         }
     </script>

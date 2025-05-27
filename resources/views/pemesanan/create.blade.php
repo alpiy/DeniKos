@@ -36,6 +36,14 @@
             <label for="total_pembayaran_display" class="block font-semibold mb-1">Total Pembayaran</label>
             <input type="text" id="total_pembayaran_display" readonly class="w-full px-4 py-2 border rounded-lg bg-gray-100">
         </div>
+        <div>
+            <label for="jenis_pembayaran" class="block font-semibold mb-1">Jenis Pembayaran</label>
+            <select name="jenis_pembayaran" id="jenis_pembayaran" class="w-full border rounded-lg px-4 py-2 mb-2">
+                <option value="dp" selected>DP (Minimal 30% dari total pembayaran)</option>
+                <option value="lunas">Lunas (Bayar penuh)</option>
+            </select>
+            <small class="text-gray-500">Pilih "Lunas" jika ingin membayar penuh langsung.</small>
+        </div>
         <input type="hidden" id="total_pembayaran" name="total_pembayaran">
         <div class="mb-4 text-center">
             <label class="block text-sm font-medium text-gray-700 mb-2">Scan QRIS untuk Pembayaran</label>
@@ -49,14 +57,7 @@
                 <div class="text-red-500 text-sm">{{ $message }}</div>
             @enderror
         </div>
-        <div>
-            <label for="jenis_pembayaran" class="block font-semibold mb-1">Jenis Pembayaran</label>
-            <select name="jenis_pembayaran" id="jenis_pembayaran" class="w-full border rounded-lg px-4 py-2 mb-2">
-                <option value="dp" selected>DP (Minimal 30% dari total pembayaran)</option>
-                <option value="lunas">Lunas (Bayar penuh)</option>
-            </select>
-            <small class="text-gray-500">Pilih "Lunas" jika ingin membayar penuh langsung.</small>
-        </div>
+        
         <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
             Kirim Pemesanan
         </button>
@@ -67,20 +68,5 @@
                 {{ $kamar->harga_bulanan }},
             @endforeach
         ];
-        document.addEventListener('DOMContentLoaded', function () {
-            const lamaSewa = document.getElementById('lama_sewa');
-            const totalPembayaran = document.getElementById('total_pembayaran');
-            const totalPembayaranDisplay = document.getElementById('total_pembayaran_display');
-            function updateTotal() {
-                const lama = parseInt(lamaSewa.value) || 0;
-                let total = 0;
-                hargaList.forEach(harga => {
-                    total += harga * lama;
-                });
-                totalPembayaran.value = total;
-                totalPembayaranDisplay.value = total > 0 ? 'Rp' + total.toLocaleString('id-ID') : '';
-            }
-            lamaSewa.addEventListener('input', updateTotal);
-        });
     </script>
 @endsection

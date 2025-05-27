@@ -22,6 +22,7 @@ return new class extends Migration
             $table->json('foto')->nullable();
             $table->string('denah_kamar')->nullable(); // Opsional untuk menyimpan URL gambar denah
             $table->enum('status_kamar', ['tersedia', 'terpesan'])->default('tersedia');
+            $table->string('luas_kamar')->default('2x3'); // Luas kamar 2x3 meter
             $table->timestamps();
         });
         

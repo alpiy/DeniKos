@@ -11,6 +11,7 @@ use App\Events\PemesananBaru;
 use App\Events\NotifikasiUserBaru;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PemesananController extends Controller
 {
@@ -217,5 +218,25 @@ public function pelunasan(Request $request, $id)
         'status' => 'pending',
     ]);
     return redirect()->route('user.riwayat')->with('success', 'Bukti pelunasan berhasil diupload, menunggu verifikasi admin.');
+}
+
+/**
+ * Download PDF receipt for a verified pemesanan
+ */
+public function downloadReceipt($id)
+{
+    $pemesanan = Pemesanan::with(['user', 'kos', 'pembayaran'])->findOrFail($id);
+    // Only allow if status diterima & ada pembayaran terverifikasi (status: 'diterima')
+    $hasVerifiedPayment = $pemesanan->pembayaran && $pemesanan->pembayaran->where('status','diterima')->count() > 0;
+    if ($pemesanan->status_pemesanan !== 'diterima' || !$hasVerifiedPayment) {
+        abort(403, 'Tanda terima hanya tersedia setelah pembayaran diverifikasi.');
+    }
+    // Ambil pembayaran terakhir yang terverifikasi (atau pertama jika hanya satu)
+    $pembayaran = $pemesanan->pembayaran->where('status','diterima')->sortByDesc('created_at')->first();
+    $pdf = Pdf::loadView('pemesanan.receipt', [
+        'pemesanan' => $pemesanan,
+        'pembayaran' => $pembayaran
+    ]);
+    return $pdf->download('TandaTerima-DeniKos-'.$pemesanan->id.'.pdf');
 }
 }

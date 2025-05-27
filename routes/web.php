@@ -70,6 +70,9 @@ Route::prefix('user')->name('user.')->middleware('role:user')->group(function ()
     Route::post('/pemesanan/{id}/batal', [UserPemesananController::class, 'batal'])->name('pesan.batal');
     // Upload pelunasan pembayaran
     Route::post('/pemesanan/{id}/pelunasan', [UserPemesananController::class, 'pelunasan'])->name('pembayaran.pelunasan');
+
+    // Route untuk download tanda terima pembayaran
+    Route::get('/pemesanan/{id}/receipt', [UserPemesananController::class, 'downloadReceipt'])->name('pemesanan.downloadReceipt');
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------

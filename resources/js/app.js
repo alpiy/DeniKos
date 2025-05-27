@@ -193,4 +193,38 @@ if (tambahLamaSewaInput) {
         lamaSewaInputMulti.addEventListener('input', updateTotalPembayaranMulti);
         updateTotalPembayaranMulti();
     }
+
+    // Hitung Total Pembayaran pada Form Pemesanan (multi kamar, DP/lunas)
+function updateTotalPembayaranMultiKamar() {
+    const lamaSewaInput = document.getElementById('lama_sewa');
+    const totalDisplay = document.getElementById('total_pembayaran_display');
+    const totalHidden = document.getElementById('total_pembayaran');
+    const jenisPembayaran = document.getElementById('jenis_pembayaran');
+    const hargaList = window.hargaKamarList;
+    if (!lamaSewaInput || !totalDisplay || !totalHidden || !hargaList) return;
+    const lama = parseInt(lamaSewaInput.value) || 0;
+    let total = 0;
+    hargaList.forEach(harga => {
+        total += harga * lama;
+    });
+    let finalTotal = total;
+    const jenis = (jenisPembayaran ? jenisPembayaran.value : 'dp');
+    if (jenis === 'dp') {
+        finalTotal = Math.ceil(total * 0.3); // DP minimal 30%
+    }
+    totalHidden.value = finalTotal;
+    totalDisplay.value = finalTotal > 0 ? 'Rp' + finalTotal.toLocaleString('id-ID') : '';
+}
+
+// Inisialisasi event listener untuk form pemesanan multi kamar
+function initFormPemesananMultiKamar() {
+    const lamaSewaInput = document.getElementById('lama_sewa');
+    const jenisPembayaran = document.getElementById('jenis_pembayaran');
+    if (!lamaSewaInput) return;
+    lamaSewaInput.addEventListener('input', updateTotalPembayaranMultiKamar);
+    if (jenisPembayaran) jenisPembayaran.addEventListener('change', updateTotalPembayaranMultiKamar);
+    setTimeout(updateTotalPembayaranMultiKamar, 0);
+}
+
+    initFormPemesananMultiKamar();
 });
