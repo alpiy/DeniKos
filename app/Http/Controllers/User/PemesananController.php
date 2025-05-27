@@ -58,8 +58,7 @@ class PemesananController extends Controller
         ]);
         $validated['user_id'] = Auth::id();
         $validated['status_pemesanan'] = 'pending';
-        // Simpan tanggal_masuk ke field pemesanan
-        $validated['tanggal_masuk'] = $request->tanggal_masuk;
+        $validated['tanggal_pesan'] = now();
         $successIds = [];
         if ($request->hasFile('bukti_pembayaran')) {
             $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
@@ -76,6 +75,10 @@ class PemesananController extends Controller
                 ->exists();
             if ($sudahPesan) continue;
             $validated['kos_id'] = $kosId;
+            // Hitung tanggal selesai otomatis
+            $lamaSewaInt = (int) $request->lama_sewa;
+            $tanggalSelesai = \Carbon\Carbon::parse($request->tanggal_masuk)->addMonths($lamaSewaInt)->toDateString();
+            $validated['tanggal_selesai'] = $tanggalSelesai;
             $pemesanan = Pemesanan::create($validated);
             // Hitung jumlah pembayaran sesuai jenis
             $jumlahBayar = $request->input('total_pembayaran');
@@ -133,7 +136,6 @@ public function perpanjangStore(Request $request, $id)
     }
     $request->validate([
         'tambah_lama_sewa' => 'required|integer|min:1',
-        'tanggal_masuk' => 'required|date|after_or_equal:today',
         'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
     $buktiBaru = null;
@@ -144,7 +146,6 @@ public function perpanjangStore(Request $request, $id)
         'kos_id' => $pemesananLama->kos_id,
         'user_id' => Auth::id(),
         'tanggal_pesan' => now(),
-        'tanggal_masuk' => $request->tanggal_masuk,
         'lama_sewa' => $request->tambah_lama_sewa,
         'status_pemesanan' => 'pending',
         'is_perpanjangan' => true,

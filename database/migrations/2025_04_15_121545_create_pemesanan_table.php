@@ -18,6 +18,7 @@ return new class extends Migration
              $table->boolean('is_perpanjangan')->default(false);
             $table->date('tanggal_pesan');
             $table->date('tanggal_masuk')->nullable();
+            $table->date('tanggal_selesai')->nullable();
             $table->string('bukti_pembayaran')->nullable();
             $table->integer('lama_sewa');
             $table->integer('total_pembayaran');
