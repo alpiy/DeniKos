@@ -48,7 +48,7 @@
                                 </svg>
                             </div>
                             <input type="email" name="email" id="email" value="{{ old('email', request()->email) }}" {{-- Ambil email dari request jika ada --}}
-                                   class="w-full border-gray-300 rounded-lg shadow-sm pl-11 pr-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 @error('email') border-red-500 @enderror"
+                                   class="w-full  rounded-lg shadow-sm pl-11 pr-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 @error('email') border-red-500 @enderror"
                                    required placeholder="Email yang terhubung dengan akun Anda">
                         </div>
                         @error('email')
@@ -66,7 +66,7 @@
                                 </svg>
                             </div>
                             <input type="password" name="password" id="password"
-                                   class="w-full border-gray-300 rounded-lg shadow-sm pl-11 pr-10 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 @error('password') border-red-500 @enderror"
+                                   class="w-full  rounded-lg shadow-sm pl-11 pr-10 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 @error('password') border-red-500 @enderror"
                                    required placeholder="Minimal 6 karakter">
                             <button type="button" data-toggle="password" data-target="password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none" tabindex="-1">
                                 {{-- SVG Icon Show/Hide --}}
