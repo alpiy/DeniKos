@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Pemesanan;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use App\Events\NotifikasiUserBaru;
 use App\Http\Controllers\Controller;
@@ -11,13 +12,50 @@ use Illuminate\Support\Facades\Storage;
 
 class PemesananController extends Controller
 {
-    public function index()
+    public function index(Request $request) // Tambahkan Request $request
     {
-        // Ambil pemesanan awal (bukan perpanjangan)
-        $pemesananAwal = Pemesanan::with('kos', 'user')->where('is_perpanjangan', false)->latest()->get();
-        // Ambil pemesanan perpanjangan
-        $pemesananPerpanjang = Pemesanan::with('kos', 'user')->where('is_perpanjangan', true)->latest()->get();
-        return view('admin.pemesanan.index', compact('pemesananAwal', 'pemesananPerpanjang'));
+        $query = Pemesanan::with(['kos', 'user', 'pembayaran']) // Eager load relasi
+                           ->orderByDesc('created_at'); // Urutkan berdasarkan terbaru
+
+        // Filter Pencarian (Nama User, Email User, No Kamar)
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereHas('user', function($userQuery) use ($searchTerm) {
+                    $userQuery->where('name', 'like', "%{$searchTerm}%")
+                              ->orWhere('email', 'like', "%{$searchTerm}%");
+                })->orWhereHas('kos', function($kosQuery) use ($searchTerm) {
+                    $kosQuery->where('nomor_kamar', 'like', "%{$searchTerm}%");
+                });
+            });
+        }
+
+        // Filter Status Pemesanan
+        if ($request->filled('status_pemesanan')) {
+            $query->where('status_pemesanan', $request->status_pemesanan);
+        }
+
+        // Filter Jenis Pemesanan (Awal / Perpanjangan)
+        if ($request->filled('jenis_pemesanan')) {
+            if ($request->jenis_pemesanan === 'awal') {
+                $query->where('is_perpanjangan', false);
+            } elseif ($request->jenis_pemesanan === 'perpanjangan') {
+                $query->where('is_perpanjangan', true);
+            }
+        }
+        
+        // Filter Bulan & Tahun (Berdasarkan tanggal_pesan)
+        if ($request->filled('bulan')) {
+            $query->whereMonth('tanggal_pesan', $request->bulan);
+        }
+        if ($request->filled('tahun')) {
+            $query->whereYear('tanggal_pesan', $request->tahun);
+        }
+
+
+        $semuaPemesanan = $query->paginate(15)->withQueryString(); // Paginasi
+
+        return view('admin.pemesanan.index', compact('semuaPemesanan'));
     }
 
     public function show($id)
@@ -123,14 +161,14 @@ public function refund($id)
         }
         return redirect()->route('admin.pemesanan.index')->with('error', 'Status refund sudah selesai atau tidak valid.');
     }
-public function perpanjangIndex()
-    {
-        $pemesananPerpanjang = Pemesanan::with('kos', 'user')->where('is_perpanjangan', true)->latest()->get();
-        return view('admin.pemesanan.perpanjang', compact('pemesananPerpanjang'));
-    }
+// public function perpanjangIndex()
+//     {
+//         $pemesananPerpanjang = Pemesanan::with('kos', 'user')->where('is_perpanjangan', true)->latest()->get();
+//         return view('admin.pemesanan.perpanjang', compact('pemesananPerpanjang'));
+//     }
 public function verifikasiPembayaran($id)
     {
-        $pembayaran = \App\Models\Pembayaran::with('pemesanan')->findOrFail($id);
+        $pembayaran = Pembayaran::with('pemesanan')->findOrFail($id);
         $pembayaran->status = 'diterima';
         $pembayaran->save();
         // Notifikasi ke user

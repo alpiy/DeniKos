@@ -30,8 +30,7 @@ class KosSeeder extends Seeder
                 'foto' => [
                     'https://via.placeholder.com/600x400',
                     'https://via.placeholder.com/600x401'
-                ],
-                'denah_kamar' => 'https://via.placeholder.com/300x200',
+                ],               
                 'status_kamar' => 'tersedia',
                 'luas_kamar' => '2x3',
             ]);
@@ -54,7 +53,6 @@ class KosSeeder extends Seeder
                     'https://via.placeholder.com/600x400',
                     'https://via.placeholder.com/600x401'
                 ],
-                'denah_kamar' => 'https://via.placeholder.com/300x200',
                 'status_kamar' => 'tersedia',
                 'luas_kamar' => '2x3',
             ]);

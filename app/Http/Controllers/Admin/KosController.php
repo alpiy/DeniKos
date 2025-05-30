@@ -18,8 +18,45 @@ class KosController extends Controller
         if ($request->filled('q')) {
             $query->where('nomor_kamar', 'like', '%'.$request->q.'%');
         }
-        $data = $query->orderBy('nomor_kamar')->get();
-        return view('admin.kos.index', compact('data'));
+        if ($request->filled('lantai')) { // Tambahkan filter lantai jika diinginkan
+        $query->where('lantai', $request->lantai);
+        }
+        // Sorting
+        $sortableColumns = [
+            'nomor_kamar' => 'nomor_kamar',
+            'lantai' => 'lantai',
+            'harga_bulanan' => 'harga_bulanan',
+            'status_kamar' => 'status_kamar',
+            // Tambahkan kolom lain yang ingin bisa di-sort
+        ];
+
+        $sortBy = $request->input('sort_by', 'nomor_kamar'); // Default sort
+        $sortDirection = $request->input('sort_direction', 'asc'); // Default direction
+
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'asc';
+        }
+
+        if (array_key_exists($sortBy, $sortableColumns)) {
+             // Jika nomor_kamar ingin di sort secara numerik, bukan alphabetical
+            if ($sortBy == 'nomor_kamar') {
+                 // Ini asumsi nomor kamar bisa berupa angka atau angka+huruf.
+                 // Untuk sorting numerik murni, CAST(nomor_kamar AS UNSIGNED) lebih baik jika formatnya angka semua.
+                $query->orderByRaw('LENGTH(nomor_kamar) ' . $sortDirection . ', nomor_kamar ' . $sortDirection);
+            } else {
+                $query->orderBy($sortableColumns[$sortBy], $sortDirection);
+            }
+        } else {
+            $query->orderBy('nomor_kamar', 'asc'); // Fallback default sort
+        }
+
+        $dataKos = $query->paginate(15)->withQueryString(); 
+        $totalKos = Kos::count();
+        $tersediaCount = Kos::where('status_kamar', 'tersedia')->count();
+        $terpesanCount = Kos::where('status_kamar', 'terpesan')->count();
+
+
+        return view('admin.kos.index', compact('dataKos', 'totalKos', 'tersediaCount', 'terpesanCount','sortBy', 'sortDirection'));
     }
 
     public function create()
@@ -40,7 +77,7 @@ class KosController extends Controller
             'deskripsi' => 'nullable',
             'fasilitas' => 'required|array',
             'foto.*' => 'nullable|image|max:2048',
-            'denah_kamar' => 'nullable|image|max:2048', // Jika ada denah kamar
+            // Jika ada denah kamar
         ]);
 
         $fotoPaths = [];
@@ -49,8 +86,7 @@ class KosController extends Controller
             $fotoPaths[] = $file->store('kos', 'public');
          }
         }
-         // Menyimpan denah kamar
-         $denahPath = $request->hasFile('denah_kamar') ? $request->file('denah_kamar')->store('denah', 'public') : null;
+        
 
         Kos::create([
             'alamat' => $request->alamat,
@@ -60,7 +96,7 @@ class KosController extends Controller
             'deskripsi' => $request->deskripsi,
             'fasilitas' => $request->fasilitas,
             'foto' => $fotoPaths,
-            'denah_kamar' => $denahPath,
+
             'status_kamar' => 'tersedia', // Default status kamar adalah tersedia
         ]);
 
@@ -85,7 +121,7 @@ class KosController extends Controller
             'deskripsi' => 'nullable',
             'fasilitas' => 'required|array',
             'foto.*' => 'nullable|image|max:2048',
-            'denah_kamar' => 'nullable|image|max:2048', // Jika ada denah kamar
+            // Jika ada denah kamar
         ]);
 
         $fotoPaths = $ko->foto ?? [];
@@ -99,24 +135,14 @@ class KosController extends Controller
             }
             $fotoPaths = array_values($fotoPaths); // reindex
         }
-        // Hapus denah jika dicentang
-        $denahPath = $ko->denah_kamar;
-        if ($request->filled('hapus_denah')) {
-            if ($denahPath) {
-                Storage::disk('public')->delete($denahPath);
-            }
-            $denahPath = null;
-        }
+       
         // Tambah foto baru
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
                 $fotoPaths[] = $file->store('kos', 'public');
             }
         }
-        // Tambah/replace denah baru
-        if ($request->hasFile('denah_kamar')) {
-            $denahPath = $request->file('denah_kamar')->store('denah', 'public');
-        }
+      
 
         $ko->update([
             'alamat' => $request->alamat,
@@ -126,7 +152,7 @@ class KosController extends Controller
             'deskripsi' => $request->deskripsi,
             'fasilitas' => $request->fasilitas,
             'foto' => $fotoPaths,
-            'denah_kamar' => $denahPath,
+           
             'status_kamar' => $request->status_kamar ?? $ko->status_kamar, // Memperbarui status jika ada input
         ]);
 
@@ -143,10 +169,7 @@ class KosController extends Controller
                 }
             }
         }
-        // Hapus denah kamar jika ada
-        if (!empty($ko->denah_kamar)) {
-            Storage::disk('public')->delete($ko->denah_kamar);
-        }
+      
         $ko->delete();
         return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil dihapus.');
     }

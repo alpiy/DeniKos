@@ -89,11 +89,11 @@ Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function
     Route::post('/pemesanan/{id}/approve', [AdminPemesananController::class, 'approve'])->name('pemesanan.approve');
     Route::post('/pemesanan/{id}/reject', [AdminPemesananController::class, 'reject'])->name('pemesanan.reject');
     Route::post('/pemesanan/{id}/refund', [AdminPemesananController::class, 'refund'])->name('pemesanan.refund');
-    Route::get('/perpanjang', [AdminPemesananController::class, 'perpanjangIndex'])->name('pemesanan.perpanjang');
+    // Route::get('/perpanjang', [AdminPemesananController::class, 'perpanjangIndex'])->name('pemesanan.perpanjang');
 
     //data penyewa
     Route::get('/penyewa', [AdminPenyewaController::class, 'index'])->name('penyewa.index');
-    Route::delete('/penyewa/{id}', [AdminPenyewaController::class, 'destroy'])->name('penyewa.destroy');
+    Route::post('/penyewa/{id}/selesai', [AdminPenyewaController::class, 'markAsCompleted'])->name('penyewa.complete');
 
     //laporanSewa
     Route::get('/laporan-sewa', [AdminLaporanSewaController::class, 'index'])->name('laporan.index');
