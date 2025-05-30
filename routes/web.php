@@ -66,6 +66,7 @@ Route::prefix('user')->name('user.')->middleware('role:user')->group(function ()
     // Perpanjang sewa
     Route::get('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangForm'])->name('pesan.perpanjang');
     Route::post('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangStore'])->name('pesan.perpanjang.store');
+    Route::get('/pesan/perpanjang/success/{id}', [UserPemesananController::class, 'perpanjangSuccess'])->name('pesan.perpanjang.success');
     // Pembatalan pemesanan
     Route::post('/pemesanan/{id}/batal', [UserPemesananController::class, 'batal'])->name('pesan.batal');
     // Upload pelunasan pembayaran

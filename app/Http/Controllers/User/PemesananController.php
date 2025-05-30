@@ -12,6 +12,7 @@ use App\Events\NotifikasiUserBaru;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PemesananController extends Controller
 {
@@ -78,7 +79,7 @@ class PemesananController extends Controller
             $validated['kos_id'] = $kosId;
             // Hitung tanggal selesai otomatis
             $lamaSewaInt = (int) $request->lama_sewa;
-            $tanggalSelesai = \Carbon\Carbon::parse($request->tanggal_masuk)->addMonths($lamaSewaInt)->toDateString();
+            $tanggalSelesai = Carbon::parse($request->tanggal_masuk)->addMonths($lamaSewaInt)->toDateString();
             $validated['tanggal_selesai'] = $tanggalSelesai;
             $pemesanan = Pemesanan::create($validated);
             // Hitung jumlah pembayaran sesuai jenis
@@ -126,53 +127,104 @@ public function perpanjangForm($id)
     if ($pemesanan->status_pemesanan !== 'diterima') {
         abort(403, 'Hanya bisa perpanjang sewa pada pemesanan aktif.');
     }
-    return view('pemesanan.perpanjang', compact('pemesanan'));
+
+    $tanggalSelesaiSewaSaatIniCarbon = Carbon::parse($pemesanan->tanggal_selesai);
+    $tanggalSelesaiSewaSaatIni = $tanggalSelesaiSewaSaatIniCarbon->format('d F Y');
+
+    // Kebijakan: Batas maksimal pengajuan perpanjangan adalah 7 hari setelah masa sewa berakhir
+    $batasAkhirPengajuan = $tanggalSelesaiSewaSaatIniCarbon->copy()->addDays(7);
+    $bisaPerpanjang = Carbon::now()->lte($batasAkhirPengajuan);
+
+    $disarankanTanggalMulaiPerpanjang = null;
+    if ($pemesanan->tanggal_selesai) {
+        try {
+            $disarankanTanggalMulaiPerpanjang = Carbon::parse($pemesanan->tanggal_selesai)->addDay()->toDateString();
+        } catch (\Exception $e) {
+            //
+        }
+    }
+
+    return view('pemesanan.perpanjang', compact('pemesanan', 'tanggalSelesaiSewaSaatIni', 'disarankanTanggalMulaiPerpanjang', 'bisaPerpanjang', 'batasAkhirPengajuan'));
 }
 
 public function perpanjangStore(Request $request, $id)
 {
     $pemesananLama = Pemesanan::with('kos')->where('user_id', Auth::id())->findOrFail($id);
     if ($pemesananLama->status_pemesanan !== 'diterima') {
-        return redirect()->route('user.pemesanan.index')->with('error', 'Hanya bisa perpanjang sewa pada pemesanan aktif.');
+        return redirect()->route('user.riwayat')->with('error', 'Hanya bisa perpanjang sewa pada pemesanan aktif.');
     }
-    $request->validate([
+
+    // Validasi Batas Waktu Pengajuan Perpanjangan
+    $tanggalSelesaiSewaSaatIniCarbon = Carbon::parse($pemesananLama->tanggal_selesai);
+    $batasAkhirPengajuan = $tanggalSelesaiSewaSaatIniCarbon->copy()->addDays(7); // Misal, 7 hari setelah selesai
+    if (Carbon::now()->gt($batasAkhirPengajuan)) {
+        return redirect()->route('user.riwayat')->with('error', 'Masa pengajuan perpanjangan telah berakhir. Silakan hubungi admin jika ada pertanyaan.');
+    }
+
+    $validatedData = $request->validate([ // Simpan hasil validasi
         'tambah_lama_sewa' => 'required|integer|min:1',
         'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'total_biaya_perpanjangan' => 'required|numeric|min:0'
     ]);
+
     $buktiBaru = null;
     if ($request->hasFile('bukti_pembayaran')) {
         $buktiBaru = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
     }
+
+    // Pastikan $tambah_lama_sewa adalah integer
+    $lamaSewaTambahan = (int) $validatedData['tambah_lama_sewa']; // Gunakan data dari hasil validasi dan cast ke integer
+
+    $tanggalMulaiPerpanjangan = Carbon::parse($pemesananLama->tanggal_selesai)->addDay();
+    // Gunakan variabel yang sudah di-cast ke integer
+    $tanggalSelesaiPerpanjangan = $tanggalMulaiPerpanjangan->copy()->addMonths($lamaSewaTambahan);
+
+
     $pemesananBaru = Pemesanan::create([
         'kos_id' => $pemesananLama->kos_id,
         'user_id' => Auth::id(),
         'tanggal_pesan' => now(),
-        'lama_sewa' => $request->tambah_lama_sewa,
+        'tanggal_masuk' => $tanggalMulaiPerpanjangan->toDateString(),
+        'tanggal_selesai' => $tanggalSelesaiPerpanjangan->toDateString(),
+        'lama_sewa' => $lamaSewaTambahan, // Gunakan variabel yang sudah di-cast
+        'total_pembayaran' => $validatedData['total_biaya_perpanjangan'], // Gunakan dari hasil validasi
         'status_pemesanan' => 'pending',
         'is_perpanjangan' => true,
         'status_refund' => 'belum',
     ]);
-    // Buat pembayaran perpanjangan
+
     Pembayaran::create([
         'pemesanan_id' => $pemesananBaru->id,
         'tanggal_bayar' => now(),
         'jenis' => 'lainnya',
-        'jumlah' => $request->tambah_lama_sewa * $pemesananLama->kos->harga_bulanan,
+        'jumlah' => $validatedData['total_biaya_perpanjangan'], // Gunakan dari hasil validasi
         'bukti_pembayaran' => $buktiBaru,
         'status' => 'pending',
     ]);
+
     Notification::create([
         'user_id' => null,
-        'title' => 'Perpanjangan Sewa',
-        'message' => 'User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesananLama->kos->nomor_kamar . '".',
+        'title' => 'Pengajuan Perpanjangan Sewa',
+        'message' => 'User ' . Auth::user()->name . ' mengajukan perpanjangan sewa untuk kamar "' . ($pemesananLama->kos->nomor_kamar ?? '-') . '".',
     ]);
-    event(new PemesananBaru('User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . $pemesananLama->kos->nomor_kamar . '".'));
+    event(new PemesananBaru('User ' . Auth::user()->name . ' mengajukan perpanjangan sewa kamar "' . ($pemesananLama->kos->nomor_kamar ?? '-') . '".'));
+
     event(new NotifikasiUserBaru(
         Auth::id(),
-        'Perpanjangan Sewa Berhasil',
-        'Pengajuan perpanjangan sewa kamar ' . $pemesananLama->kos->nomor_kamar . ' berhasil dikirim. Menunggu verifikasi admin.'
+        'Pengajuan Perpanjangan Terkirim',
+        'Pengajuan perpanjangan sewa kamar ' . ($pemesananLama->kos->nomor_kamar ?? '-') . ' telah berhasil dikirim dan menunggu verifikasi admin.'
     ));
-    return redirect()->route('user.riwayat')->with('success', 'Pengajuan perpanjangan berhasil, menunggu verifikasi admin.');
+
+    return redirect()->route('user.pesan.perpanjang.success', $pemesananBaru->id);
+}
+public function perpanjangSuccess($id)
+{
+    $pemesanan = Pemesanan::with(['kos', 'user'])->findOrFail($id);
+    // Pastikan hanya user yang memesan bisa melihat dan ini adalah perpanjangan
+    if ($pemesanan->user_id !== Auth::id() || !$pemesanan->is_perpanjangan) {
+        abort(403, 'Akses ditolak atau bukan pemesanan perpanjangan.');
+    }
+    return view('pemesanan.perpanjang_success', compact('pemesanan'));
 }
 
 public function batal($id)
