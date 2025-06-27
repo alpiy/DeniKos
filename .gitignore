@@ -1,0 +1,38 @@
+# Created by https://www.toptal.com/developers/gitignore/api/laravel
+# Edit at https://www.toptal.com/developers/gitignore?templates=laravel
+
+### Laravel ###
+.env
+/bootstrap/cache/
+/node_modules/
+/public/build/
+/public/hot
+/public/storage
+/storage/*.key
+/storage/app/
+/storage/framework/
+/storage/logs/
+/vendor/
+
+# Rocketeer
+.rocketeer/
+
+# Bootsnipp
+.bootsnipp/
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# macOS
+.DS_Store
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
