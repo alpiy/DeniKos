@@ -84,10 +84,10 @@
                         <div class="relative group">
                             <input type="password" name="password" id="password"
                                    class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
-                                   required placeholder="Minimal 6 karakter">
-                            <button type="button" data-toggle="password" data-target="password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none" tabindex="-1">
-                                <svg class="w-5 h-5 icon-show" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                <svg class="w-5 h-5 icon-hide hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
+                                   required placeholder="Minimal 8 karakter">
+                            <button type="button" data-toggle="password" data-target="password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200" tabindex="-1">
+                                <svg class="w-5 h-5 icon-show transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
                             </button>
                         </div>
                     </div>
@@ -99,9 +99,9 @@
                             <input type="password" name="password_confirmation" id="password_confirmation"
                                    class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
                                    required placeholder="Ulangi password">
-                            <button type="button" data-toggle="password" data-target="password_confirmation" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none" tabindex="-1">
-                                <svg class="w-5 h-5 icon-show" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                <svg class="w-5 h-5 icon-hide hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
+                            <button type="button" data-toggle="password" data-target="password_confirmation" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200" tabindex="-1">
+                                <svg class="w-5 h-5 icon-show transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
                             </button>
                         </div>
                     </div>
@@ -113,6 +113,25 @@
                         </button>
                     </div>
 
+                    {{-- Info Email Verification --}}
+                    <div class="md:col-span-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-semibold mb-1">📧 Setelah Daftar:</p>
+                                <ol class="list-decimal list-inside space-y-1 text-xs">
+                                    <li>Email verifikasi akan dikirim otomatis</li>
+                                    <li>Cek kotak masuk (dan folder Spam)</li>
+                                    <li>Klik link verifikasi di email</li>
+                                    <li>Login otomatis setelah verifikasi</li>
+                                    <li>Jika tidak ada email, bisa kirim ulang di halaman login</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="md:col-span-2 text-sm text-center text-gray-600">
                         Sudah punya akun? <a href="{{ route('auth.login.form') }}" class="font-semibold text-indigo-600 hover:text-indigo-500 hover:underline transition">Login di sini</a>
                     </div>
@@ -122,3 +141,77 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password strength validation
+    const password = document.getElementById('password');
+    const passwordConfirm = document.getElementById('password_confirmation');
+    
+    function validatePassword() {
+        const value = password.value;
+        const minLength = value.length >= 8;
+        const hasLetter = /[a-zA-Z]/.test(value);
+        const hasNumber = /\d/.test(value);
+        
+        // Remove existing feedback
+        const existingFeedback = password.parentNode.nextElementSibling;
+        if (existingFeedback && existingFeedback.classList.contains('password-feedback')) {
+            existingFeedback.remove();
+        }
+        
+        if (value.length > 0) {
+            const feedback = document.createElement('div');
+            feedback.className = 'password-feedback mt-2 text-xs space-y-1';
+            
+            const checks = [
+                { condition: minLength, text: 'Minimal 8 karakter', icon: minLength ? '✅' : '❌' },
+                { condition: hasLetter, text: 'Mengandung huruf', icon: hasLetter ? '✅' : '❌' },
+                { condition: hasNumber, text: 'Mengandung angka', icon: hasNumber ? '✅' : '❌' }
+            ];
+            
+            checks.forEach(check => {
+                const div = document.createElement('div');
+                div.className = `flex items-center ${check.condition ? 'text-green-600' : 'text-red-500'}`;
+                div.innerHTML = `<span class="mr-2">${check.icon}</span>${check.text}`;
+                feedback.appendChild(div);
+            });
+            
+            password.parentNode.parentNode.insertBefore(feedback, password.parentNode.nextSibling);
+        }
+    }
+    
+    function validatePasswordConfirm() {
+        const confirmValue = passwordConfirm.value;
+        const passwordValue = password.value;
+        
+        // Remove existing feedback
+        const existingFeedback = passwordConfirm.parentNode.nextElementSibling;
+        if (existingFeedback && existingFeedback.classList.contains('confirm-feedback')) {
+            existingFeedback.remove();
+        }
+        
+        if (confirmValue.length > 0) {
+            const feedback = document.createElement('div');
+            feedback.className = 'confirm-feedback mt-2 text-xs';
+            
+            if (confirmValue === passwordValue) {
+                feedback.innerHTML = '<div class="flex items-center text-green-600"><span class="mr-2">✅</span>Password sesuai</div>';
+            } else {
+                feedback.innerHTML = '<div class="flex items-center text-red-500"><span class="mr-2">❌</span>Password tidak sesuai</div>';
+            }
+            
+            passwordConfirm.parentNode.parentNode.insertBefore(feedback, passwordConfirm.parentNode.nextSibling);
+        }
+    }
+    
+    if (password) {
+        password.addEventListener('input', validatePassword);
+    }
+    if (passwordConfirm) {
+        passwordConfirm.addEventListener('input', validatePasswordConfirm);
+    }
+});
+</script>
+@endpush

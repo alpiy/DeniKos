@@ -29,6 +29,16 @@
             @error('email')
                 <div class="mb-4 p-3 rounded-md bg-red-50 border border-red-300 text-red-700 text-sm animate-fade-in-down">
                     {{ $message }}
+                    
+                    {{-- Jika error terkait verifikasi email, tampilkan opsi resend --}}
+                    @if(str_contains($message, 'verifikasi email') || str_contains($message, 'verify'))
+                        <div class="mt-3 pt-3 border-t border-red-200">
+                            <p class="text-xs text-red-600 mb-2">Belum menerima email verifikasi?</p>
+                            <button type="button" onclick="showResendForm()" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded transition">
+                                Kirim Ulang Email Verifikasi
+                            </button>
+                        </div>
+                    @endif
                 </div>
             @enderror
 
@@ -67,13 +77,13 @@
                             <button type="button"
                                 data-toggle="password"
                                 data-target="password"
-                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none"
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200"
                                 tabindex="-1">
-                                <svg class="w-5 h-5 icon-show" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <svg class="w-5 h-5 icon-show transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
-                                <svg class="w-5 h-5 icon-hide hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
                                 </svg>
@@ -101,7 +111,38 @@
                     </div>
                 </div>
             </form>
+
+            {{-- Form Resend Email Verification (tersembunyi) --}}
+            <div id="resendForm" class="hidden mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 class="text-sm font-semibold text-blue-800 mb-2">Kirim Ulang Email Verifikasi</h3>
+                <form action="{{ route('auth.resend-verification') }}" method="POST">
+                    @csrf
+                    <div class="flex gap-2">
+                        <input type="email" name="email" placeholder="Masukkan email Anda" 
+                               class="flex-1 text-sm border-blue-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded transition">
+                            Kirim
+                        </button>
+                    </div>
+                </form>
+                <button type="button" onclick="hideResendForm()" class="text-xs text-blue-600 hover:text-blue-500 mt-2">
+                    Batal
+                </button>
+            </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Resend verification form functions
+function showResendForm() {
+    document.getElementById('resendForm').classList.remove('hidden');
+}
+
+function hideResendForm() {
+    document.getElementById('resendForm').classList.add('hidden');
+}
+</script>
+@endpush

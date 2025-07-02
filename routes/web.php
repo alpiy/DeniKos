@@ -21,19 +21,29 @@ Route::prefix('auth')->name('auth.')->group(function () {
     // Register
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
-
     // Login
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
-
+    // Resend verification dari login page
+    Route::post('/resend-verification', [AuthController::class, 'resendVerificationFromLogin'])->name('resend-verification');
+    
     // Forgot Password
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
     Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
-
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// Email Verification Routes (tanpa middleware auth untuk verify)
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::get('/email/verify', [AuthController::class, 'emailVerificationNotice'])
+        ->middleware('auth')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'emailVerificationVerify'])
+        ->name('verification.verify');
+    Route::post('/email/verification-notification', [AuthController::class, 'emailVerificationResend'])
+        ->middleware('auth')->name('verification.send');
 });
 
 // Admin Auth (Terpisah)
@@ -48,7 +58,7 @@ Route::get('/kos', [UserKosController::class, 'index'])->name('user.kos.index');
 Route::get('/kos/{id}', [UserKosController::class, 'show'])->name('user.kos.show');
 
 // ------------------ ROUTE UNTUK USER ------------------
-Route::prefix('user')->name('user.')->middleware('role:user')->group(function () {
+Route::prefix('user')->name('user.')->middleware(['role:user', 'verified'])->group(function () {
     // Profile
     Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
     // // List dan detail kos

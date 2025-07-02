@@ -64,30 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 effect: 'fade',
                 speed: 1000,
             });
-             // Toggle password visibility
-            document.querySelectorAll('[data-toggle="password"]').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const input = document.getElementById(this.dataset.target);
-        const iconShow = this.querySelector('.icon-show');
-        const iconHide = this.querySelector('.icon-hide');
-        if (input.type === 'password') {
-            input.type = 'text';
-            iconShow.classList.add('hidden');
-            iconHide.classList.remove('hidden');
-        } else {
-            input.type = 'password';
-            iconShow.classList.remove('hidden');
-            iconHide.classList.add('hidden');
-        }
-    });
-});
-
-            // Add event listeners for password visibility toggles
-            document.querySelectorAll('.toggle-password').forEach(button => {
-                const targetPassword = button.getAttribute('data-target');
-                const targetIcon = button.getAttribute('data-icon');
-                button.addEventListener('click', () => togglePassword(targetPassword, targetIcon));
-            });
+            // Password visibility toggle functionality
+            initPasswordToggle();
              // Hitung Total Pembayaran pada Form Pemesanan
              const hitungTotal = () => {
                 const lamaSewaInput = document.getElementById('lama_sewa');
@@ -228,3 +206,50 @@ function initFormPemesananMultiKamar() {
 
     initFormPemesananMultiKamar();
 });
+
+// Function to initialize password visibility toggle
+function initPasswordToggle() {
+    // Handle all password toggle buttons
+    document.querySelectorAll('[data-toggle="password"]').forEach(function(toggleButton) {
+        toggleButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const targetId = this.getAttribute('data-target');
+            const targetInput = document.getElementById(targetId);
+            const showIcon = this.querySelector('.icon-show');
+            const hideIcon = this.querySelector('.icon-hide');
+            
+            // Debug logging (remove in production)
+            console.log('Toggle clicked for:', targetId);
+            console.log('Target input found:', !!targetInput);
+            console.log('Show icon found:', !!showIcon);
+            console.log('Hide icon found:', !!hideIcon);
+            
+            if (!targetInput || !showIcon || !hideIcon) {
+                console.error('Password toggle elements not found:', {
+                    targetInput: !!targetInput,
+                    showIcon: !!showIcon,
+                    hideIcon: !!hideIcon
+                });
+                return;
+            }
+            
+            if (targetInput.type === 'password') {
+                // Show password
+                targetInput.type = 'text';
+                showIcon.classList.add('hidden');
+                hideIcon.classList.remove('hidden');
+                console.log('Password shown');
+            } else {
+                // Hide password
+                targetInput.type = 'password';
+                showIcon.classList.remove('hidden');
+                hideIcon.classList.add('hidden');
+                console.log('Password hidden');
+            }
+        });
+    });
+    
+    console.log('Password toggle initialized for', document.querySelectorAll('[data-toggle="password"]').length, 'buttons');
+}

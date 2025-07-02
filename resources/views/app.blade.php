@@ -31,6 +31,7 @@
    
      {{-- Tambahan scripts dari setiap halaman --}}
      @yield('scripts')
+     @stack('scripts')
      @vite('resources/js/app.js')
 
 
