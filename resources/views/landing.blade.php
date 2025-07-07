@@ -36,7 +36,7 @@
             </p>
             <a href="{{ route('user.kos.index') }}"
                class="mt-4 inline-block bg-yellow-400 text-indigo-900 font-bold px-12 py-5 rounded-xl hover:bg-yellow-300 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-yellow-500 focus:ring-opacity-50 animate-bounce">
-                Lihat Daftar Kos
+                Lihat Daftar Kamar
             </a>
         </div>
     </section>
