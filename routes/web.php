@@ -19,19 +19,19 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 // ------------------ ROUTE UNTUK AUTH ------------------
 Route::prefix('auth')->name('auth.')->group(function () {
     // Register
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
-    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form')->middleware('guest');
+    Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('guest');
     // Login
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
+    Route::post('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
     // Resend verification dari login page
-    Route::post('/resend-verification', [AuthController::class, 'resendVerificationFromLogin'])->name('resend-verification');
+    Route::post('/resend-verification', [AuthController::class, 'resendVerificationFromLogin'])->name('resend-verification')->middleware('guest');
     
     // Forgot Password
-    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request')->middleware('guest');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('guest');
+    Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset')->middleware('guest');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update')->middleware('guest');
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -48,8 +48,8 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 // Admin Auth (Terpisah)
 Route::prefix('admin/auth')->name('admin.auth.')->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post')->middleware('guest');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 });
 
@@ -87,7 +87,7 @@ Route::prefix('user')->name('user.')->middleware(['role:user', 'verified'])->gro
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
-Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['role:admin', 'prevent.back'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // CRUD kos

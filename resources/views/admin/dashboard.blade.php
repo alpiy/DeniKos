@@ -103,7 +103,19 @@
 
 @push('scripts')
 <script>
-    // Jika ada JavaScript khusus untuk dashboard, bisa diletakkan di sini
-    // Misalnya, inisialisasi Chart.js sudah ada di app.js, jadi tidak perlu diulang
+    // Additional protection specifically for dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        // Clear any existing back attempts when dashboard loads
+        if (window.backAttempts !== undefined) {
+            window.backAttempts = 0;
+        }
+        
+        // Force replace state to ensure clean history
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        
+        console.log('Dashboard loaded with clean state');
+    });
 </script>
 @endpush

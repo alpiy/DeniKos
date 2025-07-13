@@ -45,10 +45,13 @@ class DashboardController extends Controller
             $data[] = $bulanData ? $bulanData->total : 0;
         }
 
-        return view('admin.dashboard', compact(
-            'jumlahKos', 'totalPemesananAll', 'pending', 'diterima', 'ditolak', 'selesai',
-            'labels', 'data', 
-            'pemesananTerbaru' // Kirim data pemesanan terbaru
-        ));
+        // Return with cache control headers
+        return response()->view('admin.dashboard', compact(
+            'jumlahKos', 'totalPemesananAll', 'pending', 'diterima', 'ditolak', 'selesai', 
+            'pemesananTerbaru', 'labels', 'data'
+        ))
+        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', '0');
     }
 }

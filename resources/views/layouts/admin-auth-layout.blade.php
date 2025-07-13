@@ -29,5 +29,20 @@
 
     {{-- Tambahan scripts dari setiap halaman jika diperlukan --}}
     @stack('scripts')
+    
+    <script>
+        // Prevent caching for auth pages
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        
+        @if(session('loggedOut'))
+            // Clear all history after logout
+            window.history.pushState(null, null, window.location.href);
+            window.addEventListener('popstate', function(event) {
+                window.history.pushState(null, null, window.location.href);
+            });
+        @endif
+    </script>
 </body>
 </html>

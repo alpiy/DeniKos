@@ -10,7 +10,11 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('admin.auth.login');
+        // Prevent caching of login page
+        return response()->view('admin.auth.login')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function login(Request $request)
@@ -27,7 +31,13 @@ class AuthController extends Controller
             }
             
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
+            
+            // Redirect dengan session flash untuk JavaScript handling
+            return redirect()->route('admin.dashboard')
+                ->with('justLoggedIn', true)
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
         }
 
         return back()->withErrors(['email' => 'Kredensial tidak valid']);
@@ -39,6 +49,10 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        return redirect()->route('admin.login');
+        return redirect()->route('admin.auth.login')
+            ->with('loggedOut', true)
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 }

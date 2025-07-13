@@ -16,7 +16,8 @@ class Authenticate
      */
   public function handle(Request $request, Closure $next, string ...$guards): Response
     {
-        if (Auth::check()) {
+        // Jika user belum login
+        if (!Auth::check()) {
             if ($request->is('admin*')) {
                 return redirect()->route('admin.auth.login');
             }

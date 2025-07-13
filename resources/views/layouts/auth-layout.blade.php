@@ -18,5 +18,16 @@
 
     {{-- Tambahan scripts dari setiap halaman jika diperlukan --}}
     @stack('scripts')
+    
+    <script>
+        // Check if logged in user is admin trying to access user auth pages
+        @auth
+            @if(Auth::user()->role === 'admin')
+                // Admin shouldn't be here, redirect to admin dashboard immediately
+                console.log('Admin detected on user auth page, redirecting...');
+                window.location.replace('{{ route("admin.dashboard") }}');
+            @endif
+        @endauth
+    </script>
 </body>
 </html>
