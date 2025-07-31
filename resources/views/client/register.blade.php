@@ -37,35 +37,47 @@
                     <div>
                         <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
                         <input type="text" name="name" id="name" value="{{ old('name') }}"
-                               class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
+                               class="w-full rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('name') ? 'border-red-500' : 'border-gray-300' }}"
                                required placeholder="Nama Lengkap Anda">
+                        @error('name')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Email --}}
                     <div>
                         <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
                         <input type="email" name="email" id="email" value="{{ old('email') }}"
-                               class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
+                               class="w-full rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('email') ? 'border-red-500' : 'border-gray-300' }}"
                                required placeholder="email@anda.com">
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- No HP --}}
                     <div>
                         <label for="no_hp" class="block text-sm font-semibold text-gray-700 mb-1.5">No. HP</label>
                         <input type="text" name="no_hp" id="no_hp" value="{{ old('no_hp') }}"
-                               class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
+                               class="w-full rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('no_hp') ? 'border-red-500' : 'border-gray-300' }}"
                                required placeholder="08xxxxxxxxxx">
+                        <p class="mt-1 text-xs text-gray-500">Contoh: 081234567890</p>
+                        @error('no_hp')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                     
                     {{-- Jenis Kelamin --}}
                     <div>
                         <label for="jenis_kelamin" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
                         <select name="jenis_kelamin" id="jenis_kelamin"
-                                class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150" required>
-                            <option value="">Pilih...</option>
-                            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                class="w-full rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 bg-gray-100 {{ $errors->has('jenis_kelamin') ? 'border-red-500' : 'border-gray-300' }}" readonly required>
+                            <option value="Laki-laki" selected>Laki-laki</option>
                         </select>
+                        <p class="text-xs text-gray-500 mt-1">DeniKos hanya melayani penyewa laki-laki</p>
+                        @error('jenis_kelamin')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Password --}}
@@ -73,7 +85,7 @@
                         <label for="password" class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
                         <div class="relative group">
                             <input type="password" name="password" id="password"
-                                   class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
+                                   class="w-full rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('password') ? 'border-red-500' : 'border-gray-300' }}"
                                    required placeholder="Minimal 8 karakter">
                             {{-- Tombol Show/Hide Password --}}
                             <button type="button" data-toggle="password" data-target="password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200" tabindex="-1">
@@ -81,6 +93,9 @@
                                 <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
                             </button>
                         </div>
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Konfirmasi Password --}}
@@ -88,7 +103,7 @@
                         <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-1.5">Konfirmasi Password</label>
                         <div class="relative group">
                             <input type="password" name="password_confirmation" id="password_confirmation"
-                                   class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
+                                   class="w-full rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-300' }}"
                                    required placeholder="Ulangi password">
                             {{-- Tombol Show/Hide Password --}}
                             <button type="button" data-toggle="password" data-target="password_confirmation" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200" tabindex="-1">
@@ -96,6 +111,9 @@
                                 <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
                             </button>
                         </div>
+                        @error('password_confirmation')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                     
                     {{-- Real-time Password Feedback --}}
@@ -106,8 +124,12 @@
                     <div class="md:col-span-2">
                         <label for="alamat" class="block text-sm font-semibold text-gray-700 mb-1.5">Alamat</label>
                         <textarea name="alamat" id="alamat" rows="3"
-                                  class="w-full border-gray-300 rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400"
+                                  class="w-full rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('alamat') ? 'border-red-500' : 'border-gray-300' }}"
                                   required placeholder="Alamat lengkap Anda">{{ old('alamat') }}</textarea>
+                        <p class="mt-1 text-xs text-gray-500">Masukkan alamat lengkap tempat tinggal Anda</p>
+                        @error('alamat')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
 
@@ -150,19 +172,105 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Password strength validation
+    // Form validation variables
+    const form = document.querySelector('form');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const noHpInput = document.getElementById('no_hp');
     const passwordInput = document.getElementById('password');
     const passwordConfirmInput = document.getElementById('password_confirmation');
+    const alamatInput = document.getElementById('alamat');
     const feedbackContainer = document.getElementById('password-feedback');
     
+    // Real-time validation functions
+    function validateName() {
+        if (!nameInput) return true;
+        const value = nameInput.value.trim();
+        const parent = nameInput.closest('div');
+        const errorElement = parent.querySelector('.text-red-600');
+        
+        if (errorElement) errorElement.remove();
+        
+        if (value.length === 0) {
+            showFieldError(parent, 'Nama lengkap wajib diisi');
+            return false;
+        } else if (value.length > 255) {
+            showFieldError(parent, 'Nama tidak boleh lebih dari 255 karakter');
+            return false;
+        }
+        return true;
+    }
+    
+    function validateEmail() {
+        if (!emailInput) return true;
+        const value = emailInput.value.trim();
+        const parent = emailInput.closest('div');
+        const errorElement = parent.querySelector('.text-red-600');
+        
+        if (errorElement) errorElement.remove();
+        
+        if (value.length === 0) {
+            showFieldError(parent, 'Email wajib diisi');
+            return false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            showFieldError(parent, 'Format email tidak valid');
+            return false;
+        }
+        return true;
+    }
+    
+    function validateNoHp() {
+        if (!noHpInput) return true;
+        const value = noHpInput.value.trim();
+        const parent = noHpInput.closest('div');
+        const errorElement = parent.querySelector('.text-red-600');
+        
+        if (errorElement) errorElement.remove();
+        
+        if (value.length === 0) {
+            showFieldError(parent, 'Nomor HP wajib diisi');
+            return false;
+        } else if (!/^08[0-9]{8,13}$/.test(value)) {
+            showFieldError(parent, 'Nomor HP harus diawali 08 dan berisi 10-15 digit');
+            return false;
+        }
+        return true;
+    }
+    
+    function validateAlamat() {
+        if (!alamatInput) return true;
+        const value = alamatInput.value.trim();
+        const parent = alamatInput.closest('div');
+        const errorElement = parent.querySelector('.text-red-600');
+        
+        if (errorElement) errorElement.remove();
+        
+        if (value.length === 0) {
+            showFieldError(parent, 'Alamat wajib diisi');
+            return false;
+        } else if (value.length > 500) {
+            showFieldError(parent, 'Alamat tidak boleh lebih dari 500 karakter');
+            return false;
+        }
+        return true;
+    }
+    
+    function showFieldError(parent, message) {
+        const errorElement = document.createElement('p');
+        errorElement.className = 'mt-1 text-sm text-red-600';
+        errorElement.textContent = message;
+        parent.appendChild(errorElement);
+    }
+    
+    // Password strength validation
     function validatePassword() {
-        if (!passwordInput || !feedbackContainer) return;
+        if (!passwordInput || !feedbackContainer) return true;
         
         const value = passwordInput.value;
         feedbackContainer.innerHTML = ''; // Clear previous feedback
 
         if (value.length === 0) {
-            return;
+            return true; // Don't show feedback for empty field
         }
 
         const checks = [
@@ -186,10 +294,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Also validate confirmation if it has a value
         validatePasswordConfirm();
+        return allValid;
     }
     
     function validatePasswordConfirm() {
-        if (!passwordConfirmInput || !passwordInput || !feedbackContainer) return;
+        if (!passwordConfirmInput || !passwordInput || !feedbackContainer) return true;
         
         // Remove existing confirmation feedback
         const existingConfirmFeedback = document.getElementById('confirm-feedback');
@@ -205,20 +314,66 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirmValue === passwordValue && passwordValue.length > 0) {
                 div.className = 'flex items-center text-green-600';
                 div.innerHTML = `<span class="mr-2">✅</span> Password sesuai`;
+                return true;
             } else {
                 div.className = 'flex items-center text-red-500';
                 div.innerHTML = `<span class="mr-2">❌</span> Password tidak sesuai`;
+                feedbackContainer.appendChild(div);
+                return false;
             }
             feedbackContainer.appendChild(div);
         }
+        return true;
     }
     
-    if (passwordInput) {
-        passwordInput.addEventListener('input', validatePassword);
+    // Add event listeners
+    if (nameInput) nameInput.addEventListener('blur', validateName);
+    if (emailInput) emailInput.addEventListener('blur', validateEmail);
+    if (noHpInput) noHpInput.addEventListener('blur', validateNoHp);
+    if (alamatInput) alamatInput.addEventListener('blur', validateAlamat);
+    if (passwordInput) passwordInput.addEventListener('input', validatePassword);
+    if (passwordConfirmInput) passwordConfirmInput.addEventListener('input', validatePasswordConfirm);
+    
+    // Form submit validation
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isNoHpValid = validateNoHp();
+            const isAlamatValid = validateAlamat();
+            const isPasswordValid = validatePassword();
+            const isPasswordConfirmValid = validatePasswordConfirm();
+            
+            if (!isNameValid || !isEmailValid || !isNoHpValid || !isAlamatValid || !isPasswordValid || !isPasswordConfirmValid) {
+                e.preventDefault();
+                // Scroll to first error
+                const firstError = document.querySelector('.text-red-600');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
     }
-    if (passwordConfirmInput) {
-        passwordConfirmInput.addEventListener('input', validatePasswordConfirm);
-    }
+    
+    // Show/Hide password functionality
+    document.querySelectorAll('[data-toggle="password"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetInput = document.getElementById(targetId);
+            const iconShow = this.querySelector('.icon-show');
+            const iconHide = this.querySelector('.icon-hide');
+            
+            if (targetInput.type === 'password') {
+                targetInput.type = 'text';
+                iconShow.classList.add('hidden');
+                iconHide.classList.remove('hidden');
+            } else {
+                targetInput.type = 'password';
+                iconShow.classList.remove('hidden');
+                iconHide.classList.add('hidden');
+            }
+        });
+    });
 });
 </script>
 @endpush

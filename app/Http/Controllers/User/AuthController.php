@@ -33,8 +33,18 @@ class AuthController extends Controller
          ]);
  
         if (Auth::attempt($credentials)) {
-            // Cek apakah email sudah diverifikasi
-            if (is_null(Auth::user()->email_verified_at)) {
+            $user = Auth::user();
+            
+            // Jika admin mencoba login di halaman user
+            if ($user->role === 'admin') {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Akun admin harus login melalui halaman admin. <a href="' . route('admin.auth.login') . '" class="underline text-indigo-600 hover:text-indigo-800">Klik di sini untuk login admin</a>',
+                ]);
+            }
+            
+            // Cek apakah email user sudah diverifikasi (hanya untuk user biasa)
+            if ($user->role === 'user' && is_null($user->email_verified_at)) {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Silakan verifikasi email Anda terlebih dahulu. Cek kotak masuk email Anda.',
@@ -43,10 +53,7 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
         
-            return match(Auth::user()->role) {
-                'user' => redirect()->route('landing')->with('success', 'Selamat datang, ' . Auth::user()->name),
-                default => back()->withErrors(['email' => 'Akun admin harus login melalui halaman admin.']),
-            };
+            return redirect()->route('landing')->with('success', 'Selamat datang, ' . $user->name);
         }
 
  
@@ -66,14 +73,35 @@ class AuthController extends Controller
              'name' => ['required', 'string', 'max:255'],
              'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
              'password' => ['required', 'confirmed', 'min:8'],
-             'jenis_kelamin' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+             'jenis_kelamin' => ['required', Rule::in(['Laki-laki'])], // Hanya laki-laki untuk kost putra
              'no_hp' => ['required', 'string', 'max:20', 'regex:/^08[0-9]{8,13}$/'],
              'alamat' => ['required', 'string', 'max:500'],
          ], [
+             // Custom error messages
+             'name.required' => 'Nama lengkap wajib diisi.',
+             'name.string' => 'Nama harus berupa teks.',
+             'name.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+             
+             'email.required' => 'Email wajib diisi.',
+             'email.email' => 'Format email tidak valid.',
+             'email.unique' => 'Email sudah terdaftar. Gunakan email lain atau login jika sudah punya akun.',
+             'email.max' => 'Email tidak boleh lebih dari 255 karakter.',
+             
+             'password.required' => 'Password wajib diisi.',
              'password.min' => 'Password minimal 8 karakter.',
              'password.confirmed' => 'Konfirmasi password tidak sesuai.',
-             'no_hp.regex' => 'Nomor HP harus diawali dengan 08 dan berisi 10-15 digit.',
-             'email.unique' => 'Email sudah terdaftar. Gunakan email lain.',
+             
+             'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
+             'jenis_kelamin.in' => 'Jenis kelamin harus Laki-laki (DeniKos khusus kost putra).',
+             
+             'no_hp.required' => 'Nomor HP wajib diisi.',
+             'no_hp.string' => 'Nomor HP harus berupa teks.',
+             'no_hp.max' => 'Nomor HP tidak boleh lebih dari 20 karakter.',
+             'no_hp.regex' => 'Nomor HP harus diawali dengan 08 dan berisi 10-15 digit (contoh: 081234567890).',
+             
+             'alamat.required' => 'Alamat wajib diisi.',
+             'alamat.string' => 'Alamat harus berupa teks.',
+             'alamat.max' => 'Alamat tidak boleh lebih dari 500 karakter.',
          ]);
 
          $user = User::create([
@@ -82,7 +110,7 @@ class AuthController extends Controller
              'password' => Hash::make($validated['password']),
              'no_hp' => $validated['no_hp'],
              'alamat' => $validated['alamat'],
-             'jenis_kelamin' => $validated['jenis_kelamin'],
+             'jenis_kelamin' => 'Laki-laki', // Selalu laki-laki untuk kost putra
              'role' => 'user', // default user
          ]);
 
@@ -154,7 +182,7 @@ class AuthController extends Controller
              'email.exists' => 'Email tidak ditemukan dalam sistem kami.'
          ]);
 
-         $user = User::where('email', $request->email)->first();
+         $user = User::where('email', $request->input('email'))->first();
 
          if (!is_null($user->email_verified_at)) {
              return back()->with('success', 'Email sudah terverifikasi. Silakan login.');

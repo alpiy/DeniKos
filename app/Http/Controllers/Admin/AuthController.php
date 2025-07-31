@@ -25,7 +25,8 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            if (Auth::user()->role !== 'admin') {
+            $user = Auth::user();
+            if ($user && $user->role !== 'admin') {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Hanya admin yang dapat login di sini']);
             }

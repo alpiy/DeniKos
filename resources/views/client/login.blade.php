@@ -28,7 +28,7 @@
             @endif
             @error('email')
                 <div class="mb-4 p-3 rounded-md bg-red-50 border border-red-300 text-red-700 text-sm animate-fade-in-down">
-                    {{ $message }}
+                    {!! $message !!}
                     
                     {{-- Jika error terkait verifikasi email, tampilkan opsi resend --}}
                     @if(str_contains($message, 'verifikasi email') || str_contains($message, 'verify'))

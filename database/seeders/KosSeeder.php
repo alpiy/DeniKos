@@ -18,8 +18,8 @@ class KosSeeder extends Seeder
             Kos::create([
                 'alamat' => 'Jl. Melati No. 10',
                 'harga_bulanan' => 450000,
-                'lantai' => '2',
-                'nomor_kamar' => (string)$i,
+                'lantai' => 2,
+                'nomor_kamar' => $i, // Integer langsung
                 'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
                 'fasilitas' => [
                     'Kamar mandi dalam',
@@ -40,8 +40,8 @@ class KosSeeder extends Seeder
             Kos::create([
                 'alamat' => 'Jl. Melati No. 10',
                 'harga_bulanan' => 350000,
-                'lantai' => '3',
-                'nomor_kamar' => (string)$i,
+                'lantai' => 3,
+                'nomor_kamar' => $i, // Integer langsung
                 'deskripsi' => 'Kamar nyaman dengan fasilitas lengkap, cocok untuk mahasiswa.',
                 'fasilitas' => [
                     'Kamar mandi dalam',

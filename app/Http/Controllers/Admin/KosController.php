@@ -13,13 +13,13 @@ class KosController extends Controller
     {
         $query = Kos::query();
         if ($request->filled('status_kamar')) {
-            $query->where('status_kamar', $request->status_kamar);
+            $query->where('status_kamar', $request->input('status_kamar'));
         }
         if ($request->filled('q')) {
-            $query->where('nomor_kamar', 'like', '%'.$request->q.'%');
+            $query->where('nomor_kamar', 'like', '%'.$request->input('q').'%');
         }
         if ($request->filled('lantai')) { // Tambahkan filter lantai jika diinginkan
-        $query->where('lantai', $request->lantai);
+        $query->where('lantai', $request->input('lantai'));
         }
         // Sorting
         $sortableColumns = [
@@ -71,13 +71,28 @@ class KosController extends Controller
         ]);
         $request->validate([
            'alamat' => 'required',
-            'harga_bulanan' => 'required|integer',
+            'harga_bulanan' => 'required|integer|min:1',
             'lantai' => 'required|in:2,3', // hanya lantai 2 dan 3 yang tersedia
-            'nomor_kamar' => 'required|unique:kos', // Nomor kamar harus unik
+            'nomor_kamar' => 'required|integer|unique:kos|min:1|max:999', // Nomor kamar harus integer dan unik
             'deskripsi' => 'nullable',
             'fasilitas' => 'required|array',
             'foto.*' => 'nullable|image|max:2048',
-            // Jika ada denah kamar
+        ], [
+            'alamat.required' => 'Alamat kamar wajib diisi.',
+            'harga_bulanan.required' => 'Harga bulanan wajib diisi.',
+            'harga_bulanan.integer' => 'Harga bulanan harus berupa angka.',
+            'harga_bulanan.min' => 'Harga bulanan minimal Rp 1.',
+            'lantai.required' => 'Lantai kamar wajib dipilih.',
+            'lantai.in' => 'Lantai yang tersedia hanya lantai 2 dan 3.',
+            'nomor_kamar.required' => 'Nomor kamar wajib diisi.',
+            'nomor_kamar.integer' => 'Nomor kamar harus berupa angka.',
+            'nomor_kamar.unique' => 'Nomor kamar sudah ada. Silakan gunakan nomor lain.',
+            'nomor_kamar.min' => 'Nomor kamar minimal 1.',
+            'nomor_kamar.max' => 'Nomor kamar maksimal 999.',
+            'fasilitas.required' => 'Fasilitas kamar wajib diisi.',
+            'fasilitas.array' => 'Format fasilitas tidak valid.',
+            'foto.*.image' => 'File yang diupload harus berupa gambar.',
+            'foto.*.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         $fotoPaths = [];
@@ -89,12 +104,12 @@ class KosController extends Controller
         
 
         Kos::create([
-            'alamat' => $request->alamat,
-            'harga_bulanan' => $request->harga_bulanan,
-            'lantai' => $request->lantai,
-            'nomor_kamar' => $request->nomor_kamar,
-            'deskripsi' => $request->deskripsi,
-            'fasilitas' => $request->fasilitas,
+            'alamat' => $request->input('alamat'),
+            'harga_bulanan' => $request->input('harga_bulanan'),
+            'lantai' => $request->input('lantai'),
+            'nomor_kamar' => $request->input('nomor_kamar'),
+            'deskripsi' => $request->input('deskripsi'),
+            'fasilitas' => $request->input('fasilitas'),
             'foto' => $fotoPaths,
 
             'status_kamar' => 'tersedia', // Default status kamar adalah tersedia
@@ -115,19 +130,34 @@ class KosController extends Controller
         ]);
         $request->validate([
             'alamat' => 'required',
-            'harga_bulanan' => 'required|integer',
+            'harga_bulanan' => 'required|integer|min:1',
             'lantai' => 'required|in:2,3', // hanya lantai 2 dan 3 yang tersedia
-            'nomor_kamar' => 'required|unique:kos,nomor_kamar,' . $ko->id, // Nomor kamar harus unik, kecuali untuk data yang sedang diedit
+            'nomor_kamar' => 'required|integer|unique:kos,nomor_kamar,' . $ko->getKey() . '|min:1|max:999', // Nomor kamar harus integer dan unik kecuali untuk data yang sedang diedit
             'deskripsi' => 'nullable',
             'fasilitas' => 'required|array',
             'foto.*' => 'nullable|image|max:2048',
-            // Jika ada denah kamar
+        ], [
+            'alamat.required' => 'Alamat kamar wajib diisi.',
+            'harga_bulanan.required' => 'Harga bulanan wajib diisi.',
+            'harga_bulanan.integer' => 'Harga bulanan harus berupa angka.',
+            'harga_bulanan.min' => 'Harga bulanan minimal Rp 1.',
+            'lantai.required' => 'Lantai kamar wajib dipilih.',
+            'lantai.in' => 'Lantai yang tersedia hanya lantai 2 dan 3.',
+            'nomor_kamar.required' => 'Nomor kamar wajib diisi.',
+            'nomor_kamar.integer' => 'Nomor kamar harus berupa angka.',
+            'nomor_kamar.unique' => 'Nomor kamar sudah ada. Silakan gunakan nomor lain.',
+            'nomor_kamar.min' => 'Nomor kamar minimal 1.',
+            'nomor_kamar.max' => 'Nomor kamar maksimal 999.',
+            'fasilitas.required' => 'Fasilitas kamar wajib diisi.',
+            'fasilitas.array' => 'Format fasilitas tidak valid.',
+            'foto.*.image' => 'File yang diupload harus berupa gambar.',
+            'foto.*.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         $fotoPaths = $ko->foto ?? [];
         // Hapus foto yang dicentang
         if ($request->filled('hapus_foto')) {
-            foreach ($request->hapus_foto as $idx) {
+            foreach ($request->input('hapus_foto') as $idx) {
                 if (isset($fotoPaths[$idx])) {
                     Storage::disk('public')->delete($fotoPaths[$idx]);
                     unset($fotoPaths[$idx]);
@@ -145,15 +175,15 @@ class KosController extends Controller
       
 
         $ko->update([
-            'alamat' => $request->alamat,
-            'harga_bulanan' => $request->harga_bulanan,
-            'lantai' => $request->lantai,
-            'nomor_kamar' => $request->nomor_kamar,
-            'deskripsi' => $request->deskripsi,
-            'fasilitas' => $request->fasilitas,
+            'alamat' => $request->input('alamat'),
+            'harga_bulanan' => $request->input('harga_bulanan'),
+            'lantai' => $request->input('lantai'),
+            'nomor_kamar' => $request->input('nomor_kamar'),
+            'deskripsi' => $request->input('deskripsi'),
+            'fasilitas' => $request->input('fasilitas'),
             'foto' => $fotoPaths,
            
-            'status_kamar' => $request->status_kamar ?? $ko->status_kamar, // Memperbarui status jika ada input
+            'status_kamar' => $request->input('status_kamar', $ko->status_kamar ?? 'tersedia'), // Memperbarui status jika ada input
         ]);
 
         return redirect()->route('admin.kos.index')->with('success', 'Kos berhasil diperbarui!');

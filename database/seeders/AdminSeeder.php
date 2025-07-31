@@ -21,8 +21,9 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('admin'), // pastikan menggunakan password yang aman
             'role' => 'admin', // menentukan role sebagai admin
             'no_hp' => '081234567890',
-            'jenis_kelamin' => 'laki-laki',
+            'jenis_kelamin' => 'Laki-laki',
             'alamat' => 'Jl. Contoh No. 123, Kota X',
+            'email_verified_at' => now(), // Admin langsung verified
         ]);
         
          // User 1
@@ -32,7 +33,7 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('poy123'),
             'no_hp' => '081234567891',
             'alamat' => 'Jl. Mawar No. 2',
-            'jenis_kelamin' => 'laki-laki',
+            'jenis_kelamin' => 'Laki-laki',
             'role' => 'user',
         ]);
 
@@ -43,7 +44,7 @@ class AdminSeeder extends Seeder
             'password' => Hash::make('poy123'),
             'no_hp' => '081234567892',
             'alamat' => 'Jl. Melati No. 3',
-            'jenis_kelamin' => 'perempuan',
+            'jenis_kelamin' => 'Laki-laki',
             'role' => 'user',
         ]);
     

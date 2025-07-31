@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->integer('harga_bulanan');
             $table->enum('lantai', [2, 3]); // Lantai 2 atau 3
-            $table->string('nomor_kamar')->unique(); // Penomoran kamar 1-12
+            $table->integer('nomor_kamar')->unique(); // Penomoran kamar 1-12 (integer)
             $table->text('deskripsi')->nullable();
             $table->json('fasilitas');
             $table->json('foto')->nullable();
