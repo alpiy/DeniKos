@@ -11,7 +11,7 @@
                 </svg>
             </div>
             <h1 class="text-3xl font-bold text-gray-800 mb-2">🏠 Pesan Kamar Kos</h1>
-            <p class="text-gray-600">Lengkapi formulir untuk memesan kamar kos impian Anda</p>
+            <p class="text-gray-600">Lengkapi data pemesanan terlebih dahulu</p>
         </div>
 
         <!-- Error Messages -->
@@ -107,65 +107,83 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                             </svg>
                         </div>
-                        <h2 class="text-lg font-semibold text-gray-800">Ringkasan Pembayaran</h2>
+                        <h2 class="text-lg font-semibold text-gray-800">Ringkasan Biaya</h2>
                     </div>
 
                     <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-3 mb-3">
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600 text-sm">Total Pembayaran:</span>
+                            <span class="text-gray-600 text-sm">Total Biaya Sewa:</span>
                             <span id="total_pembayaran_display" class="text-xl font-bold text-gray-800">Rp 0</span>
                         </div>
-                        <div id="payment-breakdown"></div>
+                     <div id="payment-breakdown" class="text-xs text-gray-500 mt-1">
+                            <p>* Pembayaran akan dilakukan setelah pemesanan dibuat</p>
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="jenis_pembayaran" class="block text-sm font-semibold text-gray-700 mb-1">
-                            💳 Jenis Pembayaran
-                        </label>
-                        <select name="jenis_pembayaran" id="jenis_pembayaran" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm">
-                            <option value="dp" selected>DP (Minimal 30% dari total pembayaran)</option>
-                            <option value="lunas">Lunas (Bayar penuh)</option>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-1">💡 Pilih "Lunas" jika ingin membayar penuh langsung.</p>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-sm text-blue-700">
+                                <p class="font-medium">Info Pembayaran:</p>
+                                <p class="text-xs mt-1">Setelah pemesanan dibuat, Anda akan diarahkan ke halaman pembayaran untuk melakukan DP atau pembayaran lunas.</p>
+                            </div>
+                        </div>
                     </div>
-                    <input type="hidden" id="total_pembayaran" name="total_pembayaran">
                 </div>
             </div>
 
             <!-- Right Column -->
             <div class="space-y-4">
-                <!-- Payment Method Card -->
+                <!-- Booking Terms Card -->
                 <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100">
                     <div class="flex items-center mb-3">
-                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center mr-2">
+                        <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-2">
                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <h2 class="text-lg font-semibold text-gray-800">Pembayaran</h2>
+                        <h2 class="text-lg font-semibold text-gray-800">Syarat & Ketentuan</h2>
                     </div>
 
-                    <div class="text-center mb-4">
-                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-3 mb-3">
-                            <h3 class="font-semibold text-gray-800 mb-2 text-sm">Scan QRIS untuk Pembayaran</h3>
-                            <div class="inline-block bg-white p-3 rounded-lg shadow-sm">
-                                <img src="{{ asset('qris/qris.jpg') }}" alt="QRIS Pembayaran" class="w-40 h-auto mx-auto">
-                            </div>
-                            <p class="text-xs text-gray-600 mt-2">📱 Scan kode QR di atas dengan aplikasi mobile banking atau e-wallet Anda</p>
+                    <div class="space-y-3 text-sm text-gray-600">
+                        <div class="flex items-start">
+                            <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Pemesanan akan direview oleh admin dalam 1x24 jam</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Pembayaran dilakukan setelah pemesanan disetujui</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>DP minimal 30% dari total biaya sewa</span>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Kamar dapat dibatalkan jika pembayaran belum lunas</span>
                         </div>
                     </div>
 
-                    <div>
-                        <label for="bukti_pembayaran" class="block text-sm font-semibold text-gray-700 mb-1">
-                            📎 Upload Bukti Pembayaran <span class="text-red-500">*</span>
-                        </label>
-                        <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" required accept="image/*" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                        <p class="text-xs text-gray-500 mt-1">Format: PNG, JPG, JPEG (maksimal 5MB)</p>
-                        @error('bukti_pembayaran')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
+                    <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-sm text-yellow-700">
+                                <p class="font-medium">Penting!</p>
+                                <p class="text-xs mt-1">Pastikan data yang diisi sudah benar. Perubahan setelah pemesanan memerlukan persetujuan admin.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -173,17 +191,18 @@
                 <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100">
                     <div class="text-center">
                         <h3 class="text-lg font-semibold text-gray-800 mb-3">✅ Konfirmasi Pemesanan</h3>
-                        <p class="text-sm text-gray-600 mb-4">Pastikan semua data sudah benar sebelum mengirim pemesanan</p>
+                        <p class="text-sm text-gray-600 mb-4">Pastikan semua data sudah benar sebelum membuat pemesanan</p>
                         <button type="submit" id="submitBtn" 
                                 class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 inline-flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
-                            <span class="submit-text">Kirim Pemesanan</span>
+                            <span class="submit-text">Buat Pemesanan</span>
                             <div class="loading-spinner hidden ml-2">
                                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                             </div>
                         </button>
+                        <p class="text-xs text-gray-500 mt-2">Setelah pemesanan dibuat, Anda akan diarahkan ke halaman pembayaran</p>
                     </div>
                 </div>
             </div>
@@ -204,9 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // DOM elements
     const lamaSewa = document.getElementById('lama_sewa');
     const totalPembayaranDisplay = document.getElementById('total_pembayaran_display');
-    const totalPembayaran = document.getElementById('total_pembayaran');
-    const jenisPembayaran = document.getElementById('jenis_pembayaran');
-    const buktiPembayaran = document.getElementById('bukti_pembayaran');
     const submitBtn = document.getElementById('submitBtn');
     const form = document.getElementById('bookingForm');
 
@@ -219,25 +235,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('Months:', months, 'Total harga:', totalHarga); // Debug log
         
-        // Calculate based on payment type
-        let finalTotal = totalHarga;
-        const jenisPembayaranValue = jenisPembayaran.value;
-        
-        if (jenisPembayaranValue === 'dp') {
-            finalTotal = Math.ceil(totalHarga * 0.3); // DP 30%
-        }
-        
-        console.log('Final total:', finalTotal, 'Payment type:', jenisPembayaranValue); // Debug log
-        
-        // Update display
-        totalPembayaranDisplay.textContent = `Rp ${finalTotal.toLocaleString('id-ID')}`;
-        totalPembayaran.value = finalTotal;
+        // Update display (for user information only)
+        totalPembayaranDisplay.textContent = `Rp ${totalHarga.toLocaleString('id-ID')}`;
 
         // Show breakdown info
-        updatePaymentBreakdown(totalHarga, finalTotal, jenisPembayaranValue);
+        updatePaymentBreakdown(totalHarga);
 
         // Animate the display
-        if (finalTotal > 0) {
+        if (totalHarga > 0) {
             totalPembayaranDisplay.classList.add('animate-pulse');
             setTimeout(() => {
                 totalPembayaranDisplay.classList.remove('animate-pulse');
@@ -246,89 +251,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Update payment breakdown information
-    function updatePaymentBreakdown(totalHarga, finalTotal, jenisPembayaran) {
+    function updatePaymentBreakdown(totalHarga) {
         const breakdownContainer = document.getElementById('payment-breakdown');
         
         if (!breakdownContainer) return;
         
         let breakdownHTML = '';
         
-        if (jenisPembayaran === 'dp' && totalHarga > 0) {
-            const sisaPembayaran = totalHarga - finalTotal;
+        if (totalHarga > 0) {
             breakdownHTML = `
-                <div class="text-xs text-gray-600 mt-2 p-2 bg-blue-50 rounded">
+                <div class="text-xs text-gray-600 mt-2 p-2 bg-gray-50 rounded">
                     <div class="flex justify-between">
-                        <span>Total Sewa:</span>
-                        <span>Rp ${totalHarga.toLocaleString('id-ID')}</span>
+                        <span>Total Biaya Sewa:</span>
+                        <span class="font-semibold">Rp ${totalHarga.toLocaleString('id-ID')}</span>
                     </div>
-                    <div class="flex justify-between font-semibold text-blue-700">
-                        <span>DP (30%):</span>
-                        <span>Rp ${finalTotal.toLocaleString('id-ID')}</span>
-                    </div>
-                    <div class="flex justify-between text-gray-500">
-                        <span>Sisa Pembayaran:</span>
-                        <span>Rp ${sisaPembayaran.toLocaleString('id-ID')}</span>
+                    <div class="text-center text-blue-600 mt-1">
+                        <span class="text-xs">Pembayaran akan dilakukan di halaman berikutnya</span>
                     </div>
                 </div>
             `;
-        } else if (jenisPembayaran === 'lunas' && totalHarga > 0) {
-            breakdownHTML = `
-                <div class="text-xs text-gray-600 mt-2 p-2 bg-green-50 rounded">
-                    <div class="flex justify-between font-semibold text-green-700">
-                        <span>Pembayaran Lunas:</span>
-                        <span>Rp ${finalTotal.toLocaleString('id-ID')}</span>
-                    </div>
-                </div>
-            `;
+        } else {
+            breakdownHTML = '<p class="text-xs text-gray-500">* Pembayaran akan dilakukan setelah pemesanan dibuat</p>';
         }
         
         breakdownContainer.innerHTML = breakdownHTML;
     }
 
-    // File upload handling - sederhana
-    function handleFileUpload() {
-        const file = buktiPembayaran.files[0];
-        
-        if (file) {
-            // Validasi ukuran file max 5MB
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Ukuran file maksimal 5MB');
-                buktiPembayaran.value = '';
-                return;
-            }
-            
-            // Tampilkan info file terpilih
-            const existingInfo = document.querySelector('.file-upload-info');
-            if (existingInfo) {
-                existingInfo.remove();
-            }
-            
-            const fileInfo = document.createElement('div');
-            fileInfo.className = 'file-upload-info mt-2 p-2 bg-green-100 border border-green-300 rounded text-sm text-green-800';
-            fileInfo.innerHTML = `✓ File terpilih: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
-            
-            buktiPembayaran.parentNode.appendChild(fileInfo);
-        }
-    }
-
-    // Form validation - sederhana dan mudah dipahami
+    // File upload handling - removed (not needed for booking form)
+    
+    // Form validation - simplified for booking only
     function handleSubmit(e) {
         const submitText = submitBtn.querySelector('.submit-text');
         const loadingSpinner = submitBtn.querySelector('.loading-spinner');
         
-        // Tampilkan loading
+        // Show loading
         submitText.textContent = 'Mengirim...';
         loadingSpinner.classList.remove('hidden');
         submitBtn.disabled = true;
         
-        // Validasi form
-        if (!buktiPembayaran.files[0]) {
-            e.preventDefault();
-            alert('Mohon upload bukti pembayaran');
-            resetSubmitButton();
-            return;
-        }
-        
+        // Basic validation
         if (!lamaSewa.value || lamaSewa.value < 1) {
             e.preventDefault();
             alert('Mohon masukkan lama sewa yang valid');
@@ -343,43 +304,30 @@ document.addEventListener('DOMContentLoaded', function() {
             resetSubmitButton();
             return;
         }
-
-        // Pastikan total pembayaran sudah dihitung
-        if (!totalPembayaran.value || totalPembayaran.value <= 0) {
-            e.preventDefault();
-            calculateTotal();
-            if (!totalPembayaran.value || totalPembayaran.value <= 0) {
-                alert('Terjadi kesalahan dalam kalkulasi pembayaran');
-                resetSubmitButton();
-                return;
-            }
-        }
     }
 
     function resetSubmitButton() {
         const submitText = submitBtn.querySelector('.submit-text');
         const loadingSpinner = submitBtn.querySelector('.loading-spinner');
         
-        submitText.textContent = 'Kirim Pemesanan';
+        submitText.textContent = 'Buat Pemesanan';
         loadingSpinner.classList.add('hidden');
         submitBtn.disabled = false;
     }
 
-    // Event listeners - sederhana
+    // Event listeners - simplified
     lamaSewa.addEventListener('input', calculateTotal);
-    jenisPembayaran.addEventListener('change', calculateTotal);
-    buktiPembayaran.addEventListener('change', handleFileUpload);
     form.addEventListener('submit', handleSubmit);
 
-    // Inisialisasi - pastikan kalkulasi berjalan saat halaman dimuat
+    // Initialize - ensure calculation runs when page loads
     console.log('DOM loaded, initializing...'); // Debug log
     console.log('Room prices:', hargaKamarList); // Debug log
     
-    // Pastikan semua element sudah ada
-    if (lamaSewa && totalPembayaranDisplay && jenisPembayaran) {
+    // Make sure all elements exist
+    if (lamaSewa && totalPembayaranDisplay) {
         calculateTotal();
         
-        // Backup calculation untuk memastikan
+        // Backup calculation to ensure
         setTimeout(function() {
             console.log('Backup calculation triggered'); // Debug log
             calculateTotal();

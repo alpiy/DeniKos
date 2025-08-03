@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\KosController as AdminKosController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PenyewaController as AdminPenyewaController;
 use App\Http\Controllers\Admin\LaporanSewaController as AdminLaporanSewaController;
+use App\Http\Controllers\Admin\LandingBackgroundController as AdminLandingBackgroundController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\User\PemesananController as UserPemesananController;
 use App\Http\Controllers\User\KosController as UserKosController;
@@ -73,17 +74,23 @@ Route::prefix('user')->name('user.')->middleware(['role:user', 'verified'])->gro
     Route::get('/riwayat', [UserPemesananController::class, 'index'])->name('riwayat'); // daftar
    
     Route::get('/pesan/success/{id}', [UserPemesananController::class, 'success'])->name('pesan.success');
+    Route::get('/pesan/success-multiple', [UserPemesananController::class, 'successMultiple'])->name('pesan.success.multiple');
     // Perpanjang sewa
     Route::get('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangForm'])->name('pesan.perpanjang');
     Route::post('/pemesanan/{id}/perpanjang', [UserPemesananController::class, 'perpanjangStore'])->name('pesan.perpanjang.store');
     Route::get('/pesan/perpanjang/success/{id}', [UserPemesananController::class, 'perpanjangSuccess'])->name('pesan.perpanjang.success');
     // Pembatalan pemesanan
     Route::post('/pemesanan/{id}/batal', [UserPemesananController::class, 'batal'])->name('pesan.batal');
-    // Upload pelunasan pembayaran
-    Route::post('/pemesanan/{id}/pelunasan', [UserPemesananController::class, 'pelunasan'])->name('pembayaran.pelunasan');
+    // Pelunasan pembayaran
+    Route::get('/pemesanan/{id}/pelunasan', [UserPemesananController::class, 'pelunasan'])->name('pesan.pelunasan');
+    Route::post('/pemesanan/{id}/pelunasan', [UserPemesananController::class, 'processPelunasan'])->name('pesan.pelunasan.process');
 
     // Route untuk download tanda terima pembayaran
     Route::get('/pemesanan/{id}/receipt', [UserPemesananController::class, 'downloadReceipt'])->name('pemesanan.downloadReceipt');
+
+    // Route untuk halaman pembayaran terpisah
+    Route::get('/pemesanan/{id}/pembayaran', [UserPemesananController::class, 'showPembayaran'])->name('pembayaran.show');
+    Route::post('/pemesanan/{id}/pembayaran', [UserPemesananController::class, 'processPembayaran'])->name('pembayaran.process');
 });
 
 // ------------------ ROUTE UNTUK ADMIN ------------------
@@ -93,12 +100,16 @@ Route::prefix('admin')->name('admin.')->middleware(['role:admin', 'prevent.back'
     // CRUD kos
     Route::resource('/kos', AdminKosController::class)->names('kos');
 
+    // Landing Background Management
+    Route::resource('/landing-background', AdminLandingBackgroundController::class)->names('landing-background')->except(['show']);
+
     // Daftar pemesanan
-    Route::resource('/pemesanan', AdminPemesananController::class)->names('pemesanan')->except(['create','edit', 'store']);
+    Route::resource('/pemesanan', AdminPemesananController::class)->names('pemesanan')->except(['create','edit', 'store', 'show']);
     Route::get('/pemesanan/{id}/detail', [AdminPemesananController::class, 'show'])->name('pemesanan.show');
     Route::post('/pemesanan/{id}/approve', [AdminPemesananController::class, 'approve'])->name('pemesanan.approve');
     Route::post('/pemesanan/{id}/reject', [AdminPemesananController::class, 'reject'])->name('pemesanan.reject');
     Route::post('/pemesanan/{id}/refund', [AdminPemesananController::class, 'refund'])->name('pemesanan.refund');
+    Route::post('/pemesanan/{id}/cancel', [AdminPemesananController::class, 'cancelBooking'])->name('pemesanan.cancel');
     // Route::get('/perpanjang', [AdminPemesananController::class, 'perpanjangIndex'])->name('pemesanan.perpanjang');
 
     //data penyewa
@@ -112,4 +123,7 @@ Route::prefix('admin')->name('admin.')->middleware(['role:admin', 'prevent.back'
 
     // Verifikasi Pembayaran
     Route::post('/pembayaran/{id}/verifikasi', [AdminPemesananController::class, 'verifikasiPembayaran'])->name('pembayaran.verifikasi');
+    
+    // Payment Methods Management
+    Route::resource('/payment-methods', \App\Http\Controllers\Admin\PaymentMethodController::class)->names('payment-methods');
 });

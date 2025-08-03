@@ -29,23 +29,25 @@ class AdminSeeder extends Seeder
          // User 1
         User::create([
             'name' => 'Budi Santoso',
-            'email' => 'budi@example.com',
+            'email' => 'budi@gmail.com',
             'password' => Hash::make('poy123'),
             'no_hp' => '081234567891',
             'alamat' => 'Jl. Mawar No. 2',
             'jenis_kelamin' => 'Laki-laki',
             'role' => 'user',
+            'email_verified_at' => now(),
         ]);
 
         // User 2
         User::create([
             'name' => 'Siti Aminah',
-            'email' => 'siti@example.com',
+            'email' => 'siti@gmail.com',
             'password' => Hash::make('poy123'),
             'no_hp' => '081234567892',
             'alamat' => 'Jl. Melati No. 3',
             'jenis_kelamin' => 'Laki-laki',
             'role' => 'user',
+            'email_verified_at' => now(),
         ]);
     
     }

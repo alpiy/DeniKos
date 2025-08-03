@@ -11,8 +11,44 @@
                 </svg>
             </div>
             <h1 class="text-3xl font-bold text-green-600 mb-2">Pemesanan Berhasil!</h1>
-            <p class="text-gray-600 text-lg">Terima kasih! Pemesanan Anda sedang diproses oleh admin.</p>
+            <p class="text-gray-600 text-lg">Terima kasih! Pemesanan Anda berhasil dibuat.</p>
         </div>
+
+        <!-- Payment Deadline Alert -->
+        @if(!$isExpired && !$existingPembayaran)
+        <div class="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6 rounded-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-orange-800">Batas Waktu Pembayaran</h3>
+                    <div class="mt-2 text-sm text-orange-700">
+                        <p>Lakukan pembayaran sebelum: <strong id="deadline-display">{{ $paymentDeadline->format('d F Y, H:i') }} WIB</strong></p>
+                        <p class="mt-1 font-semibold">Sisa waktu: <span id="countdown" class="text-red-600"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if($existingPembayaran)
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">Status Pembayaran</h3>
+                    <p class="mt-1 text-sm text-blue-700">Pembayaran telah dikirim dan menunggu verifikasi admin.</p>
+                </div>
+            </div>
+        </div>
+        @endif
 
         <!-- Detail Pemesanan Card -->
         <div class="bg-white rounded-xl shadow-lg p-8 mb-6">
@@ -73,6 +109,22 @@
                 </svg>
                 Langkah Selanjutnya
             </h3>
+            @if(!$existingPembayaran && !$isExpired)
+            <ul class="text-blue-700 space-y-2">
+                <li class="flex items-start">
+                    <span class="font-semibold mr-2">1.</span>
+                    <span>Lakukan pembayaran dalam waktu 24 jam untuk mengkonfirmasi pemesanan</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold mr-2">2.</span>
+                    <span>Admin akan memverifikasi bukti pembayaran Anda dalam 1x24 jam</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold mr-2">3.</span>
+                    <span>Anda akan mendapat notifikasi melalui email setelah verifikasi selesai</span>
+                </li>
+            </ul>
+            @else
             <ul class="text-blue-700 space-y-2">
                 <li class="flex items-start">
                     <span class="font-semibold mr-2">1.</span>
@@ -87,19 +139,61 @@
                     <span>Silakan hubungi admin jika ada pertanyaan lebih lanjut</span>
                 </li>
             </ul>
+            @endif
         </div>
 
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('landing') }}" 
-               class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
-                Beranda
-            </a>
+            @if(!$existingPembayaran && !$isExpired)
+                <a href="{{ route('user.pembayaran.show', $pemesanan->id) }}" 
+                   class="px-8 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors text-center shadow-lg">
+                    💳 Bayar Sekarang
+                </a>
+                <a href="{{ route('user.riwayat') }}" 
+                   class="px-6 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
+                    📋 Lihat Riwayat & Bayar Nanti
+                </a>
+            @else
+                <a href="{{ route('user.riwayat') }}" 
+                   class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
+                    📋 Lihat Riwayat Pemesanan
+                </a>
+            @endif
             <a href="{{ route('user.kos.index') }}" 
                class="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors text-center">
-                Pesan Kamar Lain
+                🏠 Pesan Kamar Lain
             </a>
         </div>
     </div>
 </div>
+
+@if(!$isExpired && !$existingPembayaran)
+<script>
+// Countdown Timer
+function updateCountdown() {
+    const deadline = new Date('{{ $paymentDeadline->toISOString() }}');
+    const now = new Date();
+    const timeDiff = deadline - now;
+    
+    if (timeDiff <= 0) {
+        document.getElementById('countdown').innerHTML = '<span class="font-bold">EXPIRED!</span>';
+        // Optionally reload page to update status
+        setTimeout(() => location.reload(), 2000);
+        return;
+    }
+    
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    
+    document.getElementById('countdown').innerHTML = 
+        `<span class="font-mono font-bold">${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}</span>`;
+}
+
+// Update countdown every second
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+@endif
+
 @endsection

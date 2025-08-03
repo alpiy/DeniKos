@@ -117,11 +117,11 @@
                             <div class="text-sm text-gray-900">Kamar {{ $pesanan->kos->nomor_kamar ?? 'N/A' }}</div>
                             <div class="text-xs text-gray-500">Lantai {{ $pesanan->kos->lantai ?? '-' }}</div>
                         </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($pesanan->tanggal_pesan)->isoFormat('D MMM YYYY, HH:mm') }}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($pesanan->tanggal_pesan)->format('d M Y, H:i') }}</td>
                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $pesanan->tanggal_masuk ? \Carbon\Carbon::parse($pesanan->tanggal_masuk)->isoFormat('D MMM YY') : '-' }}
+                            {{ $pesanan->tanggal_masuk ? \Carbon\Carbon::parse($pesanan->tanggal_masuk)->format('d M y') : '-' }}
                             <span class="text-gray-400 mx-1">&rarr;</span>
-                            {{ $pesanan->tanggal_selesai ? \Carbon\Carbon::parse($pesanan->tanggal_selesai)->isoFormat('D MMM YY') : '-' }}
+                            {{ $pesanan->tanggal_selesai ? \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d M y') : '-' }}
                             <div class="text-xs text-gray-400">({{ $pesanan->lama_sewa }} bulan)</div>
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap">

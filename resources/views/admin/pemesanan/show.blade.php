@@ -79,7 +79,7 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Tanggal Pemesanan</label>
-                        <p class="text-gray-900">{{ \Carbon\Carbon::parse($pemesanan->tanggal_pesan)->isoFormat('dddd, D MMMM Y') }}</p>
+                        <p class="text-gray-900">{{ \Carbon\Carbon::parse($pemesanan->tanggal_pesan)->format('l, d F Y') }}</p>
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Tanggal Masuk</label>
-                        <p class="text-gray-900 font-medium">{{ \Carbon\Carbon::parse($pemesanan->tanggal_masuk)->isoFormat('dddd, D MMMM Y') }}</p>
+                        <p class="text-gray-900 font-medium">{{ \Carbon\Carbon::parse($pemesanan->tanggal_masuk)->format('l, d F Y') }}</p>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Lama Sewa</label>
@@ -161,7 +161,7 @@
                                             </span>
                                         </div>
                                         <p class="text-lg font-semibold text-gray-900">Rp {{ number_format($bayar->jumlah, 0, ',', '.') }}</p>
-                                        <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($bayar->created_at)->isoFormat('D MMMM Y, HH:mm') }}</p>
+                                        <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($bayar->created_at)->format('d F Y, H:i') }}</p>
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         @if($bayar->bukti_pembayaran)

@@ -36,4 +36,14 @@ class NotifikasiUserBaru implements ShouldBroadcast
     {
         return 'notifikasi-user';
     }
+
+    public function broadcastWith()
+    {
+        return [
+            'title' => $this->title,
+            'message' => $this->message,
+            'type' => $this->type,
+            'userId' => $this->userId,
+        ];
+    }
 }

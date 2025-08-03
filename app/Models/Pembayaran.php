@@ -16,10 +16,16 @@ class Pembayaran extends Model
         'jumlah',
         'bukti_pembayaran',
         'status',
+        'payment_method_id',
     ];
 
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class);
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

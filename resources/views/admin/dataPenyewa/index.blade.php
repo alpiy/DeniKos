@@ -104,9 +104,9 @@
                                 <div class="text-xs text-gray-500">Lantai {{ $pemesanan->kos->lantai ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $pemesanan->tanggal_masuk ? \Carbon\Carbon::parse($pemesanan->tanggal_masuk)->isoFormat('D MMM YY') : '-' }}
+                                {{ $pemesanan->tanggal_masuk ? \Carbon\Carbon::parse($pemesanan->tanggal_masuk)->format('d M y') : '-' }}
                                 <span class="text-gray-400 mx-1">&rarr;</span>
-                                {{ $tanggalSelesai ? $tanggalSelesai->isoFormat('D MMM YY') : '-' }}
+                                {{ $tanggalSelesai ? $tanggalSelesai->format('d M y') : '-' }}
                                 <div class="text-xs text-gray-400">({{ $pemesanan->lama_sewa }} bulan)</div>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">
