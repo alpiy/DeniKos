@@ -83,7 +83,7 @@
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Periode Sewa</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Bayar (Verified)</th>
-                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Jenis</th>
+                        {{-- <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Jenis</th> --}}
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
@@ -118,11 +118,11 @@
                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">
                             Rp{{ number_format($pesanan->pembayaran()->where('status', 'diterima')->sum('jumlah'), 0, ',', '.') }}
                         </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $pesanan->is_perpanjangan ? 'bg-purple-100 text-purple-800' : 'bg-teal-100 text-teal-800' }}">
                                 {{ $pesanan->is_perpanjangan ? 'Perpanjangan' : 'Awal' }}
                             </span>
-                        </td>
+                        </td> --}}
                          <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('admin.pemesanan.show', $pesanan->id) }}" class="text-indigo-600 hover:text-indigo-800 transition-colors duration-150">
                                 Detail
@@ -131,7 +131,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-6 py-12 text-center">
+                        <td colspan="6" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center">
                                 <svg class="w-16 h-16 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10h.01M13 10h.01M7 10h.01"></path></svg>
                                 <p class="text-base font-semibold text-gray-600 mb-1">Tidak Ada Data Pemesanan</p>

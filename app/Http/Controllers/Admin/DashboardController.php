@@ -15,12 +15,17 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $jumlahKos = Kos::count();
-        $totalPemesananAll = Pemesanan::count(); // Nama variabel diubah untuk kejelasan
+        $totalPemesananAll = Pemesanan::count(); // Total semua pemesanan
+        
+        // Hitung pemesanan berdasarkan status
         $pending = Pemesanan::where('status_pemesanan', 'pending')->count();
         $diterima = Pemesanan::where('status_pemesanan', 'diterima')->count();
         $ditolak = Pemesanan::where('status_pemesanan', 'ditolak')
                         ->orWhere('status_pemesanan', 'batal')->count(); // Gabung ditolak & batal
         $selesai = Pemesanan::where('status_pemesanan', 'selesai')->count();
+        
+        // Penyewa aktif - sederhana: hitung berdasarkan jumlah pemesanan aktif
+        $penyewaAktif = Pemesanan::where('status_pemesanan', 'diterima')->count();
         
         // Ambil 5 pemesanan terbaru untuk ditampilkan di dashboard
         $pemesananTerbaru = Pemesanan::with(['user', 'kos'])
@@ -46,12 +51,17 @@ class DashboardController extends Controller
         }
 
         // Return with cache control headers
-        return response()->view('admin.dashboard', compact(
-            'jumlahKos', 'totalPemesananAll', 'pending', 'diterima', 'ditolak', 'selesai', 
-            'pemesananTerbaru', 'labels', 'data'
-        ))
-        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-        ->header('Pragma', 'no-cache')
-        ->header('Expires', '0');
+        return view('admin.dashboard', compact(
+            'jumlahKos', 
+            'totalPemesananAll', 
+            'pending', 
+            'diterima', 
+            'ditolak', 
+            'selesai', 
+            'penyewaAktif',
+            'pemesananTerbaru',
+            'labels',
+            'data'
+        ));
     }
 }

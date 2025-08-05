@@ -17,6 +17,8 @@ class Pembayaran extends Model
         'bukti_pembayaran',
         'status',
         'payment_method_id',
+        'alasan_tolak',
+        'ditolak_pada',
     ];
 
     public function pemesanan()

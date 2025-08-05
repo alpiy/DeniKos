@@ -44,7 +44,7 @@
                     <th>Periode Sewa</th>
                     <th>Lama</th>
                     <th>Status</th>
-                    <th>Jenis</th>
+                    {{-- <th>Jenis</th> --}}
                     <th>Total Dibayar (Verified)</th>
                 </tr>
             </thead>
@@ -61,7 +61,7 @@
                         </td>
                         <td>{{ $item->lama_sewa }} bln</td>
                         <td class="status-{{ strtolower($item->status_pemesanan) }}">{{ ucfirst($item->status_pemesanan) }}</td>
-                        <td>{{ $item->is_perpanjangan ? 'Perpanjangan' : 'Awal' }}</td>
+                        {{-- <td>{{ $item->is_perpanjangan ? 'Perpanjangan' : 'Awal' }}</td> --}}
                         <td>Rp{{ number_format($item->pembayaran->where('status', 'diterima')->sum('jumlah'), 0, ',', '.') }}</td>
                     </tr>
                 @empty
@@ -77,7 +77,7 @@
         </div>
     </div>
     <div class="footer">
-        Laporan ini digenerate pada: {{ \Carbon\Carbon::now()->format('d F Y H:i:s') }} - DeniKos Application
+        Laporan ini dibuat pada: {{ \Carbon\Carbon::now()->format('d F Y H:i:s') }} - DeniKos
     </div>
 </body>
 </html>

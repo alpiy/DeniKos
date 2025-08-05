@@ -144,13 +144,17 @@
                                                 $statusClasses = '';
                                                 switch($bayar->status) {
                                                     case 'verified':
+                                                    case 'diterima':
                                                         $statusClasses = 'bg-green-100 text-green-800';
                                                         break;
                                                     case 'pending':
                                                         $statusClasses = 'bg-yellow-100 text-yellow-800';
                                                         break;
-                                                    default:
+                                                    case 'ditolak':
                                                         $statusClasses = 'bg-red-100 text-red-800';
+                                                        break;
+                                                    default:
+                                                        $statusClasses = 'bg-gray-100 text-gray-800';
                                                 }
                                             @endphp
                                             <span class="px-2 py-1 rounded text-xs font-medium {{ $jenisClasses }}">
@@ -177,6 +181,19 @@
                                                     <i class="fas fa-check mr-1"></i>Verifikasi
                                                 </button>
                                             </form>
+                                            <button type="button" onclick="openRejectModal({{ $bayar->id }})" class="inline-flex items-center px-3 py-1 bg-red-600 text-white rounded-md text-xs font-medium hover:bg-red-700 transition-colors">
+                                                <i class="fas fa-times mr-1"></i>Tolak
+                                            </button>
+                                        @endif
+                                        @if($bayar->status == 'ditolak')
+                                            <span class="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-medium">
+                                                <i class="fas fa-exclamation-triangle mr-1"></i>Ditolak
+                                            </span>
+                                            @if($bayar->alasan_tolak)
+                                                <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs">
+                                                    <strong>Alasan:</strong> {{ $bayar->alasan_tolak }}
+                                                </div>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -221,11 +238,27 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Aksi Pemesanan</h3>
                     <div class="space-y-3">
+                        @php
+                            $hasPendingPayment = $pemesanan->pembayaran->where('status', 'pending')->count() > 0;
+                            $hasVerifiedPayment = $pemesanan->pembayaran->where('status', 'diterima')->count() > 0;
+                        @endphp
+                        
+                        @if($hasPendingPayment)
+                            <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clock text-yellow-600 mr-2"></i>
+                                    <span class="text-sm text-yellow-800">
+                                        Ada pembayaran pending. Verifikasi/tolak pembayaran terlebih dahulu.
+                                    </span>
+                                </div>
+                            </div>
+                        @endif
+
                         <form action="{{ route('admin.pemesanan.approve', $pemesanan->id) }}" method="POST">
                             @csrf
-                            @if(request()->has('is_perpanjangan') || old('is_perpanjangan') || $pemesanan->is_perpanjangan ?? false)
-                                <input type="hidden" name="is_perpanjangan" value="1">
-                            @endif
+                            {{-- @if(request()->has('is_perpanjangan') || old('is_perpanjangan') || $pemesanan->is_perpanjangan ?? false) --}}
+                                {{-- <input type="hidden" name="is_perpanjangan" value="1"> --}}
+                            {{-- @endif --}}
                             <button type="submit" class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
                                 <i class="fas fa-check mr-2"></i>Setujui Pemesanan
                             </button>
@@ -234,10 +267,19 @@
                         <form action="{{ route('admin.pemesanan.reject', $pemesanan->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="w-full bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
-                                    onclick="return confirm('Apakah Anda yakin ingin menolak pemesanan ini?')">
+                                    onclick="return confirm('Apakah Anda yakin ingin menolak seluruh pemesanan ini? Ini akan membatalkan pemesanan secara permanen.')">
                                 <i class="fas fa-times mr-2"></i>Tolak Pemesanan
                             </button>
                         </form>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 class="text-sm font-medium text-blue-800 mb-1">Tips:</h4>
+                        <ul class="text-xs text-blue-700 space-y-1">
+                            <li>• Gunakan tombol "Tolak" pada pembayaran jika bukti pembayaran tidak sesuai</li>
+                            <li>• User bisa upload ulang bukti pembayaran yang benar</li>
+                            <li>• Gunakan "Tolak Pemesanan" hanya jika pemesanan benar-benar tidak valid</li>
+                        </ul>
                     </div>
                 </div>
             @endif
@@ -259,4 +301,79 @@
         </div>
     </div>
 </div>
+
+{{-- Modal Tolak Pembayaran --}}
+<div id="rejectModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Tolak Pembayaran</h3>
+                <button type="button" onclick="closeRejectModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="rejectForm" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="alasan_tolak" class="block text-sm font-medium text-gray-700 mb-2">
+                        Alasan Penolakan <span class="text-red-500">*</span>
+                    </label>
+                    <textarea name="alasan_tolak" id="alasan_tolak" rows="4" required
+                              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              placeholder="Jelaskan alasan mengapa pembayaran ditolak..."></textarea>
+                    <p class="text-xs text-gray-500 mt-1">Alasan ini akan dikirimkan ke user agar mereka tahu kenapa pembayaran ditolak.</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeRejectModal()" 
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        <i class="fas fa-times mr-1"></i>Tolak Pembayaran
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openRejectModal(pembayaranId) {
+    const modal = document.getElementById('rejectModal');
+    const form = document.getElementById('rejectForm');
+    const textarea = document.getElementById('alasan_tolak');
+    
+    // Set form action
+    form.action = `/admin/pembayaran/${pembayaranId}/tolak`;
+    
+    // Clear textarea
+    textarea.value = '';
+    
+    // Show modal
+    modal.classList.remove('hidden');
+    
+    // Focus textarea
+    setTimeout(() => textarea.focus(), 100);
+}
+
+function closeRejectModal() {
+    const modal = document.getElementById('rejectModal');
+    modal.classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeRejectModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeRejectModal();
+    }
+});
+</script>
 @endsection

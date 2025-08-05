@@ -32,7 +32,7 @@
             </div>
         @endif
 
-        <!-- Warning Message for Paid Cancellation -->
+        
        
         <!-- Pemesanan Cards -->
         <div class="space-y-6">
@@ -42,10 +42,23 @@
                     $totalDibayar = $p->pembayaran->whereIn('status', ['pending','diterima'])->sum('jumlah');
                     $sisaTagihan = max($totalTagihan - $totalDibayar, 0);
                     
-                    // Check if there's approved DP and no pelunasan yet
+                    // Check payment status
                     $hasApprovedDP = $p->pembayaran->where('jenis', 'dp')->where('status', 'diterima')->count() > 0;
                     $hasPelunasan = $p->pembayaran->where('jenis', 'pelunasan')->count() > 0;
                     $showPelunasanForm = $p->status_pemesanan == 'diterima' && $hasApprovedDP && !$hasPelunasan && $sisaTagihan > 0;
+                    
+                    // Check rejected payments
+                    $hasRejectedPayment = $p->pembayaran->where('status', 'ditolak')->count() > 0;
+                    $latestRejectedPayment = $p->pembayaran->where('status', 'ditolak')->sortByDesc('ditolak_pada')->first();
+                    
+                    // Check if there's any accepted payment - if yes, no need for upload ulang
+                    $hasAcceptedPayment = $p->pembayaran->where('status', 'diterima')->count() > 0;
+                    
+                    // Only show upload ulang if there's rejected payment AND no accepted payment AND status is not 'batal'
+                    $showUploadUlang = $hasRejectedPayment && !$hasAcceptedPayment && $p->status_pemesanan !== 'batal';
+                    
+                    // Check if user can make new payment (exclude 'batal' status)
+                    $canMakeNewPayment = $p->status_pemesanan == 'pending' && ($hasRejectedPayment || !$p->has_payment);
                 @endphp
                 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -66,6 +79,8 @@
                                     <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">Ditolak</span>
                                 @elseif($p->status_pemesanan == 'batal')
                                     <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Dibatalkan</span>
+                                @elseif($p->status_pemesanan == 'selesai')
+                                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">Selesai</span>
                                 @endif
                             </div>
                         </div>
@@ -119,10 +134,29 @@
                                                 <span class="font-medium">{{ ucfirst($bayar->jenis) }}:</span>
                                                 <div class="text-right">
                                                     <span class="font-bold">Rp{{ number_format($bayar->jumlah, 0, ',', '.') }}</span>
-                                                    <span class="block text-xs text-gray-500">({{ $bayar->status }})</span>
+                                                    <div class="text-xs mt-1">
+                                                        @if($bayar->status == 'pending')
+                                                            <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Menunggu Verifikasi</span>
+                                                        @elseif($bayar->status == 'diterima')
+                                                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full">Diterima</span>
+                                                        @elseif($bayar->status == 'ditolak')
+                                                            <span class="bg-red-100 text-red-700 px-2 py-1 rounded-full">Ditolak</span>
+                                                        @endif
+                                                    </div>
                                                     @if($bayar->bukti_pembayaran)
                                                         <a href="{{ asset('storage/'.$bayar->bukti_pembayaran) }}" target="_blank" 
                                                            class="text-blue-600 hover:underline text-xs">Lihat Bukti</a>
+                                                    @endif
+                                                    
+                                                    {{-- Tampilkan alasan penolakan --}}
+                                                    @if($bayar->status == 'ditolak' && $bayar->alasan_tolak)
+                                                        <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs">
+                                                            <div class="font-medium text-red-800 mb-1">Alasan Penolakan:</div>
+                                                            <div class="text-red-700">{{ $bayar->alasan_tolak }}</div>
+                                                            <div class="mt-1 text-red-600 font-medium">
+                                                                💡 Anda bisa upload ulang bukti pembayaran yang sesuai
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -226,14 +260,23 @@
                         <div class="flex justify-between items-center">
                             <div class="flex space-x-3">
                                 @if ($p->status_pemesanan == 'pending' && !$p->is_payment_expired)
-                                    @if(!$p->has_payment)
+                                    @if(!$p->has_payment && !$hasAcceptedPayment)
+                                        <!-- Belum ada pembayaran sama sekali -->
                                         <a href="{{ route('user.pembayaran.show', $p->id) }}" 
                                            class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
-                                            Lakukan Pembayaran
+                                            💳 Lakukan Pembayaran
                                         </a>
+                                    @elseif($hasAcceptedPayment)
+                                        <!-- Sudah ada pembayaran yang diterima - show status -->
+                                        <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-2 rounded-lg text-sm font-medium">
+                                            <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Pembayaran Diterima
+                                        </div>
                                     @endif
                                     
-                                    <!-- Simple cancellation logic -->
+                                    <!-- Cancellation logic -->
                                     @php
                                         $totalPaidVerified = $p->pembayaran->where('status', 'diterima')->sum('jumlah');
                                         $totalPaidPending = $p->pembayaran->where('status', 'pending')->sum('jumlah');
@@ -241,18 +284,15 @@
                                     
                                     <div class="flex items-center space-x-2">
                                         @if($totalPaidPending > 0)
-                                            <!-- Ada pembayaran pending - tidak bisa batalkan -->
+                                            <!-- Ada pembayaran pending -->
                                             <div class="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-lg text-sm font-medium">
                                                 <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                                                 </svg>
-                                                Menunggu Verifikasi Pembayaran
-                                            </div>
-                                            <div class="text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border">
-                                                💡 Pembatalan tidak tersedia setelah pembayaran diverifikasi
+                                                Menunggu Verifikasi Admin
                                             </div>
                                         @elseif($totalPaidVerified > 0)
-                                            <!-- Sudah ada pembayaran verified - tidak bisa batalkan -->
+                                            <!-- Sudah ada pembayaran verified -->
                                             <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium">
                                                 <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -262,26 +302,37 @@
                                             <div class="text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border">
                                                 💡 Hubungi admin jika ada keperluan mendesak
                                             </div>
-                                        @else
-                                            <!-- Belum ada pembayaran - pembatalan gratis -->
+                                        @elseif($hasRejectedPayment)
+                                            <!-- Ada pembayaran ditolak - bisa upload ulang atau batalkan -->
+                                            <a href="{{ route('user.pembayaran.show', $p->id) }}" 
+                                               class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
+                                                🔄 Upload Ulang Bukti Bayar
+                                            </a>
                                             <form action="{{ route('user.pesan.batal', $p->id) }}" method="POST" 
-                                                  onsubmit="return confirm('Batalkan pemesanan ini?\n\nPembatalan gratis karena belum ada pembayaran.\nTindakan ini tidak dapat dibatalkan.')" class="inline">
+                                                  onsubmit="return confirm('Batalkan pemesanan ini?\n\nTindakan ini tidak dapat dibatalkan.')" class="inline">
                                                 @csrf
                                                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
-                                                    Batalkan Pesanan (Gratis)
+                                                    Batalkan Pesanan
                                                 </button>
                                             </form>
-                                            
-                                            <div class="text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg border border-green-200">
+                                        @else
+                                            <!-- Belum ada pembayaran sama sekali -->
+                                            <form action="{{ route('user.pesan.batal', $p->id) }}" method="POST" 
+                                                  onsubmit="return confirm('Batalkan pemesanan ini?\n\nTindakan ini tidak dapat dibatalkan.')" class="inline">
+                                                @csrf
+                                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors">
+                                                    Batalkan Pesanan
+                                                </button>
+                                            </form>
+                                            {{-- <div class="text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg border border-green-200">
                                                 ✅ Pembatalan gratis sampai deadline pembayaran
-                                            </div>
+                                            </div> --}}
                                         @endif
                                     </div>
                             @elseif ($p->status_pemesanan == 'diterima')
-                                <a href="{{ route('user.pesan.perpanjang', $p->id) }}" 
-                                   class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
-                                    Ajukan Perpanjangan
-                                </a>
+                                <div class="text-xs text-gray-600 mt-2">
+        💡 Masa sewa berakhir: {{ \Carbon\Carbon::parse($p->tanggal_selesai)->format('d M Y') }}
+    </div>
                             @else
                                 <a href="{{ asset('storage/'.$p->bukti_pembayaran) }}" target="_blank" 
                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium">
@@ -323,7 +374,7 @@
         </div>
 
         <!-- Cancellation Policy Info - SIMPLIFIED -->
-        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+        {{-- <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
             <div class="flex items-start">
                 <div class="flex-shrink-0">
                     <svg class="w-6 h-6 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -333,13 +384,20 @@
                 <div class="ml-3">
                     <h3 class="text-lg font-medium text-blue-900 mb-2">📋 Kebijakan Pembatalan Pemesanan</h3>
                     <div class="text-sm text-blue-800 space-y-2">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="bg-white rounded-lg p-3 border border-blue-200">
                                 <div class="flex items-center mb-2">
                                     <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
                                     <span class="font-semibold">Belum Bayar</span>
                                 </div>
                                 <p class="text-xs">Gratis pembatalan sampai deadline pembayaran (24 jam setelah booking)</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 border border-blue-200">
+                                <div class="flex items-center mb-2">
+                                    <span class="w-3 h-3 bg-orange-500 rounded-full mr-2"></span>
+                                    <span class="font-semibold">Pembayaran Ditolak</span>
+                                </div>
+                                <p class="text-xs">Bisa batalkan pesanan atau upload ulang bukti pembayaran yang benar</p>
                             </div>
                             <div class="bg-white rounded-lg p-3 border border-blue-200">
                                 <div class="flex items-center mb-2">
@@ -350,13 +408,13 @@
                             </div>
                         </div>
                         <p class="text-xs mt-3 text-blue-700">
-                            <strong>Catatan:</strong> Dengan melakukan pembayaran, Anda setuju untuk menempati kamar yang telah dipesan. 
-                            Untuk informasi lebih lanjut, hubungi customer service kami.
+                            <strong>Catatan:</strong> Jika pembayaran ditolak admin, Anda akan mendapat notifikasi dengan alasan penolakan. 
+                            Silakan perbaiki dan upload ulang bukti pembayaran yang sesuai, atau batalkan pemesanan jika tidak jadi melanjutkan.
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 
@@ -400,7 +458,7 @@ function goBack() {
 </script>
 
         <!-- Cancellation Policy Info - SIMPLIFIED -->
-        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+        {{-- <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
             <div class="flex items-start">
                 <div class="flex-shrink-0">
                     <svg class="w-6 h-6 text-blue-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -433,7 +491,7 @@ function goBack() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 

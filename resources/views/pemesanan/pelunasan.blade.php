@@ -59,9 +59,13 @@
                                 <div class="flex-1">
                                     <div class="font-medium text-gray-900">{{ $method->name }}</div>
                                     <div class="text-sm text-gray-500">{{ $method->account_number }}</div>
-                                    @if($method->description)
-                                    <div class="text-xs text-gray-400 mt-1">{{ $method->description }}</div>
-                                    @endif
+                                     @if($method->type === 'qris' && $method->logo_path)
+                                                    <div class="text-center my-3">
+                                                        <div class="inline-block bg-gray-50 p-3 rounded-lg">
+                                                            <img src="{{ asset($method->logo_path) }}" alt="QRIS" class="w-32 h-auto mx-auto">
+                                                        </div>
+                                                    </div>
+                                                @endif
                                 </div>
                                 <div class="ml-3">
                                     <div class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-500 peer-checked:bg-blue-500"></div>

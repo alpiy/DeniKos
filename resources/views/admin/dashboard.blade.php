@@ -5,7 +5,7 @@
 @section('content')
     <h1 class="text-3xl font-bold mb-8 text-gray-800">Dashboard Admin</h1>
   
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-8"> {{-- Ubah jadi 3 kolom untuk statistik utama --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-200 border-l-4 border-indigo-500">
             <h2 class="text-lg font-semibold text-gray-700">Total Kamar Kos</h2>
             <p class="text-4xl font-bold text-indigo-600 mt-1">{{ $jumlahKos }}</p>
@@ -18,15 +18,18 @@
             <h2 class="text-lg font-semibold text-gray-700">Pemesanan Pending</h2>
             <p class="text-4xl font-bold text-yellow-500 mt-1">{{ $pending }}</p>
         </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-200 border-l-4 border-green-500">
             <h2 class="text-lg font-semibold text-gray-700">Penyewa Aktif</h2>
-            <p class="text-4xl font-bold text-green-500 mt-1">{{ $diterima }}</p>
+            <p class="text-4xl font-bold text-green-600 mt-1">{{ $penyewaAktif }}</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-200 border-l-4 border-red-500">
             <h2 class="text-lg font-semibold text-gray-700">Ditolak / Batal</h2>
             <p class="text-4xl font-bold text-red-500 mt-1">{{ $ditolak }}</p>
         </div>
-         <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-200 border-l-4 border-blue-500">
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-transform duration-200 border-l-4 border-blue-500">
             <h2 class="text-lg font-semibold text-gray-700">Sewa Selesai</h2>
             <p class="text-4xl font-bold text-blue-500 mt-1">{{ $selesai }}</p>
         </div>
@@ -64,11 +67,12 @@
                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($pesanan->tanggal_pesan)->isoFormat('LL') }}</td>
                         <td class="px-4 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                @if($pesanan->status_pemesanan == 'diterima') 
-                                @elseif($pesanan->status_pemesanan == 'pending')  
-                                @elseif($pesanan->status_pemesanan == 'ditolak') 
-                                @elseif($pesanan->status_pemesanan == 'batal') 
-                                @elseif($pesanan->status_pemesanan == 'selesai') 
+                                @if($pesanan->status_pemesanan == 'diterima') bg-green-100 text-green-800
+                                @elseif($pesanan->status_pemesanan == 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($pesanan->status_pemesanan == 'ditolak') bg-red-100 text-red-800
+                                @elseif($pesanan->status_pemesanan == 'batal') bg-gray-100 text-gray-800
+                                @elseif($pesanan->status_pemesanan == 'selesai') bg-blue-100 text-blue-800
+                                @else bg-gray-100 text-gray-800
                                 @endif">
                                 {{ ucfirst($pesanan->status_pemesanan) }}
                             </span>
@@ -102,6 +106,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Additional protection specifically for dashboard
     document.addEventListener('DOMContentLoaded', function() {
@@ -116,6 +121,47 @@
         }
         
         console.log('Dashboard loaded with clean state');
+        
+        // Initialize Chart
+        const canvas = document.getElementById('grafikPendapatan');
+        if (canvas) {
+            const labels = JSON.parse(canvas.getAttribute('data-labels'));
+            const data = JSON.parse(canvas.getAttribute('data-data'));
+            
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pendapatan (Rp)',
+                        data: data,
+                        borderColor: 'rgb(99, 102, 241)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Pendapatan Bulanan'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + value.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
     });
 </script>
 @endpush

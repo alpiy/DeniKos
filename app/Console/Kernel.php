@@ -12,9 +12,24 @@ use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
+    /**
+     * The Artisan commands provided by your application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        \App\Console\Commands\CancelExpiredBookings::class,
+    ];
+
     protected function schedule(Schedule $schedule)
     {
         Log::info('Schedule method called, registering all scheduled tasks...');
+        
+        // Check for expired bookings every 5 minutes
+        $schedule->command('bookings:cancel-expired')
+            ->everyFiveMinutes()
+            ->withoutOverlapping();
+        
         //         $schedule->call(function () {
         //     Log::info('SCHEDULER WORKS! Time: ' . now());
         // })->everyMinute();

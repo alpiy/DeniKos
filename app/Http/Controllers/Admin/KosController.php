@@ -70,15 +70,14 @@ class KosController extends Controller
             'fasilitas' => array_map('trim', explode(',', $request->input('fasilitas'))),
         ]);
         $request->validate([
-           'alamat' => 'required',
             'harga_bulanan' => 'required|integer|min:1',
             'lantai' => 'required|in:2,3', // hanya lantai 2 dan 3 yang tersedia
             'nomor_kamar' => 'required|integer|unique:kos|min:1|max:999', // Nomor kamar harus integer dan unik
             'deskripsi' => 'nullable',
             'fasilitas' => 'required|array',
-            'foto.*' => 'nullable|image|max:2048',
+            'foto' => 'nullable|array|max:5', // Maksimal 5 foto
+            'foto.*' => 'nullable|image|max:2048', // Setiap foto max 2MB
         ], [
-            'alamat.required' => 'Alamat kamar wajib diisi.',
             'harga_bulanan.required' => 'Harga bulanan wajib diisi.',
             'harga_bulanan.integer' => 'Harga bulanan harus berupa angka.',
             'harga_bulanan.min' => 'Harga bulanan minimal Rp 1.',
@@ -91,27 +90,32 @@ class KosController extends Controller
             'nomor_kamar.max' => 'Nomor kamar maksimal 999.',
             'fasilitas.required' => 'Fasilitas kamar wajib diisi.',
             'fasilitas.array' => 'Format fasilitas tidak valid.',
+            'foto.max' => 'Maksimal 5 foto yang dapat diupload.',
             'foto.*.image' => 'File yang diupload harus berupa gambar.',
-            'foto.*.max' => 'Ukuran gambar maksimal 2MB.',
+            'foto.*.max' => 'Ukuran gambar maksimal 2MB per foto.',
         ]);
 
         $fotoPaths = [];
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
-            $fotoPaths[] = $file->store('kos', 'public');
-         }
+                // Pastikan tidak melebihi 5 foto
+                if (count($fotoPaths) >= 5) {
+                    break;
+                }
+                $fotoPaths[] = $file->store('kos', 'public');
+            }
         }
         
 
         Kos::create([
-            'alamat' => $request->input('alamat'),
+            'alamat' => 'Jl. Laksda Adi Sucipto, Gg. 19, Pandanwangi, Blimbing, Kota Malang, Jawa Timur', // Alamat tetap DeniKos
             'harga_bulanan' => $request->input('harga_bulanan'),
             'lantai' => $request->input('lantai'),
             'nomor_kamar' => $request->input('nomor_kamar'),
             'deskripsi' => $request->input('deskripsi'),
             'fasilitas' => $request->input('fasilitas'),
             'foto' => $fotoPaths,
-
+            'luas_kamar' => '2x3', // Luas tetap 2x3 meter
             'status_kamar' => 'tersedia', // Default status kamar adalah tersedia
         ]);
 
@@ -129,15 +133,14 @@ class KosController extends Controller
             'fasilitas' => array_map('trim', explode(',', $request->input('fasilitas'))),
         ]);
         $request->validate([
-            'alamat' => 'required',
             'harga_bulanan' => 'required|integer|min:1',
             'lantai' => 'required|in:2,3', // hanya lantai 2 dan 3 yang tersedia
             'nomor_kamar' => 'required|integer|unique:kos,nomor_kamar,' . $ko->getKey() . '|min:1|max:999', // Nomor kamar harus integer dan unik kecuali untuk data yang sedang diedit
             'deskripsi' => 'nullable',
             'fasilitas' => 'required|array',
+            'foto' => 'nullable|array|max:5', // Maksimal 5 foto total
             'foto.*' => 'nullable|image|max:2048',
         ], [
-            'alamat.required' => 'Alamat kamar wajib diisi.',
             'harga_bulanan.required' => 'Harga bulanan wajib diisi.',
             'harga_bulanan.integer' => 'Harga bulanan harus berupa angka.',
             'harga_bulanan.min' => 'Harga bulanan minimal Rp 1.',
@@ -150,8 +153,9 @@ class KosController extends Controller
             'nomor_kamar.max' => 'Nomor kamar maksimal 999.',
             'fasilitas.required' => 'Fasilitas kamar wajib diisi.',
             'fasilitas.array' => 'Format fasilitas tidak valid.',
+            'foto.max' => 'Maksimal 5 foto yang dapat diupload.',
             'foto.*.image' => 'File yang diupload harus berupa gambar.',
-            'foto.*.max' => 'Ukuran gambar maksimal 2MB.',
+            'foto.*.max' => 'Ukuran gambar maksimal 2MB per foto.',
         ]);
 
         $fotoPaths = $ko->foto ?? [];
@@ -169,20 +173,24 @@ class KosController extends Controller
         // Tambah foto baru
         if ($request->hasFile('foto')) {
             foreach ($request->file('foto') as $file) {
+                // Pastikan total foto tidak melebihi 5
+                if (count($fotoPaths) >= 5) {
+                    break; // Stop jika sudah mencapai maksimal
+                }
                 $fotoPaths[] = $file->store('kos', 'public');
             }
         }
       
 
         $ko->update([
-            'alamat' => $request->input('alamat'),
+            'alamat' => 'Jl. Contoh No. 123, DeniKos, Kota Anda', // Alamat tetap DeniKos
             'harga_bulanan' => $request->input('harga_bulanan'),
             'lantai' => $request->input('lantai'),
             'nomor_kamar' => $request->input('nomor_kamar'),
             'deskripsi' => $request->input('deskripsi'),
             'fasilitas' => $request->input('fasilitas'),
             'foto' => $fotoPaths,
-           
+            'luas_kamar' => '2x3', // Luas tetap 2x3 meter
             'status_kamar' => $request->input('status_kamar', $ko->status_kamar ?? 'tersedia'), // Memperbarui status jika ada input
         ]);
 

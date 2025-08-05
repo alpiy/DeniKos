@@ -114,7 +114,10 @@ Route::prefix('admin')->name('admin.')->middleware(['role:admin', 'prevent.back'
 
     //data penyewa
     Route::get('/penyewa', [AdminPenyewaController::class, 'index'])->name('penyewa.index');
-    Route::post('/penyewa/{id}/selesai', [AdminPenyewaController::class, 'markAsCompleted'])->name('penyewa.complete');
+    Route::post('/penyewa/{id}/selesai', [AdminPenyewaController::class, 'complete'])->name('penyewa.complete');
+
+    //allusers
+    // Route::get('/admin/penyewa/all-users', [AdminPenyewaController::class, 'allUsers'])->name('penyewa.all-users');
 
     //laporanSewa
     Route::get('/laporan-sewa', [AdminLaporanSewaController::class, 'index'])->name('laporan.index');
@@ -123,6 +126,7 @@ Route::prefix('admin')->name('admin.')->middleware(['role:admin', 'prevent.back'
 
     // Verifikasi Pembayaran
     Route::post('/pembayaran/{id}/verifikasi', [AdminPemesananController::class, 'verifikasiPembayaran'])->name('pembayaran.verifikasi');
+    Route::post('/pembayaran/{id}/tolak', [AdminPemesananController::class, 'tolakPembayaran'])->name('pembayaran.tolak');
     
     // Payment Methods Management
     Route::resource('/payment-methods', \App\Http\Controllers\Admin\PaymentMethodController::class)->names('payment-methods');

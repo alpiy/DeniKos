@@ -112,7 +112,7 @@
                                 </a>
                             </th>
                             @endforeach
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Alamat</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Luas</th>
                             <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Fasilitas</th>
                             <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -129,8 +129,8 @@
                                         {{ ucfirst($kos->status_kamar) }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-700">
-                                    <div class="max-w-xs truncate" title="{{ $kos->alamat }}">{{ Str::limit($kos->alamat, 40) }}</div>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
+                                    <span class="text-gray-600 font-medium">{{ $kos->luas_kamar }} m</span>
                                 </td>
                                 <td class="px-4 py-4 text-sm text-gray-700">
                                     @if(is_array($kos->fasilitas) && count($kos->fasilitas) > 0)

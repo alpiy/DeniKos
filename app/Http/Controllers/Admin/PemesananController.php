@@ -304,6 +304,47 @@ public function verifikasiPembayaran($id)
         return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi.');
     }
 
+    public function tolakPembayaran(Request $request, $id)
+    {
+        $pembayaran = Pembayaran::with('pemesanan')->findOrFail($id);
+        
+        // Validasi: hanya bisa menolak pembayaran yang pending
+        if ($pembayaran->status !== 'pending') {
+            return redirect()->back()->with('error', 'Hanya dapat menolak pembayaran yang berstatus pending.');
+        }
+        
+        $request->validate([
+            'alasan_tolak' => 'required|string|max:500'
+        ], [
+            'alasan_tolak.required' => 'Alasan penolakan harus diisi.',
+            'alasan_tolak.max' => 'Alasan penolakan maksimal 500 karakter.'
+        ]);
+        
+        // Update status dan alasan penolakan
+        $pembayaran->update([
+            'status' => 'ditolak',
+            'alasan_tolak' => $request->alasan_tolak,
+            'ditolak_pada' => now()
+        ]);
+        
+        // RESET DEADLINE: Berikan kesempatan baru 24 jam untuk upload ulang
+        $pemesanan = $pembayaran->pemesanan;
+        $pemesanan->payment_deadline = now()->addHours(24);
+        $pemesanan->save();
+        
+        // Notifikasi ke user dengan deadline baru
+        $deadlineFormatted = $pemesanan->payment_deadline->format('d M Y, H:i') . ' WIB';
+        event(new NotifikasiUserBaru(
+            $pembayaran->pemesanan->user_id,
+            'Pembayaran Ditolak - Upload Ulang Segera',
+            'Pembayaran ' . $pembayaran->jenis . ' Anda ditolak. Alasan: ' . $request->alasan_tolak . 
+            '. Anda memiliki waktu hingga ' . $deadlineFormatted . ' untuk upload ulang bukti pembayaran yang sesuai. ' .
+            'Jika melewati deadline, pemesanan akan dibatalkan otomatis.'
+        ));
+        
+        return redirect()->back()->with('success', 'Pembayaran berhasil ditolak. User diberi deadline baru 24 jam untuk upload ulang bukti pembayaran.');
+    }
+
     public function cancelBooking($id)
     {
         $pemesanan = Pemesanan::with(['pembayaran', 'kos'])->findOrFail($id);

@@ -8,11 +8,62 @@
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                💳 Pembayaran Pemesanan
+                {{ isset($hasRejectedPayment) && $hasRejectedPayment ? '🔄 Upload Ulang Pembayaran' : '💳 Pembayaran Pemesanan' }}
             </h1>
             <p class="text-gray-600 mt-2">
-                Lengkapi pembayaran untuk menyelesaikan pemesanan Anda
+                {{ isset($hasRejectedPayment) && $hasRejectedPayment ? 'Upload ulang bukti pembayaran dengan data yang sesuai' : 'Lengkapi pembayaran untuk menyelesaikan pemesanan Anda' }}
             </p>
+        </div>
+
+        <!-- Alert for Rejected Payment -->
+        @if(isset($hasRejectedPayment) && $hasRejectedPayment && isset($latestRejectedPayment))
+            <div class="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
+                <div class="flex items-start">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                        <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-red-800 mb-2">❌ Pembayaran Sebelumnya Ditolak</h3>
+                        @if($latestRejectedPayment->alasan_tolak)
+                            <div class="bg-white border border-red-200 rounded-lg p-4 mb-4">
+                                <p class="text-sm font-medium text-red-800 mb-1">Alasan Penolakan:</p>
+                                <p class="text-red-700">{{ $latestRejectedPayment->alasan_tolak }}</p>
+                            </div>
+                        @endif
+                        <div class="bg-white border border-red-200 rounded-lg p-4">
+                            <p class="text-sm font-medium text-red-800 mb-2">📝 Pastikan bukti pembayaran yang baru:</p>
+                            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                                <li>Foto atau screenshot yang jelas dan tidak buram</li>
+                                <li>Nominal pembayaran sesuai dengan yang dipilih</li>
+                                <li>Nama rekening tujuan yang benar</li>
+                                <li>Tanggal dan waktu transaksi terlihat</li>
+                                <li>Format file PNG, JPG, atau JPEG maksimal 5MB</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Payment Deadline Alert -->
+        <div class="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    <h5 class="font-semibold text-orange-800">
+                        {{ isset($hasRejectedPayment) && $hasRejectedPayment ? '⏰ Deadline Upload Ulang' : '⏰ Deadline Pembayaran' }}
+                    </h5>
+                    <p class="text-sm text-orange-700">
+                        {{ isset($hasRejectedPayment) && $hasRejectedPayment ? 'Batas waktu upload ulang' : 'Batas waktu pembayaran' }}: 
+                        <span class="font-semibold">{{ $paymentDeadline->format('d M Y, H:i') }} WIB</span>
+                        <span class="block" id="countdown"></span>
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- Booking Summary Card -->

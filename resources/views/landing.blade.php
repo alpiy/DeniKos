@@ -46,38 +46,38 @@
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 md:mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Kenapa Memilih <span class="text-indigo-600">DeniKos</span>?</h2>
-                <p class="text-gray-600 mt-2 text-xl max-w-2xl mx-auto">Kami berkomitmen memberikan pengalaman tinggal terbaik dengan berbagai keunggulan.</p>
+                {{-- <p class="text-gray-600 mt-2 text-xl max-w-2xl mx-auto">Kami berkomitmen memberikan pengalaman tinggal terbaik dengan berbagai keunggulan.</p> --}}
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <x-feature-card title="Lokasi Strategis"
-                                iconPathD="M17.657 16.657L13.414 12.414M6.343 7.343l4.243 4.243m6.364 0a8 8 0 11-11.314-11.314 8 8 0 0111.314 11.314z">
-                    DeniKos terletak strategis, dekat dengan kampus ternama, pusat perkantoran, dan akses mudah ke transportasi publik.
+                 <x-feature-card title="Lokasi Strategis"
+                    iconPathD="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z">
+                    Berlokasi di Pandanwangi, Blimbing, dekat dengan berbagai akses penting di Kota Malang.
                 </x-feature-card>
 
-                <x-feature-card title="Fasilitas Lengkap"
-                                iconPathD="M9.75 17l.97-4.243a1 1 0 00-.212-.96l-3.536-3.536a1 1 0 011.414-1.414l3.536 3.536a1 1 0 00.96.212L17 9.75m0 0V7m0 2.75L7 17">
-                    Nikmati fasilitas lengkap mulai dari kamar mandi dalam, AC/Non-AC, WiFi super cepat, dapur bersama modern, hingga area parkir yang aman dan luas.
+                <x-feature-card title="Fasilitas Memadai"
+                    iconPathD="M9.75 17l.97-4.243a1 1 0 00-.212-.96l-3.536-3.536a1 1 0 011.414-1.414l3.536 3.536a1 1 0 00.96.212L17 9.75m0 0V7m0 2.75L7 17">
+                    Setiap kamar dilengkapi fasilitas dasar seperti lemari, kasur, meja, bantal, dan guling. Tersedia juga koneksi WiFi dan kamar mandi luar yang bersih.
                 </x-feature-card>
 
-                <x-feature-card title="Harga Terjangkau"
-                                iconPathD="M12 8c1.657 0 3 .895 3 2v6a3 3 0 01-6 0v-6c0-1.105 1.343-2 3-2zM12 15.5A1.5 1.5 0 0110.5 14V9.5a1.5 1.5 0 013 0V14a1.5 1.5 0 01-1.5 1.5z"
-                                iconViewBox="0 0 24 24"> {{-- Contoh penggunaan viewBox custom jika SVG-nya beda --}}
-                    Kami menawarkan harga sewa yang kompetitif dan terjangkau, mulai dari Rp500.000 per bulan. Pilihan ideal untuk pelajar, mahasiswa, dan profesional muda.
+                 <x-feature-card title="Harga Terjangkau"
+                    iconPathD="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01">
+                    Temukan kenyamanan tinggal dengan harga yang ramah di kantong, cocok untuk mahasiswa dan pekerja.
                 </x-feature-card>
             </div>
         </div>
     </section>
 
     {{-- Testimonial Section (Contoh Tambahan) --}}
-    <section class="py-20 md:py-28 bg-white">
+
+    {{-- <section class="py-20 md:py-28 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 md:mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Apa Kata Mereka?</h2>
                 <p class="text-gray-600 mt-2 text-xl max-w-2xl mx-auto">Pendapat jujur dari para penghuni DeniKos.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {{-- Testimonial Card 1 --}}
+               
                 <div class="bg-slate-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                     <div class="flex items-center mb-4">
                         <img src="https://i.pravatar.cc/60?u=user1" alt="User 1" class="w-14 h-14 rounded-full mr-4 border-2 border-indigo-300">
@@ -88,7 +88,7 @@
                     </div>
                     <p class="text-gray-600 italic">"Kosnya nyaman banget, bersih, dan lokasinya strategis dekat kampus. Fasilitas WiFi juga kencang, sangat membantu untuk kuliah online."</p>
                 </div>
-                {{-- Testimonial Card 2 --}}
+                
                 <div class="bg-slate-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                     <div class="flex items-center mb-4">
                         <img src="https://i.pravatar.cc/60?u=user2" alt="User 2" class="w-14 h-14 rounded-full mr-4 border-2 border-indigo-300">
@@ -99,7 +99,7 @@
                     </div>
                     <p class="text-gray-600 italic">"Harga sewanya sangat terjangkau untuk fasilitas yang didapat. Lingkungan juga aman dan tenang, cocok untuk istirahat setelah kerja."</p>
                 </div>
-                {{-- Testimonial Card 3 --}}
+                
                 <div class="bg-slate-50 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                     <div class="flex items-center mb-4">
                         <img src="https://i.pravatar.cc/60?u=user3" alt="User 3" class="w-14 h-14 rounded-full mr-4 border-2 border-indigo-300">
@@ -112,7 +112,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     {{-- Call to Action Section --}}
     <section class="py-20 md:py-28 bg-gradient-to-r from-indigo-600 to-purple-700 text-white">
@@ -132,9 +132,9 @@
     <footer class="bg-gray-800 text-gray-400 py-12">
         <div class="container mx-auto px-6 text-center">
             <p class="text-lg font-semibold text-gray-300 mb-2">DeniKos</p>
-            <p class="text-sm mb-1">Jl. Contoh Alamat No. 123, Kota Maju, Indonesia</p>
-            <p class="text-sm mb-4">Email: info@denikos.com | Telepon: (021) 123-4567</p>
-            <p class="text-xs">&copy; {{ date('Y') }} DeniKos. Hak Cipta Dilindungi. Dibuat dengan ❤️ di Indonesia.</p>
+            <p class="text-sm mb-1">Jl. Laksda Adi Sucipto, Gg. 19, Pandanwangi, Blimbing, Kota Malang, Jawa Timur</p>
+            <p class="text-sm mb-4">Email: info.denikos@gmail.com | Telepon: 0812-3456-7890</p>
+            <p class="text-xs">&copy; {{ date('Y') }} DeniKos. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 

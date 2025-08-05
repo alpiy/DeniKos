@@ -151,6 +151,9 @@ class PemesananController extends Controller
             // Calculate total_pembayaran automatically based on room price and duration
             $validated['total_pembayaran'] = $kos->harga_bulanan * $lamaSewaInt;
             
+            // Set initial payment deadline (24 hours from booking)
+            $validated['payment_deadline'] = now()->addHours(24);
+            
             $pemesanan = Pemesanan::create($validated);
             
             // Create notification for admin about new booking
@@ -568,7 +571,7 @@ public function downloadReceipt($id)
  */
 public function showPembayaran($id)
 {
-    $pemesanan = Pemesanan::with('kos')->findOrFail($id);
+    $pemesanan = Pemesanan::with(['kos', 'pembayaran'])->findOrFail($id);
     
     // Pastikan hanya user yang memesan bisa melihat
     if ($pemesanan->user_id !== Auth::user()->id) {
@@ -581,8 +584,11 @@ public function showPembayaran($id)
             ->with('error', 'Pembayaran hanya dapat dilakukan untuk pemesanan dengan status pending.');
     }
     
-    // Check payment deadline (24 hours after booking)
-    $paymentDeadline = Carbon::parse($pemesanan->tanggal_pesan)->addHours(24);
+    // Check for rejected payments - this now creates fresh deadline
+    $hasRejectedPayment = $pemesanan->pembayaran->where('status', 'ditolak')->count() > 0;
+    
+    // Use payment_deadline from database (set when payment is rejected or initial booking)
+    $paymentDeadline = $pemesanan->payment_deadline ?? Carbon::parse($pemesanan->tanggal_pesan)->addHours(24);
     $isExpired = Carbon::now()->gt($paymentDeadline);
     
     if ($isExpired) {
@@ -590,13 +596,17 @@ public function showPembayaran($id)
         $pemesanan->status_pemesanan = 'batal';
         $pemesanan->save();
         
-        return redirect()->route('user.riwayat')
-            ->with('error', 'Pemesanan telah kadaluarsa (24 jam). Silakan buat pemesanan baru.');
+        // Different message for rejected vs initial payment
+        $message = $hasRejectedPayment 
+            ? 'Batas waktu upload ulang pembayaran telah habis. Pemesanan dibatalkan otomatis.'
+            : 'Pemesanan telah kadaluarsa (24 jam). Silakan buat pemesanan baru.';
+        
+        return redirect()->route('user.riwayat')->with('error', $message);
     }
     
-    // Check if payment already exists
-    $existingPembayaran = Pembayaran::where('pemesanan_id', $id)->first();
-    if ($existingPembayaran) {
+    // Check if payment already exists and is pending/approved
+    $activePembayaran = $pemesanan->pembayaran->whereIn('status', ['pending', 'diterima'])->first();
+    if ($activePembayaran && !$hasRejectedPayment) {
         return redirect()->route('user.pesan.success', $id)
             ->with('info', 'Pembayaran untuk pemesanan ini sudah dilakukan.');
     }
@@ -607,7 +617,17 @@ public function showPembayaran($id)
     // Get active payment methods
     $paymentMethods = PaymentMethod::active()->ordered()->get();
     
-    return view('user.pembayaran.create', compact('pemesanan', 'totalTagihan','paymentDeadline', 'paymentMethods'));
+    // Get latest rejected payment for context
+    $latestRejectedPayment = $pemesanan->pembayaran->where('status', 'ditolak')->sortByDesc('ditolak_pada')->first();
+    
+    return view('user.pembayaran.create', compact(
+        'pemesanan', 
+        'totalTagihan', 
+        'paymentDeadline', 
+        'paymentMethods', 
+        'hasRejectedPayment',
+        'latestRejectedPayment'
+    ));
 }
 
 /**
@@ -615,7 +635,7 @@ public function showPembayaran($id)
  */
 public function processPembayaran(Request $request, $id)
 {
-    $pemesanan = Pemesanan::with('kos')->findOrFail($id);
+    $pemesanan = Pemesanan::with(['kos', 'pembayaran'])->findOrFail($id);
     
     // Pastikan hanya user yang memesan bisa melakukan pembayaran
     if ($pemesanan->user_id !== Auth::user()->id) {
@@ -628,21 +648,29 @@ public function processPembayaran(Request $request, $id)
             ->with('error', 'Pembayaran hanya dapat dilakukan untuk pemesanan dengan status pending.');
     }
     
-    // Check if payment already exists
-    $existingPembayaran = Pembayaran::where('pemesanan_id', $id)->first();
-    if ($existingPembayaran) {
-        return redirect()->route('user.pesan.success', $id)
-            ->with('error', 'Pembayaran untuk pemesanan ini sudah dilakukan.');
-    }
+    // Check for rejected payments and use new deadline logic
+    $hasRejectedPayment = $pemesanan->pembayaran->where('status', 'ditolak')->count() > 0;
     
-    // SECURITY: Check booking expiration (24 hours after booking)
-    $bookingExpiry = Carbon::parse($pemesanan->tanggal_pesan)->addHours(24);
-    if (Carbon::now()->gt($bookingExpiry)) {
+    // Use payment_deadline from database (reset when payment rejected)
+    $paymentDeadline = $pemesanan->payment_deadline ?? Carbon::parse($pemesanan->tanggal_pesan)->addHours(24);
+    
+    // SECURITY: Check payment deadline (supports reset deadline for rejected payments)
+    if (Carbon::now()->gt($paymentDeadline)) {
         // Auto-cancel expired booking
         $pemesanan->update(['status_pemesanan' => 'batal']);
         
-        return redirect()->route('user.kos.index')
-            ->with('error', 'Pemesanan telah kadaluarsa (24 jam). Silakan buat pemesanan baru.');
+        $message = $hasRejectedPayment 
+            ? 'Batas waktu upload ulang pembayaran telah habis. Pemesanan dibatalkan otomatis.'
+            : 'Pemesanan telah kadaluarsa (24 jam). Silakan buat pemesanan baru.';
+        
+        return redirect()->route('user.kos.index')->with('error', $message);
+    }
+    
+    // Check if active payment already exists (but allow re-upload for rejected payments)
+    $activePembayaran = $pemesanan->pembayaran->whereIn('status', ['pending', 'diterima'])->first();
+    if ($activePembayaran && !$hasRejectedPayment) {
+        return redirect()->route('user.pesan.success', $id)
+            ->with('error', 'Pembayaran untuk pemesanan ini sudah dilakukan.');
     }
     
     // SIMPLIFIED VALIDATION - only LUNAS or DP 50%

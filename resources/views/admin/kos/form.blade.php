@@ -46,12 +46,13 @@
                 </select>
                 @error('status_kamar') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
             </div>
-             <div class="sm:col-span-3">
-                <label for="luas_kamar" class="block text-sm font-medium text-gray-700">Luas Kamar</label>
-                <input type="text" name="luas_kamar" id="luas_kamar" value="{{ old('luas_kamar', $kos->luas_kamar ?? '2x3') }}"
-                       class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {{ $errors->has('luas_kamar') ? 'border-red-500' : 'border-gray-300' }}"
-                       placeholder="Contoh: 2x3 meter, 3x3">
-                @error('luas_kamar') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+            
+            <div class="sm:col-span-3">
+                <label class="block text-sm font-medium text-gray-700">Luas Kamar</label>
+                <div class="mt-1 p-3 bg-gray-50 rounded-md border border-gray-300">
+                    <span class="text-sm text-gray-700 font-medium">2x3 meter</span>
+                    <p class="text-xs text-gray-500 mt-1">Standar untuk semua kamar DeniKos</p>
+                </div>
             </div>
         </div>
     </div>
@@ -63,14 +64,6 @@
             <p class="mt-1 text-sm text-gray-500">Informasi detail mengenai kondisi dan fasilitas kamar.</p>
         </div>
         <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-            <div class="sm:col-span-6">
-                <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat Lengkap Kos <span class="text-red-500">*</span></label>
-                <textarea id="alamat" name="alamat" rows="3" required
-                          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {{ $errors->has('alamat') ? 'border-red-500' : 'border-gray-300' }}"
-                          placeholder="Masukkan alamat lengkap properti kos">{{ old('alamat', $kos->alamat ?? '') }}</textarea>
-                @error('alamat') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
-
             <div class="sm:col-span-6">
                 <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi Kamar</label>
                 <textarea id="deskripsi" name="deskripsi" rows="4"
@@ -93,7 +86,7 @@
     </div>
 
     {{-- Bagian Media (Foto & Denah) --}}
-    <div class="pt-8" x-data="{ photoPreviews: [], denahPreview: '{{ isset($kos) && $kos->denah_kamar ? asset('storage/' . $kos->denah_kamar) : '' }}' }">
+    <div class="pt-8">
         <div>
             <h3 class="text-lg leading-6 font-medium text-gray-900">Media Kamar</h3>
             <p class="mt-1 text-sm text-gray-500">Unggah foto-foto kamar dan denah jika ada.</p>
@@ -101,30 +94,30 @@
         <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             {{-- Foto Kamar --}}
             <div class="sm:col-span-6">
-                <label for="foto" class="block text-sm font-medium text-gray-700">Foto Kamar (Bisa lebih dari satu)</label>
-                <input type="file" name="foto[]" id="foto" multiple accept="image/*"
-                       @change="photoPreviews = []; Array.from($event.target.files).forEach(file => { let reader = new FileReader(); reader.onload = (e) => photoPreviews.push(e.target.result); reader.readAsDataURL(file); })"
-                       class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 {{ $errors->has('foto.*') ? 'border-red-500' : '' }}">
-                @error('foto.*') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
-                
-                {{-- Preview Foto Baru (Alpine.js) --}}
-                <div x-show="photoPreviews.length > 0" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    <template x-for="(preview, index) in photoPreviews" :key="index">
-                        <img :src="preview" class="w-full h-32 object-cover rounded-md shadow-md">
-                    </template>
+                <label for="foto" class="block text-sm font-medium text-gray-700">
+                    Foto Kamar 
+                    <span class="text-xs text-gray-500">(Maksimal 5 foto, masing-masing max 2MB)</span>
+                </label>
+                <div class="mt-1">
+                    <input type="file" name="foto[]" id="foto" multiple accept="image/*" max="5"
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-gray-300 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors {{ $errors->has('foto.*') ? 'border-red-500' : '' }}">
+                    <p class="mt-1 text-xs text-gray-600">Format: JPG, PNG, GIF. Pilih beberapa foto sekaligus dengan Ctrl+Click (Windows) atau Cmd+Click (Mac)</p>
                 </div>
+                @error('foto.*') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
 
                 {{-- Foto yang Sudah Ada (Mode Edit) --}}
                 @if (isset($kos) && is_array($kos->foto) && count($kos->foto) > 0)
-                    <p class="mt-4 text-sm font-medium text-gray-700">Foto Saat Ini:</p>
-                    <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <p class="mt-4 text-sm font-medium text-gray-700 mb-3">Foto Saat Ini:</p>
+                    <div class="flex flex-wrap gap-3">
                         @foreach ($kos->foto as $i => $path)
-                            <div class="relative group">
-                                <img src="{{ asset('storage/' . $path) }}" alt="Foto Kamar {{ $i + 1 }}" class="w-full h-32 object-cover rounded-md shadow-md">
-                                <label class="absolute top-1 right-1 bg-white/80 hover:bg-red-100 p-1 rounded cursor-pointer transition-colors">
-                                    <input type="checkbox" name="hapus_foto[]" value="{{ $i }}" class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
-                                    <span class="text-xs text-red-700 ml-1">Hapus</span>
+                            <div class="relative">
+                                <img src="{{ asset('storage/' . $path) }}" alt="Foto Kamar {{ $i + 1 }}" class="w-32 h-32 object-cover rounded-lg shadow-md border-2 border-gray-200">
+                                <label class="absolute top-1 right-1 bg-white/95 hover:bg-red-100 p-1 rounded-full cursor-pointer transition-colors shadow-md">
+                                    <input type="checkbox" name="hapus_foto[]" value="{{ $i }}" class="h-3 w-3 text-red-600 border-gray-300 rounded focus:ring-red-500">
                                 </label>
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs p-1 rounded-b-lg text-center">
+                                    <span class="font-medium">Foto {{ $i + 1 }}</span>
+                                </div>
                             </div>
                         @endforeach
                     </div>

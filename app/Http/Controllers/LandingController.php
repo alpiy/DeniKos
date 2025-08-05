@@ -26,7 +26,7 @@ class LandingController extends Controller
             $backgroundFotos = [
                 'images/landing/kos-slide1.jpeg',
                 'images/landing/Landing2.jpeg',
-                'images/landing/kos-slide3.jpeg',
+                'images/landing/landing3.jpeg',
             ];
         } else {
             // Tambahkan storage path untuk images dari database

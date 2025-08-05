@@ -68,7 +68,7 @@
                     
                     <div class="flex justify-between py-2 border-b border-gray-100">
                         <span class="font-medium text-gray-600">Tanggal Masuk:</span>
-                        <span class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($pemesanan->tanggal_pesan)->format('d F Y') }}</span>
+                        <span class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($pemesanan->tanggal_masuk)->format('d F Y') }}</span>
                     </div>
                     
                     <div class="flex justify-between py-2 border-b border-gray-100">

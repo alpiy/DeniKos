@@ -56,4 +56,24 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('foto');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const fileCount = e.target.files.length;
+            const helpText = fileInput.parentElement.querySelector('p');
+            
+            if (fileCount > 0) {
+                helpText.innerHTML = `Format: JPG, PNG, GIF. <strong>${fileCount} foto dipilih</strong>`;
+                helpText.className = 'mt-1 text-xs text-green-600 font-medium';
+            } else {
+                helpText.innerHTML = 'Format: JPG, PNG, GIF. Pilih beberapa foto sekaligus dengan Ctrl+Click (Windows) atau Cmd+Click (Mac)';
+                helpText.className = 'mt-1 text-xs text-gray-600';
+            }
+        });
+    }
+});
+</script>
 @endpush

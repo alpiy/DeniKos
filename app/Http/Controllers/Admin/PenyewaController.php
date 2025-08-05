@@ -7,85 +7,106 @@ use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 use App\Events\NotifikasiUserBaru;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class PenyewaController extends Controller
 {
     public function index(Request $request)
     {
         $query = Pemesanan::with(['user', 'kos', 'pembayaran'])
-            ->where('status_pemesanan', 'diterima') // Hanya yang statusnya 'diterima' (aktif)
-            ->whereHas('kos'); // Pastikan relasi kos ada (kos tidak soft deleted, misalnya)
+            ->where('status_pemesanan', 'diterima')
+            ->whereHas('kos');
 
-        // Filter Pencarian (Nama User, Email User, No Kamar)
+        // Filter pencarian
         if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->whereHas('user', function($userQuery) use ($searchTerm) {
-                    $userQuery->where('name', 'like', "%{$searchTerm}%")
-                              ->orWhere('email', 'like', "%{$searchTerm}%");
-                })->orWhereHas('kos', function($kosQuery) use ($searchTerm) {
-                    $kosQuery->where('nomor_kamar', 'like', "%{$searchTerm}%");
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                })->orWhereHas('kos', function ($q) use ($search) {
+                    $q->where('nomor_kamar', 'like', "%{$search}%");
                 });
             });
         }
 
-        // Filter Lantai
+        // Filter lantai
         if ($request->filled('lantai')) {
-            $query->whereHas('kos', function($kosQuery) use ($request) {
-                $kosQuery->where('lantai', $request->lantai);
+            $query->whereHas('kos', function ($q) use ($request) {
+                $q->where('lantai', $request->lantai);
             });
         }
-        
-        // Filter Berdasarkan Tanggal Selesai Sewa (Contoh: akan berakhir dalam 7 hari)
+
+        // Filter akan berakhir (dalam 1 bulan)
         if ($request->filled('akan_berakhir')) {
-            $targetTanggal = Carbon::now()->addDays(7)->toDateString();
-            // Perlu kalkulasi tanggal_selesai di query, bisa lebih kompleks
-            // Untuk sekarang, kita bisa filter setelah get(), atau buat scope di model
-            // $query->whereDate(DB::raw("DATE_ADD(tanggal_masuk, INTERVAL lama_sewa MONTH)"), '<=', $targetTanggal);
-            // Atau bisa juga dengan whereDate('tanggal_selesai', '<=', $targetTanggal) jika tanggal_selesai sudah pasti benar.
-            $query->whereNotNull('tanggal_selesai')->whereDate('tanggal_selesai', '<=', $targetTanggal);
+            $query->whereNotNull('tanggal_selesai')
+                  ->whereDate('tanggal_selesai', '<=', now()->addMonth());
         }
 
+        // Sederhana: ambil data langsung dengan pagination
+        $penyewaAktif = $query->orderBy('tanggal_selesai', 'asc')
+                             ->paginate(15)
+                             ->withQueryString();
 
-        // Urutkan berdasarkan tanggal selesai sewa yang paling dekat
-        $penyewaAktif = $query->orderBy('tanggal_selesai', 'asc') 
-                              ->paginate(15)
-                              ->withQueryString();
-        
-        $totalPenyewaAktif = (clone $query)->count(); // Hitung total sebelum paginasi untuk statistik
+        $totalPenyewaAktif = $query->count();
 
         return view('admin.dataPenyewa.index', compact('penyewaAktif', 'totalPenyewaAktif'));
     }
 
-    // Method markAsCompleted tetap sama seperti yang sudah diimprove sebelumnya
-    public function markAsCompleted($id) 
+    // public function allUsers(Request $request)
+    // {
+    //     $query = User::where('role', 'user');
+
+    //     if ($request->filled('search')) {
+    //         $search = $request->search;
+    //         $query->where(function ($q) use ($search) {
+    //             $q->where('name', 'like', "%{$search}%")
+    //               ->orWhere('email', 'like', "%{$search}%")
+    //               ->orWhere('no_hp', 'like', "%{$search}%");
+    //         });
+    //     }
+
+    //     $users = $query->withCount([
+    //             'pemesanans as total_pemesanan',
+    //             'pemesanans as pemesanan_aktif' => function($q) {
+    //                 $q->where('status_pemesanan', 'diterima');
+    //             }
+    //         ])
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate(20)
+    //         ->withQueryString();
+
+    //     return view('admin.dataPenyewa.all-users', compact('users'));
+    // }
+    
+    public function complete(Request $request, $id)
     {
-        // ... (kode dari respons sebelumnya)
-        $pemesanan = Pemesanan::with('kos', 'user')->findOrFail($id);
-
-        if ($pemesanan->status_pemesanan === 'diterima') {
-            $pemesanan->status_pemesanan = 'selesai';
-            $pemesanan->save();
-
+        try {
+            $pemesanan = Pemesanan::findOrFail($id);
+            
+            // Update status pemesanan menjadi selesai
+            $pemesanan->update([
+                'status_pemesanan' => 'selesai'
+            ]);
+            
+            // Update status kamar menjadi tersedia lagi
             if ($pemesanan->kos) {
-                 $adaPenyewaAktifLain = Pemesanan::where('kos_id', $pemesanan->kos_id)
-                                           ->where('status_pemesanan', 'diterima')
-                                           ->where('id', '!=', $pemesanan->id)
-                                           ->exists();
-                if (!$adaPenyewaAktifLain) {
-                    $pemesanan->kos->update(['status_kamar' => 'tersedia']);
-                }
+                $pemesanan->kos->update(['status_kamar' => 'tersedia']);
             }
             
-            event(new NotifikasiUserBaru( // Namespace lengkap jika belum di-use
-                $pemesanan->user_id,
-                'Masa Sewa Selesai',
-                'Masa sewa Anda untuk kamar ' . ($pemesanan->kos->nomor_kamar ?? '-') . ' telah ditandai selesai oleh admin. Terima kasih.'
-            ));
-
-            return redirect()->route('admin.penyewa.index')->with('success', 'Penyewa ' . $pemesanan->user->name . ' untuk kamar ' . ($pemesanan->kos->nomor_kamar ?? '-') . ' telah ditandai selesai.');
+            // Kirim notifikasi ke user (opsional)
+            // event(new NotifikasiUserBaru([
+            //     'user_id' => $pemesanan->user_id,
+            //     'title' => 'Sewa Kamar Selesai',
+            //     'message' => "Sewa kamar {$pemesanan->kos->nomor_kamar} Anda telah selesai.",
+            //     'type' => 'info'
+            // ]));
+            
+            return redirect()->route('admin.penyewa.index')
+                           ->with('success', "Penyewa {$pemesanan->user->name} kamar {$pemesanan->kos->nomor_kamar} berhasil ditandai sebagai selesai sewa. Kamar sekarang tersedia untuk disewakan kembali.");
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Gagal menyelesaikan sewa: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.penyewa.index')->with('error', 'Status penyewa tidak dapat diubah.');
     }
 }

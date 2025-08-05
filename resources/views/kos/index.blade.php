@@ -51,8 +51,8 @@
                                 </div>
                             @endforeach
                         </div>
-                        <div class="swiper-button-next swiper-button-next-detail-2 !w-6 !h-6 !bg-white/80 !rounded-full !shadow-md"></div>
-                        <div class="swiper-button-prev swiper-button-prev-detail-2 !w-6 !h-6 !bg-white/80 !rounded-full !shadow-md"></div>
+                        <div class="swiper-button-next swiper-button-next-detail-2"></div>
+                        <div class="swiper-button-prev swiper-button-prev-detail-2"></div>
                         <div class="swiper-pagination swiper-pagination-detail-2 !bottom-2"></div>
                     </div>
                     
@@ -152,8 +152,8 @@
                                 </div>
                             @endforeach
                         </div>
-                        <div class="swiper-button-next swiper-button-next-detail-3 !w-6 !h-6 !bg-white/80 !rounded-full !shadow-md"></div>
-                        <div class="swiper-button-prev swiper-button-prev-detail-3 !w-6 !h-6 !bg-white/80 !rounded-full !shadow-md"></div>
+                        <div class="swiper-button-next swiper-button-next-detail-3"></div>
+                        <div class="swiper-button-prev swiper-button-prev-detail-3"></div>
                         <div class="swiper-pagination swiper-pagination-detail-3 !bottom-2"></div>
                     </div>
                     

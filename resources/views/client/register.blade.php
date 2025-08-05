@@ -62,6 +62,7 @@
                                class="w-full rounded-lg shadow-sm px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('no_hp') ? 'border-red-500' : 'border-gray-300' }}"
                                required placeholder="08xxxxxxxxxx">
                         <p class="mt-1 text-xs text-gray-500">Contoh: 081234567890</p>
+                        <p class="mt-1 text-xs text-gray-500">Pastikan nomor HP aktif dan terdaftar di WhatsApp.</p> 
                         @error('no_hp')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -83,14 +84,22 @@
                     {{-- Password --}}
                     <div>
                         <label for="password" class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-                        <div class="relative group">
+                        <div class="relative">
                             <input type="password" name="password" id="password"
-                                   class="w-full rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('password') ? 'border-red-500' : 'border-gray-300' }}"
+                                   class="w-full rounded-lg shadow-sm px-4 py-2.5 pr-12 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('password') ? 'border-red-500' : 'border-gray-300' }}"
                                    required placeholder="Minimal 8 karakter">
                             {{-- Tombol Show/Hide Password --}}
-                            <button type="button" data-toggle="password" data-target="password" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200" tabindex="-1">
-                                <svg class="w-5 h-5 icon-show transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
+                            <button type="button" 
+                                    class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200 password-toggle-btn" 
+                                    data-target="password">
+                                <svg class="w-5 h-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg class="w-5 h-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                                </svg>
                             </button>
                         </div>
                         @error('password')
@@ -101,14 +110,22 @@
                     {{-- Konfirmasi Password --}}
                     <div>
                         <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-1.5">Konfirmasi Password</label>
-                        <div class="relative group">
+                        <div class="relative">
                             <input type="password" name="password_confirmation" id="password_confirmation"
-                                   class="w-full rounded-lg shadow-sm px-4 py-2.5 pr-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-300' }}"
+                                   class="w-full rounded-lg shadow-sm px-4 py-2.5 pr-12 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 placeholder-gray-400 {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-300' }}"
                                    required placeholder="Ulangi password">
                             {{-- Tombol Show/Hide Password --}}
-                            <button type="button" data-toggle="password" data-target="password_confirmation" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200" tabindex="-1">
-                                <svg class="w-5 h-5 icon-show transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                <svg class="w-5 h-5 icon-hide hidden transition-opacity duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" /></svg>
+                            <button type="button" 
+                                    class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200 password-toggle-btn" 
+                                    data-target="password_confirmation">
+                                <svg class="w-5 h-5 eye-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg class="w-5 h-5 eye-closed hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95m3.25-2.6A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.043 5.197M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                                </svg>
                             </button>
                         </div>
                         @error('password_confirmation')
@@ -170,6 +187,41 @@
 @endsection
 
 @push('scripts')
+<style>
+    /* Pastikan button password toggle bisa diklik */
+    .password-toggle-btn {
+        cursor: pointer;
+        z-index: 10;
+        user-select: none;
+        min-width: 44px; /* Minimum touch target size */
+        min-height: 44px;
+    }
+    
+    .password-toggle-btn:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+        border-radius: 0.375rem;
+    }
+    
+    .password-toggle-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .password-toggle-btn svg {
+        pointer-events: none;
+        flex-shrink: 0;
+    }
+    
+    /* Animasi untuk transisi icon */
+    .eye-open, .eye-closed {
+        transition: all 0.2s ease-in-out;
+    }
+    
+    /* Pastikan input field memiliki padding yang cukup */
+    input[type="password"], input[type="text"] {
+        padding-right: 3rem !important;
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Form validation variables
@@ -356,23 +408,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Show/Hide password functionality
-    document.querySelectorAll('[data-toggle="password"]').forEach(button => {
-        button.addEventListener('click', function() {
+    const passwordToggleBtns = document.querySelectorAll('.password-toggle-btn');
+    
+    passwordToggleBtns.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const targetId = this.getAttribute('data-target');
             const targetInput = document.getElementById(targetId);
-            const iconShow = this.querySelector('.icon-show');
-            const iconHide = this.querySelector('.icon-hide');
+            const eyeOpen = this.querySelector('.eye-open');
+            const eyeClosed = this.querySelector('.eye-closed');
+            
+            if (!targetInput || !eyeOpen || !eyeClosed) {
+                return;
+            }
             
             if (targetInput.type === 'password') {
+                // Show password
                 targetInput.type = 'text';
-                iconShow.classList.add('hidden');
-                iconHide.classList.remove('hidden');
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+                this.setAttribute('aria-label', 'Hide password');
             } else {
+                // Hide password
                 targetInput.type = 'password';
-                iconShow.classList.remove('hidden');
-                iconHide.classList.add('hidden');
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+                this.setAttribute('aria-label', 'Show password');
             }
         });
+        
+        // Set initial aria-label
+        button.setAttribute('aria-label', 'Show password');
     });
 });
 </script>

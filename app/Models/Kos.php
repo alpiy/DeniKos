@@ -9,7 +9,7 @@ class Kos extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nomor_kamar', 'alamat', 'harga_bulanan', 'deskripsi','fasilitas', 'foto', "status_kamar", 'lantai'];
+    protected $fillable = ['nomor_kamar', 'alamat', 'harga_bulanan', 'deskripsi','fasilitas', 'foto', "status_kamar", 'lantai', 'luas_kamar'];
     protected $casts = [
         'fasilitas' => 'array',
         'foto' => 'array',
