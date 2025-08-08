@@ -28,14 +28,28 @@
         $lantai3_tersedia = $lantai3->where('status_kamar', 'tersedia');
     @endphp
 
+    
     <!-- Compact Lantai 2 Section -->
-    <div class="mb-6">
+    <div class="mb-6" x-data="{ denahTerbuka: false }">
         <div class="flex items-center mb-3">
             <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-2">
                 <span class="text-white font-bold text-xs">2</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800">Lantai 2</h2>
             <span class="ml-2 text-xs text-gray-600">• {{ $lantai2_tersedia->count() }} kamar tersedia</span>
+            <button @click="denahTerbuka = !denahTerbuka" 
+        class="ml-auto text-xs font-semibold px-3 py-1.5 rounded-md border-2 transition-colors flex items-center gap-1.5"
+        :class="denahTerbuka ? 'border-red-400 bg-red-50 text-red-600' : 'border-indigo-400 bg-indigo-50 text-indigo-600 hover:bg-indigo-100'">
+    <svg x-show="!denahTerbuka" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+    <svg x-show="denahTerbuka" style="display: none;" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    <span x-show="!denahTerbuka">Lihat Denah</span>
+    <span x-show="denahTerbuka" style="display: none;">Tutup Denah</span>
+</button>
+        </div>
+        <div x-show="denahTerbuka" x-transition.opacity.duration.300ms style="display: none;" class="bg-gray-50 p-4 rounded-lg shadow-inner mb-4 border">
+            <h3 class="font-semibold text-center mb-3 text-gray-700">Denah Kamar Lantai 2</h3>
+            {{-- Pastikan gambar Anda ada di public/images/denah/denah_lantai_2.jpg --}}
+            <img src="{{ asset('images/denah/denahlantai2.jpeg') }}" alt="Denah Kamar Lantai 2" class="w-64 h-auto rounded-md border-2 border-white shadow-lg">
         </div>
         
         @if($lantai2_pertama)
@@ -101,6 +115,7 @@
                                 @endforeach
                             </div>
                         </div>
+                         
                     </div>
                     
                     <div class="bg-gray-50 rounded-lg p-3">
@@ -128,16 +143,30 @@
             </div>
         @endif
     </div>
-
+    
     <!-- Compact Lantai 3 Section -->
-    <div class="mb-6">
+    <div class="mb-6" x-data="{ denahTerbuka: false }">
         <div class="flex items-center mb-3">
             <div class="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center mr-2">
                 <span class="text-white font-bold text-xs">3</span>
             </div>
             <h2 class="text-lg font-bold text-gray-800">Lantai 3</h2>
             <span class="ml-2 text-xs text-gray-600">• {{ $lantai3_tersedia->count() }} kamar tersedia</span>
+            <button @click="denahTerbuka = !denahTerbuka" 
+        class="ml-auto text-xs font-semibold px-3 py-1.5 rounded-md border-2 transition-colors flex items-center gap-1.5"
+        :class="denahTerbuka ? 'border-red-400 bg-red-50 text-red-600' : 'border-indigo-400 bg-indigo-50 text-indigo-600 hover:bg-indigo-100'">
+    <svg x-show="!denahTerbuka" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+    <svg x-show="denahTerbuka" style="display: none;" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    <span x-show="!denahTerbuka">Lihat Denah</span>
+    <span x-show="denahTerbuka" style="display: none;">Tutup Denah</span>
+</button>
         </div>
+         <div x-show="denahTerbuka" x-transition.opacity.duration.300ms style="display: none;" class="bg-gray-50 p-4 rounded-lg shadow-inner mb-4 border">
+            <h3 class="font-semibold text-center mb-3 text-gray-700">Denah Kamar Lantai 3</h3>
+            {{-- Pastikan gambar Anda ada di public/images/denah/denah_lantai_2.jpg --}}
+            <img src="{{ asset('images/denah/denahlantai3.jpeg') }}" alt="Denah Kamar Lantai 3" class="w-64 h-auto rounded-md border-2 border-white shadow-lg">
+        </div>
+        
         
         @if($lantai3_pertama)
         <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
