@@ -20,6 +20,24 @@
         .status-selesai { color: blue; }
         .status-pending { color: orange; }
         .status-batal, .status-ditolak { color: red; }
+        
+        /* -- CSS TAMBAHAN UNTUK TANDA TANGAN -- */
+        .signature-section {
+            margin-top: 50px; /* Jarak dari tabel */
+            width: 250px; /* Lebar area tanda tangan */
+            margin-left: auto; /* Posisi di kanan */
+            margin-right: 0;
+            text-align: center;
+            font-size: 11px;
+        }
+        .signature-line {
+            border-bottom: 1px solid #333;
+            width: 100%;
+            margin-top: 70px; /* Memberi ruang untuk tanda tangan */
+            margin-bottom: 5px;
+        }
+        /* -- AKHIR CSS TAMBAHAN -- */
+
     </style>
 </head>
 <body>
@@ -44,7 +62,6 @@
                     <th>Periode Sewa</th>
                     <th>Lama</th>
                     <th>Status</th>
-                    {{-- <th>Jenis</th> --}}
                     <th>Total Dibayar (Verified)</th>
                 </tr>
             </thead>
@@ -61,12 +78,11 @@
                         </td>
                         <td>{{ $item->lama_sewa }} bln</td>
                         <td class="status-{{ strtolower($item->status_pemesanan) }}">{{ ucfirst($item->status_pemesanan) }}</td>
-                        {{-- <td>{{ $item->is_perpanjangan ? 'Perpanjangan' : 'Awal' }}</td> --}}
                         <td>Rp{{ number_format($item->pembayaran->where('status', 'diterima')->sum('jumlah'), 0, ',', '.') }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" style="text-align: center;">Tidak ada data yang cocok dengan filter.</td>
+                        <td colspan="7" style="text-align: center;">Tidak ada data yang cocok dengan filter.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -75,7 +91,14 @@
         <div class="total-section">
             <p>Total Pendapatan Terverifikasi (Sesuai Filter): Rp{{ number_format($totalPendapatanTerverifikasi, 0, ',', '.') }}</p>
         </div>
-    </div>
+
+        <div class="signature-section">
+            <p>Malang, {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}</p>
+            <p>Penanggung Jawab,</p>
+            <div class="signature-line"></div>
+            <p><strong>{{ $penanggungJawab ?? 'Admin DeniKos' }}</strong></p>
+        </div>
+        </div>
     <div class="footer">
         Laporan ini dibuat pada: {{ \Carbon\Carbon::now()->format('d F Y H:i:s') }} - DeniKos
     </div>

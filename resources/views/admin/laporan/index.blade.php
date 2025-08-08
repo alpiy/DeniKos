@@ -27,51 +27,71 @@
         </div>
 
         {{-- Filter Form --}}
-        <form method="GET" action="{{ route('admin.laporan.index') }}" class="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4 items-end">
-            <div>
-                <label for="search_histori" class="block text-sm font-medium text-gray-700">Cari (Nama/Email/No.Kamar)</label>
-                <input type="text" name="search_histori" id="search_histori" value="{{ request('search_histori') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm" placeholder="Ketik pencarian...">
-            </div>
-            <div>
-                <label for="status_histori" class="block text-sm font-medium text-gray-700">Status Pemesanan</label>
-                <select name="status_histori" id="status_histori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
-                    <option value="">Semua Status</option>
-                    <option value="pending" {{ request('status_histori') == 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="diterima" {{ request('status_histori') == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                    <option value="ditolak" {{ request('status_histori') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                    <option value="batal" {{ request('status_histori') == 'batal' ? 'selected' : '' }}>Batal</option>
-                    <option value="selesai" {{ request('status_histori') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                </select>
-            </div>
-            <div>
-                <label for="bulan_histori" class="block text-sm font-medium text-gray-700">Bulan Pesan</label>
-                <select name="bulan_histori" id="bulan_histori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
-                    <option value="">Semua Bulan</option>
-                    @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ request('bulan_histori') == $i ? 'selected' : '' }}>{{ DateTime::createFromFormat('!m', $i)->format('F') }}</option>
-                    @endfor
-                </select>
-            </div>
-            <div>
-                <label for="tahun_histori" class="block text-sm font-medium text-gray-700">Tahun Pesan</label>
-                 <select name="tahun_histori" id="tahun_histori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
-                    <option value="">Semua Tahun</option>
-                    @for ($y = date('Y'); $y >= date('Y') - 5; $y--) {{-- Ambil 5 tahun terakhir --}}
-                        <option value="{{ $y }}" {{ request('tahun_histori') == $y ? 'selected' : '' }}>{{ $y }}</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="lg:col-span-4 flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
-                <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Terapkan Filter
-                </button>
-                 @if(request()->hasAny(['search_histori', 'status_histori', 'bulan_histori', 'tahun_histori']))
-                    <a href="{{ route('admin.laporan.index') }}" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Reset Filter
-                    </a>
-                @endif
-            </div>
-        </form>
+        
+        {{-- Ganti form filter yang lama dengan kode di bawah ini --}}
+<form method="GET" action="{{ route('admin.laporan.index') }}" class="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4 items-end">
+    
+    {{-- Cari (Nama/Email/No.Kamar) --}}
+    <div>
+        <label for="search_histori" class="block text-sm font-medium text-gray-700">Cari (Nama/Email/No.Kamar)</label>
+        <input type="text" name="search_histori" id="search_histori" value="{{ request('search_histori') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm" placeholder="Ketik pencarian...">
+    </div>
+
+    {{-- Status Pemesanan --}}
+    <div>
+        <label for="status_histori" class="block text-sm font-medium text-gray-700">Status Pemesanan</label>
+        <select name="status_histori" id="status_histori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
+            <option value="">Semua Status</option>
+            <option value="pending" {{ request('status_histori') == 'pending' ? 'selected' : '' }}>Pending</option>
+            <option value="diterima" {{ request('status_histori') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+            <option value="ditolak" {{ request('status_histori') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+            <option value="batal" {{ request('status_histori') == 'batal' ? 'selected' : '' }}>Batal</option>
+            <option value="selesai" {{ request('status_histori') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+        </select>
+    </div>
+
+    {{-- ### PERUBAHAN DI SINI ### --}}
+    {{-- Filter Tanggal Pesan Spesifik --}}
+    <div>
+        <label for="tanggal_pesan" class="block text-sm font-medium text-gray-700">Tanggal Pesan</label>
+        <input type="date" name="tanggal_pesan" id="tanggal_pesan" value="{{ request('tanggal_pesan') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
+    </div>
+
+    {{-- Filter Bulan & Tahun (tetap ada jika masih dibutuhkan untuk filter bulanan) --}}
+    <div class="grid grid-cols-2 gap-x-4">
+        <div>
+            <label for="bulan_histori" class="block text-sm font-medium text-gray-700">Atau per Bulan</label>
+            <select name="bulan_histori" id="bulan_histori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
+                <option value="">-- Bulan --</option>
+                @for ($i = 1; $i <= 12; $i++)
+                    <option value="{{ $i }}" {{ request('bulan_histori') == $i ? 'selected' : '' }}>{{ DateTime::createFromFormat('!m', $i)->format('F') }}</option>
+                @endfor
+            </select>
+        </div>
+        <div>
+            <label for="tahun_histori" class="block text-sm font-medium text-gray-700">Tahun</label>
+            <select name="tahun_histori" id="tahun_histori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2.5 px-3 text-sm">
+                <option value="">-- Tahun --</option>
+                @for ($y = date('Y'); $y >= date('Y') - 5; $y--)
+                    <option value="{{ $y }}" {{ request('tahun_histori') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                @endfor
+            </select>
+        </div>
+    </div>
+    {{-- ### AKHIR PERUBAHAN ### --}}
+
+    <div class="lg:col-span-4 flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+        <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Terapkan Filter
+        </button>
+        {{-- Logika untuk menampilkan tombol Reset --}}
+        @if(request()->hasAny(['search_histori', 'status_histori', 'bulan_histori', 'tahun_histori', 'tanggal_pesan']))
+            <a href="{{ route('admin.laporan.index') }}" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Reset Filter
+            </a>
+        @endif
+    </div>
+</form>
 
         {{-- Tabel Histori --}}
         <div class="overflow-x-auto">
